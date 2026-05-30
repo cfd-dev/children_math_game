@@ -16,6 +16,18 @@ function showPage(pageId) {
     }
 }
 
+// 更新首页用户信息
+function updateHomeUserInfo() {
+    var name = getUserName();
+    var gradeName = gradeConfig[currentGrade] ? gradeConfig[currentGrade].name : '';
+
+    var greeting = document.getElementById('home-user-greeting');
+    var gradeLabel = document.getElementById('home-user-grade');
+
+    if (greeting) greeting.textContent = name ? name + '，你好！' : '你好！';
+    if (gradeLabel) gradeLabel.textContent = gradeName;
+}
+
 // 返回首页
 function goHome() {
     // 停止所有计时器
@@ -46,7 +58,8 @@ function goHome() {
     document.getElementById('memory-reward').style.display = 'none';
     document.getElementById('memory-result').style.display = 'none';
 
-    // 显示首页
+    // 更新首页用户信息并显示
+    updateHomeUserInfo();
     showPage('home-page');
 }
 
@@ -80,15 +93,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // 检查是否是首次用户
         if (isFirstTimeUser()) {
-            // 首次用户，显示欢迎页面选择年级
+            // 首次用户，显示欢迎页面创建用户和选择年级
             showPage('welcome-page');
         } else {
-            // 返回用户，加载保存的年级
+            // 返回用户，加载保存的年级和用户名
             var savedGrade = getUserGrade();
             if (savedGrade && gradeConfig[savedGrade]) {
                 currentGrade = savedGrade;
                 updateGradeDisplay();
             }
+            updateHomeUserInfo();
             showPage('home-page');
         }
     } catch (e) {

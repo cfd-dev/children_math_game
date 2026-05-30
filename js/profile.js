@@ -6,7 +6,8 @@ const STORAGE_KEYS = {
     MEMORY_HISTORY: 'memoryGameHistory',
     MATH_ABILITY: 'mathAbility',
     MEMORY_ABILITY: 'memoryAbility',
-    USER_GRADE: 'userGrade'
+    USER_GRADE: 'userGrade',
+    USER_NAME: 'userName'
 };
 
 // 初始化本地存储
@@ -35,9 +36,19 @@ function getUserGrade() {
     return localStorage.getItem(STORAGE_KEYS.USER_GRADE);
 }
 
-// 检查是否是首次使用
+// 保存用户名
+function saveUserName(name) {
+    localStorage.setItem(STORAGE_KEYS.USER_NAME, name);
+}
+
+// 获取用户名
+function getUserName() {
+    return localStorage.getItem(STORAGE_KEYS.USER_NAME);
+}
+
+// 检查是否是首次使用（用户名和年级都存在才算非首次）
 function isFirstTimeUser() {
-    return !getUserGrade();
+    return !getUserGrade() || !getUserName();
 }
 
 // 获取历史记录
@@ -309,6 +320,10 @@ function changeGradeFromProfile(grade) {
 
 // 更新个人中心页面
 function updateProfilePage() {
+    // 更新用户名
+    var profileName = document.getElementById('profile-username');
+    if (profileName) profileName.textContent = getUserName() || '-';
+
     // 更新统计
     const mathHistory = getMathHistory();
     const memoryHistory = getMemoryHistory();
@@ -340,6 +355,21 @@ function updateProfilePage() {
     showHistory('math');
 }
 
+// 切换用户（清除数据重新开始）
+function switchUser() {
+    if (confirm('切换用户将清除当前所有数据，是否继续？')) {
+        localStorage.removeItem(STORAGE_KEYS.MATH_HISTORY);
+        localStorage.removeItem(STORAGE_KEYS.MEMORY_HISTORY);
+        localStorage.removeItem(STORAGE_KEYS.MATH_ABILITY);
+        localStorage.removeItem(STORAGE_KEYS.MEMORY_ABILITY);
+        localStorage.removeItem(STORAGE_KEYS.USER_GRADE);
+        localStorage.removeItem(STORAGE_KEYS.USER_NAME);
+
+        initStorage();
+        showPage('welcome-page');
+    }
+}
+
 // 清除所有数据
 function clearAllData() {
     if (confirm('确定要清除所有学习数据吗？此操作不可恢复，需要重新选择年级。')) {
@@ -348,6 +378,7 @@ function clearAllData() {
         localStorage.removeItem(STORAGE_KEYS.MATH_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.MEMORY_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.USER_GRADE);
+        localStorage.removeItem(STORAGE_KEYS.USER_NAME);
 
         initStorage();
         updateProfilePage();
@@ -358,14 +389,27 @@ function clearAllData() {
 
 // 首次欢迎页面选择年级
 function selectWelcomeGrade(btn) {
+    const nameInput = document.getElementById('welcome-username');
+    const name = nameInput ? nameInput.value.trim() : '';
+
+    if (!name) {
+        alert('请先输入你的名字');
+        if (nameInput) nameInput.focus();
+        return;
+    }
+
     const grade = btn.dataset.grade;
 
-    // 保存年级
+    // 保存用户名和年级
+    saveUserName(name);
     saveUserGrade(grade);
 
     // 设置当前年级
     currentGrade = grade;
     updateGradeDisplay();
+
+    // 更新首页用户信息
+    updateHomeUserInfo();
 
     // 切换到主页面
     showPage('home-page');

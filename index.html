@@ -18,11 +18,19 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <!-- 首次欢迎页面（年级选择） -->
+    <!-- 首次欢迎页面（用户创建 + 年级选择） -->
     <div id="welcome-page" class="page">
         <div class="container">
             <h1 class="app-title">数学小达人</h1>
             <p class="app-subtitle">快乐学习，快速成长</p>
+
+            <!-- 用户名输入 -->
+            <div class="user-input-section">
+                <h3>你好！你叫什么名字？</h3>
+                <div class="user-input-wrap">
+                    <input type="text" id="welcome-username" class="username-input" placeholder="输入你的名字" maxlength="10" autocomplete="off">
+                </div>
+            </div>
 
             <!-- 年级选择 -->
             <div class="grade-section">
@@ -73,7 +81,16 @@
     <div id="home-page" class="page">
         <div class="container">
             <h1 class="app-title">数学小达人</h1>
-            <p class="app-subtitle">快乐学习，快速成长</p>
+
+            <!-- 用户信息栏 -->
+            <div class="home-user-info">
+                <div class="user-avatar">👤</div>
+                <div class="user-details">
+                    <span class="user-greeting" id="home-user-greeting">你好！</span>
+                    <span class="user-grade-label" id="home-user-grade">一年级</span>
+                </div>
+                <button class="switch-user-btn" onclick="switchUser()">切换用户</button>
+            </div>
 
             <div class="menu-buttons">
                 <button class="menu-btn math-btn" onclick="showMathQuiz()">
@@ -274,6 +291,14 @@
             <div class="page-header">
                 <button class="back-btn" onclick="goHome()">← 返回</button>
                 <h2>个人中心</h2>
+            </div>
+
+            <!-- 用户信息 -->
+            <div class="profile-section profile-user-section">
+                <div class="profile-user-info">
+                    <span class="profile-avatar">👤</span>
+                    <span class="profile-username" id="profile-username">-</span>
+                </div>
             </div>
 
             <!-- 能力雷达图 -->

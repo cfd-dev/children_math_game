@@ -56,6 +56,114 @@ body {
     margin-bottom: 40px;
 }
 
+/* 用户名输入区域 */
+.user-input-section {
+    background: rgba(255,255,255,0.15);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+
+.user-input-section h3 {
+    text-align: center;
+    color: white;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+}
+
+.user-input-wrap {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-justify-content: center;
+    justify-content: center;
+}
+
+.username-input {
+    width: 100%;
+    max-width: 280px;
+    padding: 12px 16px;
+    font-size: 1.1em;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-radius: 12px;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    text-align: center;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.username-input::placeholder {
+    color: rgba(255,255,255,0.6);
+}
+
+.username-input:focus {
+    border-color: rgba(255,255,255,0.8);
+    background: rgba(255,255,255,0.3);
+}
+
+/* 首页用户信息栏 */
+.home-user-info {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    background: rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 12px 16px;
+    margin-bottom: 24px;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+
+.user-avatar {
+    font-size: 2em;
+    margin-right: 12px;
+    line-height: 1;
+}
+
+.user-details {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    -webkit-flex: 1;
+    flex: 1;
+}
+
+.user-greeting {
+    color: white;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.user-grade-label {
+    color: rgba(255,255,255,0.8);
+    font-size: 0.9em;
+    margin-top: 2px;
+}
+
+.switch-user-btn {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 0.85em;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    white-space: nowrap;
+}
+
+.switch-user-btn:active {
+    background: rgba(255,255,255,0.35);
+}
+
 .grade-section {
     background: rgba(255,255,255,0.15);
     border-radius: 20px;
@@ -912,6 +1020,32 @@ body {
     font-size: 1.3em;
 }
 
+/* 个人中心用户名 */
+.profile-user-section {
+    padding: 16px 25px;
+}
+
+.profile-user-info {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.profile-avatar {
+    font-size: 1.8em;
+    line-height: 1;
+}
+
+.profile-username {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #333;
+}
+
 .radar-chart-container {
     display: -webkit-flex;
     display: flex;
@@ -1335,6 +1469,24 @@ body {
     .back-btn {
         font-size: 1em;
         padding: 8px 12px;
+    }
+
+    .home-user-info {
+        padding: 10px 12px;
+    }
+
+    .user-avatar {
+        font-size: 1.6em;
+    }
+
+    .user-greeting {
+        font-size: 1em;
+    }
+
+    .username-input {
+        max-width: 240px;
+        padding: 10px 14px;
+        font-size: 1em;
     }
 }
 
