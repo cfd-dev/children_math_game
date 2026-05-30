@@ -2,8 +2,19 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>数学小达人</title>
+    <meta name="description" content="快乐学习，快速成长的儿童数学游戏">
+    <meta name="theme-color" content="#667eea">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="数学小达人">
+    <meta name="format-detection" content="telephone=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="assets/icon.svg">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -326,6 +337,16 @@
         </div>
     </div>
 
+    <script>
+    // 立即隐藏非欢迎页面，防止全部内容同时显示
+    (function() {
+        var ids = ['home-page', 'math-page', 'memory-page', 'profile-page'];
+        for (var i = 0; i < ids.length; i++) {
+            var el = document.getElementById(ids[i]);
+            if (el) el.style.display = 'none';
+        }
+    })();
+    </script>
     <script src="js/sounds.js"></script>
     <script src="js/math-quiz.js"></script>
     <script src="js/memory-game.js"></script>

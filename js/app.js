@@ -2,13 +2,18 @@
 
 // 页面切换函数
 function showPage(pageId) {
-    // 隐藏所有页面
+    // 隐藏所有页面（包括默认显示的欢迎页）
     document.querySelectorAll('.page').forEach(page => {
         page.classList.remove('active');
+        page.style.display = 'none';
     });
 
     // 显示目标页面
-    document.getElementById(pageId).classList.add('active');
+    var target = document.getElementById(pageId);
+    if (target) {
+        target.style.display = 'block';
+        target.classList.add('active');
+    }
 }
 
 // 返回首页
@@ -41,6 +46,16 @@ function goHome() {
     showPage('home-page');
 }
 
+// 确保页面加载后立即隐藏非活动页面（防止CSS/JS加载延迟导致全部显示）
+(function() {
+    var pages = document.querySelectorAll('.page');
+    for (var i = 0; i < pages.length; i++) {
+        if (pages[i].id !== 'welcome-page') {
+            pages[i].style.display = 'none';
+        }
+    }
+})();
+
 // 显示快速计算页面
 function showMathQuiz() {
     showPage('math-page');
@@ -55,20 +70,26 @@ function showMemoryGame() {
 document.addEventListener('DOMContentLoaded', function() {
     console.log('数学小达人应用已加载');
 
-    // 初始化存储
-    initStorage();
+    try {
+        // 初始化存储
+        initStorage();
 
-    // 检查是否是首次用户
-    if (isFirstTimeUser()) {
-        // 首次用户，显示欢迎页面选择年级
-        showPage('welcome-page');
-    } else {
-        // 返回用户，加载保存的年级
-        const savedGrade = getUserGrade();
-        if (savedGrade && gradeConfig[savedGrade]) {
-            currentGrade = savedGrade;
-            updateGradeDisplay();
+        // 检查是否是首次用户
+        if (isFirstTimeUser()) {
+            // 首次用户，显示欢迎页面选择年级
+            showPage('welcome-page');
+        } else {
+            // 返回用户，加载保存的年级
+            var savedGrade = getUserGrade();
+            if (savedGrade && gradeConfig[savedGrade]) {
+                currentGrade = savedGrade;
+                updateGradeDisplay();
+            }
+            showPage('home-page');
         }
-        showPage('home-page');
+    } catch (e) {
+        console.error('初始化出错:', e);
+        // 出错时至少显示欢迎页
+        showPage('welcome-page');
     }
 });

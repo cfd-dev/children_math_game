@@ -2,19 +2,31 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-box-sizing: border-box;
 }
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: -webkit-linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
     color: #333;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
 }
 
 .page {
     display: none;
     min-height: 100vh;
     padding: 20px;
+    padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(20px + constant(safe-area-inset-bottom, 0px));
+}
+
+/* 首次用户默认显示欢迎页，其余页面隐藏 */
+#welcome-page {
+    display: block;
 }
 
 .page.active {
@@ -24,12 +36,13 @@ body {
 .container {
     max-width: 500px;
     margin: 0 auto;
+    width: 100%;
 }
 
 /* 主页面样式 */
 .app-title {
     text-align: center;
-    font-size: 2.5em;
+    font-size: 3.2em;
     color: white;
     margin-top: 40px;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
@@ -38,7 +51,7 @@ body {
 .app-subtitle {
     text-align: center;
     color: rgba(255,255,255,0.9);
-    font-size: 1.2em;
+    font-size: 1.5em;
     margin-top: 10px;
     margin-bottom: 40px;
 }
@@ -48,6 +61,7 @@ body {
     border-radius: 20px;
     padding: 20px;
     margin-bottom: 30px;
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
 }
 
@@ -65,8 +79,11 @@ body {
 }
 
 .grade-btn {
+    display: -webkit-flex;
     display: flex;
+    -webkit-flex-direction: column;
     flex-direction: column;
+    -webkit-align-items: center;
     align-items: center;
     padding: 12px 8px;
     border: 2px solid rgba(255,255,255,0.3);
@@ -74,7 +91,12 @@ body {
     background: rgba(255,255,255,0.1);
     color: white;
     cursor: pointer;
+    -webkit-transition: all 0.2s;
     transition: all 0.2s;
+    -webkit-appearance: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
 }
 
 .grade-btn:hover {
@@ -103,18 +125,23 @@ body {
     position: fixed;
     top: 20px;
     left: 50%;
+    -webkit-transform: translateX(-50%);
     transform: translateX(-50%);
     z-index: 1000;
+    background: -webkit-linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border-radius: 15px;
     padding: 15px 20px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    -webkit-animation: slideDown 0.5s ease-out;
     animation: slideDown 0.5s ease-out;
     max-width: 90%;
 }
 
 .notification-content {
+    display: -webkit-flex;
     display: flex;
+    -webkit-align-items: center;
     align-items: center;
     gap: 15px;
 }
@@ -149,15 +176,34 @@ body {
     height: 35px;
     border-radius: 50%;
     cursor: pointer;
+    display: -webkit-flex;
     display: flex;
+    -webkit-align-items: center;
     align-items: center;
+    -webkit-justify-content: center;
     justify-content: center;
+    -webkit-appearance: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
 }
 
 .notification-close:hover {
     background: rgba(255,255,255,0.3);
 }
 
+@-webkit-keyframes slideDown {
+    from {
+        opacity: 0;
+        -webkit-transform: translateX(-50%) translateY(-20px);
+        transform: translateX(-50%) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        -webkit-transform: translateX(-50%) translateY(0);
+        transform: translateX(-50%) translateY(0);
+    }
+}
 @keyframes slideDown {
     from {
         opacity: 0;
@@ -170,8 +216,11 @@ body {
 }
 
 .current-grade-display {
+    display: -webkit-flex;
     display: flex;
+    -webkit-flex-direction: column;
     flex-direction: column;
+    -webkit-align-items: center;
     align-items: center;
     gap: 8px;
     padding: 20px;
@@ -192,13 +241,17 @@ body {
 }
 
 .menu-buttons {
+    display: -webkit-flex;
     display: flex;
+    -webkit-flex-direction: column;
     flex-direction: column;
     gap: 20px;
 }
 
 .menu-btn {
+    display: -webkit-flex;
     display: flex;
+    -webkit-align-items: center;
     align-items: center;
     padding: 25px 30px;
     border: none;
@@ -206,7 +259,12 @@ body {
     background: white;
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     cursor: pointer;
+    -webkit-transition: -webkit-transform 0.2s, box-shadow 0.2s;
     transition: transform 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
 }
 
 .menu-btn:hover {
@@ -219,19 +277,19 @@ body {
 }
 
 .btn-icon {
-    font-size: 3em;
+    font-size: 3.5em;
     margin-right: 20px;
 }
 
 .btn-text {
-    font-size: 1.5em;
+    font-size: 1.8em;
     font-weight: bold;
     color: #333;
 }
 
 .btn-desc {
     display: block;
-    font-size: 0.9em;
+    font-size: 1.1em;
     color: #666;
     margin-top: 5px;
 }
@@ -250,7 +308,9 @@ body {
 
 /* 页面头部 */
 .page-header {
+    display: -webkit-flex;
     display: flex;
+    -webkit-align-items: center;
     align-items: center;
     margin-bottom: 30px;
 }
@@ -264,6 +324,10 @@ body {
     border-radius: 10px;
     cursor: pointer;
     margin-right: 15px;
+    -webkit-appearance: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
 }
 
 .back-btn:hover {
@@ -291,8 +355,11 @@ body {
 }
 
 .question-count {
+    display: -webkit-flex;
     display: flex;
+    -webkit-align-items: center;
     align-items: center;
+    -webkit-justify-content: center;
     justify-content: center;
     gap: 10px;
     margin-bottom: 25px;
@@ -305,11 +372,15 @@ body {
     border-radius: 10px;
     font-size: 1em;
     background: white;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
 }
 
 .start-btn {
     width: 100%;
     padding: 18px;
+    background: -webkit-linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border: none;
@@ -317,7 +388,12 @@ body {
     font-size: 1.2em;
     font-weight: bold;
     cursor: pointer;
+    -webkit-transition: -webkit-transform 0.2s, box-shadow 0.2s;
     transition: transform 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
 }
 
 .start-btn:hover {
@@ -334,7 +410,9 @@ body {
 }
 
 .quiz-info {
+    display: -webkit-flex;
     display: flex;
+    -webkit-justify-content: space-between;
     justify-content: space-between;
     margin-bottom: 30px;
     font-size: 1em;
@@ -353,13 +431,17 @@ body {
 }
 
 .answer-section {
+    display: -webkit-flex;
     display: flex;
+    -webkit-justify-content: center;
     justify-content: center;
 }
 
 .answer-boxes {
+    display: -webkit-flex;
     display: flex;
     gap: 10px;
+    -webkit-justify-content: center;
     justify-content: center;
 }
 
@@ -371,8 +453,12 @@ body {
     font-size: 2em;
     text-align: center;
     outline: none;
+    -webkit-transition: border-color 0.2s;
     transition: border-color 0.2s;
     caret-color: #667eea;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
 }
 
 .answer-box:focus {
@@ -423,7 +509,12 @@ body {
     font-size: 1.2em;
     font-weight: bold;
     cursor: pointer;
+    -webkit-transition: background 0.2s;
     transition: background 0.2s;
+    -webkit-appearance: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
 }
 
 .next-btn:hover {
@@ -446,7 +537,9 @@ body {
 }
 
 .result-stats {
+    display: -webkit-flex;
     display: flex;
+    -webkit-justify-content: space-around;
     justify-content: space-around;
     margin-bottom: 40px;
 }
@@ -494,11 +587,13 @@ body {
 }
 
 .result-buttons {
+    display: -webkit-flex;
     display: flex;
     gap: 15px;
 }
 
 .retry-btn, .home-btn {
+    -webkit-flex: 1;
     flex: 1;
     padding: 18px;
     border: none;
@@ -506,7 +601,12 @@ body {
     font-size: 1.1em;
     font-weight: bold;
     cursor: pointer;
+    -webkit-transition: -webkit-transform 0.2s;
     transition: transform 0.2s;
+    -webkit-appearance: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
 }
 
 .retry-btn {
@@ -546,8 +646,11 @@ body {
     letter-spacing: 15px;
     margin-bottom: 30px;
     min-height: 80px;
+    display: -webkit-flex;
     display: flex;
+    -webkit-align-items: center;
     align-items: center;
+    -webkit-justify-content: center;
     justify-content: center;
 }
 
@@ -562,8 +665,10 @@ body {
 
 .timer-fill {
     height: 100%;
+    background: -webkit-linear-gradient(90deg, #667eea, #764ba2);
     background: linear-gradient(90deg, #667eea, #764ba2);
     width: 100%;
+    -webkit-transition: width 1s linear;
     transition: width 1s linear;
 }
 
@@ -590,9 +695,12 @@ body {
 }
 
 .memory-answer-boxes {
+    display: -webkit-flex;
     display: flex;
     gap: 8px;
+    -webkit-justify-content: center;
     justify-content: center;
+    -webkit-flex-wrap: wrap;
     flex-wrap: wrap;
     margin: 20px 0;
 }
@@ -607,9 +715,13 @@ body {
     color: #333;
     text-align: center;
     outline: none;
+    -webkit-transition: border-color 0.2s;
     transition: border-color 0.2s;
     caret-color: #667eea;
     background: white;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
 }
 
 .memory-box:focus {
@@ -647,7 +759,9 @@ body {
 }
 
 .memory-info {
+    display: -webkit-flex;
     display: flex;
+    -webkit-justify-content: space-between;
     justify-content: space-between;
     margin-bottom: 30px;
     font-size: 1em;
@@ -662,12 +776,22 @@ body {
 }
 
 /* 动画效果 */
+@-webkit-keyframes shake {
+    0%, 100% { -webkit-transform: translateX(0); transform: translateX(0); }
+    25% { -webkit-transform: translateX(-10px); transform: translateX(-10px); }
+    75% { -webkit-transform: translateX(10px); transform: translateX(10px); }
+}
 @keyframes shake {
     0%, 100% { transform: translateX(0); }
     25% { transform: translateX(-10px); }
     75% { transform: translateX(10px); }
 }
 
+@-webkit-keyframes pulse {
+    0% { -webkit-transform: scale(1); transform: scale(1); }
+    50% { -webkit-transform: scale(1.05); transform: scale(1.05); }
+    100% { -webkit-transform: scale(1); transform: scale(1); }
+}
 @keyframes pulse {
     0% { transform: scale(1); }
     50% { transform: scale(1.05); }
@@ -675,10 +799,12 @@ body {
 }
 
 .shake {
+    -webkit-animation: shake 0.5s ease-in-out;
     animation: shake 0.5s ease-in-out;
 }
 
 .pulse {
+    -webkit-animation: pulse 0.5s ease-in-out;
     animation: pulse 0.5s ease-in-out;
 }
 
@@ -699,7 +825,9 @@ body {
 }
 
 .radar-chart-container {
+    display: -webkit-flex;
     display: flex;
+    -webkit-justify-content: center;
     justify-content: center;
     margin-bottom: 20px;
 }
@@ -707,10 +835,14 @@ body {
 #radar-chart {
     max-width: 100%;
     height: auto;
+    aspect-ratio: 1;
+    -webkit-aspect-ratio: 1;
 }
 
 .ability-scores {
+    display: -webkit-flex;
     display: flex;
+    -webkit-justify-content: space-around;
     justify-content: space-around;
 }
 
@@ -738,7 +870,9 @@ body {
 }
 
 .stat-card {
+    display: -webkit-flex;
     display: flex;
+    -webkit-align-items: center;
     align-items: center;
     padding: 15px;
     background: #f8f9fa;
@@ -764,6 +898,7 @@ body {
 .current-level-display {
     text-align: center;
     padding: 20px;
+    background: -webkit-linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border-radius: 15px;
 }
@@ -781,12 +916,14 @@ body {
 }
 
 .history-tabs {
+    display: -webkit-flex;
     display: flex;
     gap: 10px;
     margin-bottom: 15px;
 }
 
 .history-tab {
+    -webkit-flex: 1;
     flex: 1;
     padding: 12px;
     border: 2px solid #e0e0e0;
@@ -794,7 +931,12 @@ body {
     background: white;
     font-size: 1em;
     cursor: pointer;
+    -webkit-transition: all 0.2s;
     transition: all 0.2s;
+    -webkit-appearance: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
 }
 
 .history-tab:hover {
@@ -810,6 +952,7 @@ body {
 .history-list {
     max-height: 300px;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .history-item {
@@ -828,8 +971,10 @@ body {
 }
 
 .history-details {
+    display: -webkit-flex;
     display: flex;
     gap: 15px;
+    -webkit-flex-wrap: wrap;
     flex-wrap: wrap;
 }
 
@@ -856,7 +1001,12 @@ body {
     border-radius: 12px;
     font-size: 1em;
     cursor: pointer;
+    -webkit-transition: background 0.2s;
     transition: background 0.2s;
+    -webkit-appearance: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
 }
 
 .clear-data-btn:hover {
@@ -864,9 +1014,117 @@ body {
 }
 
 /* 响应式设计 */
-@media (max-width: 400px) {
+
+/* 大屏幕平板 (768px+) */
+@media (min-width: 768px) {
+    .container {
+        max-width: 650px;
+    }
+
+    .page {
+        padding: 30px;
+    }
+
+    .menu-buttons {
+        -webkit-flex-direction: row;
+        flex-direction: row;
+        gap: 20px;
+    }
+
+    .menu-btn {
+        -webkit-flex: 1;
+        flex: 1;
+        -webkit-flex-direction: column;
+        flex-direction: column;
+        text-align: center;
+        padding: 30px 20px;
+    }
+
+    .btn-icon {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .grade-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+    }
+
+    .result-stats {
+        gap: 20px;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+}
+
+/* 中等屏幕 (481px ~ 767px) - 默认样式已覆盖，无需额外调整 */
+
+/* 小屏幕手机 (max-width: 480px) */
+@media (max-width: 480px) {
+    .page {
+        padding: 15px;
+    }
+
     .app-title {
-        font-size: 2em;
+        font-size: 2.8em;
+        margin-top: 25px;
+    }
+
+    .app-subtitle {
+        font-size: 1.3em;
+        margin-bottom: 30px;
+    }
+
+    .menu-btn {
+        padding: 20px;
+    }
+
+    .btn-icon {
+        font-size: 2.8em;
+        margin-right: 15px;
+    }
+
+    .btn-text {
+        font-size: 1.5em;
+    }
+
+    .btn-desc {
+        font-size: 1em;
+    }
+
+    .grade-section {
+        padding: 15px;
+    }
+
+    .grade-grid {
+        gap: 8px;
+    }
+
+    .grade-btn {
+        padding: 10px 6px;
+    }
+
+    .grade-icon {
+        font-size: 1.3em;
+    }
+
+    .grade-name {
+        font-size: 0.8em;
+    }
+
+    .setup-section,
+    .quiz-section,
+    .memory-section,
+    .result-section {
+        padding: 20px;
+        border-radius: 15px;
+    }
+
+    .setup-section h3 {
+        font-size: 1.3em;
     }
 
     #math-question {
@@ -876,10 +1134,6 @@ body {
     .numbers-display {
         font-size: 2.5em;
         letter-spacing: 10px;
-    }
-
-    .stat-value {
-        font-size: 2em;
     }
 
     .answer-box, .memory-box {
@@ -898,20 +1152,149 @@ body {
         gap: 6px;
     }
 
-    .grade-grid {
-        grid-template-columns: repeat(3, 1fr);
+    .result-section h3 {
+        font-size: 1.6em;
+    }
+
+    .stat-value {
+        font-size: 2em;
+    }
+
+    .stat-label {
+        font-size: 0.9em;
+    }
+
+    .result-buttons {
+        -webkit-flex-direction: column;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .retry-btn, .home-btn {
+        padding: 15px;
+    }
+
+    .profile-section {
+        padding: 18px;
+        border-radius: 15px;
+    }
+
+    .stat-number {
+        font-size: 1.5em;
+    }
+
+    .stat-text {
+        font-size: 0.8em;
+    }
+
+    .stat-icon {
+        font-size: 1.6em;
+        margin-right: 10px;
+    }
+
+    .history-details {
         gap: 8px;
     }
 
-    .grade-btn {
-        padding: 10px 6px;
+    .history-details span {
+        font-size: 0.8em;
+        padding: 3px 8px;
     }
 
-    .grade-icon {
+    .page-header h2 {
+        font-size: 1.4em;
+    }
+
+    .back-btn {
+        font-size: 1em;
+        padding: 8px 12px;
+    }
+}
+
+/* 超小屏幕 (max-width: 360px) */
+@media (max-width: 360px) {
+    .page {
+        padding: 10px;
+    }
+
+    .app-title {
+        font-size: 2.2em;
+        margin-top: 15px;
+    }
+
+    .app-subtitle {
+        font-size: 1.1em;
+        margin-bottom: 20px;
+    }
+
+    .menu-btn {
+        padding: 15px;
+    }
+
+    .btn-icon {
+        font-size: 2.2em;
+        margin-right: 12px;
+    }
+
+    .btn-text {
         font-size: 1.3em;
     }
 
+    .btn-desc {
+        font-size: 0.9em;
+    }
+
+    .grade-grid {
+        gap: 6px;
+    }
+
+    .grade-btn {
+        padding: 8px 4px;
+    }
+
+    .grade-icon {
+        font-size: 1.2em;
+    }
+
     .grade-name {
-        font-size: 0.75em;
+        font-size: 0.7em;
+    }
+
+    #math-question {
+        font-size: 2em;
+    }
+
+    .numbers-display {
+        font-size: 2em;
+        letter-spacing: 8px;
+    }
+
+    .answer-box, .memory-box {
+        width: 40px;
+        height: 50px;
+        font-size: 1.3em;
+    }
+
+    .memory-fixed-digit {
+        width: 40px;
+        height: 50px;
+        font-size: 1.3em;
+    }
+
+    .setup-section,
+    .quiz-section,
+    .memory-section,
+    .result-section,
+    .profile-section {
+        padding: 15px;
+        border-radius: 12px;
+    }
+
+    .stat-value {
+        font-size: 1.6em;
+    }
+
+    .level-badge {
+        font-size: 1.6em;
     }
 }
