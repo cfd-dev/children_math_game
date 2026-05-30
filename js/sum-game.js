@@ -45,7 +45,6 @@ function generateSumQuestion() {
         var a = Math.floor(Math.random() * (config.max - config.min + 1)) + config.min;
         var b = target - a;
         if (b < config.min || b > config.max) continue;
-        if (a === b) continue; // 避免相同数字配对
 
         var key1 = Math.min(a, b) + ',' + Math.max(a, b);
         if (used[key1]) continue;
