@@ -924,6 +924,29 @@
                 </div>
             </div>
 
+            <!-- 当前等级 -->
+            <div class="profile-section">
+                <h3>当前等级</h3>
+                <div class="current-level-display">
+                    <div class="level-badge" id="profile-grade-badge">一年级</div>
+                    <div class="level-desc" id="profile-grade-desc">20以内加减法</div>
+                </div>
+                <div class="grade-edit">
+                    <label for="profile-grade-select">修改等级：</label>
+                    <select id="profile-grade-select" onchange="changeGradeFromProfile(this.value)">
+                        <option value="k-small">幼儿园小班</option>
+                        <option value="k-medium">幼儿园中班</option>
+                        <option value="k-large">幼儿园大班</option>
+                        <option value="grade-1">一年级</option>
+                        <option value="grade-2">二年级</option>
+                        <option value="grade-3">三年级</option>
+                        <option value="grade-4">四年级</option>
+                        <option value="grade-5">五年级</option>
+                        <option value="grade-6">六年级</option>
+                    </select>
+                </div>
+            </div>
+
             <!-- 能力雷达图 -->
             <div class="profile-section">
                 <h3>能力评估</h3>
@@ -1118,29 +1141,6 @@
                             <div class="stat-text">已看谜题数</div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- 当前等级 -->
-            <div class="profile-section">
-                <h3>当前等级</h3>
-                <div class="current-level-display">
-                    <div class="level-badge" id="profile-grade-badge">一年级</div>
-                    <div class="level-desc" id="profile-grade-desc">20以内加减法</div>
-                </div>
-                <div class="grade-edit">
-                    <label for="profile-grade-select">修改等级：</label>
-                    <select id="profile-grade-select" onchange="changeGradeFromProfile(this.value)">
-                        <option value="k-small">幼儿园小班</option>
-                        <option value="k-medium">幼儿园中班</option>
-                        <option value="k-large">幼儿园大班</option>
-                        <option value="grade-1">一年级</option>
-                        <option value="grade-2">二年级</option>
-                        <option value="grade-3">三年级</option>
-                        <option value="grade-4">四年级</option>
-                        <option value="grade-5">五年级</option>
-                        <option value="grade-6">六年级</option>
-                    </select>
                 </div>
             </div>
 
