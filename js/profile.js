@@ -5,9 +5,11 @@ const STORAGE_KEYS = {
     MATH_HISTORY: 'mathQuizHistory',
     MEMORY_HISTORY: 'memoryGameHistory',
     PATTERN_HISTORY: 'patternGameHistory',
+    COMPARE_HISTORY: 'compareGameHistory',
     MATH_ABILITY: 'mathAbility',
     MEMORY_ABILITY: 'memoryAbility',
     PATTERN_ABILITY: 'patternAbility',
+    COMPARE_ABILITY: 'compareAbility',
     USER_GRADE: 'userGrade',
     USER_NAME: 'userName'
 };
@@ -23,6 +25,9 @@ function initStorage() {
     if (!localStorage.getItem(STORAGE_KEYS.PATTERN_HISTORY)) {
         localStorage.setItem(STORAGE_KEYS.PATTERN_HISTORY, JSON.stringify([]));
     }
+    if (!localStorage.getItem(STORAGE_KEYS.COMPARE_HISTORY)) {
+        localStorage.setItem(STORAGE_KEYS.COMPARE_HISTORY, JSON.stringify([]));
+    }
     if (!localStorage.getItem(STORAGE_KEYS.MATH_ABILITY)) {
         localStorage.setItem(STORAGE_KEYS.MATH_ABILITY, '50');
     }
@@ -31,6 +36,9 @@ function initStorage() {
     }
     if (!localStorage.getItem(STORAGE_KEYS.PATTERN_ABILITY)) {
         localStorage.setItem(STORAGE_KEYS.PATTERN_ABILITY, '50');
+    }
+    if (!localStorage.getItem(STORAGE_KEYS.COMPARE_ABILITY)) {
+        localStorage.setItem(STORAGE_KEYS.COMPARE_ABILITY, '50');
     }
 }
 
@@ -70,6 +78,10 @@ function getMemoryHistory() {
 
 function getPatternHistory() {
     return JSON.parse(localStorage.getItem(STORAGE_KEYS.PATTERN_HISTORY) || '[]');
+}
+
+function getCompareHistory() {
+    return JSON.parse(localStorage.getItem(STORAGE_KEYS.COMPARE_HISTORY) || '[]');
 }
 
 // 保存数学练习记录
@@ -209,6 +221,48 @@ function getPatternAbility() {
     return parseInt(localStorage.getItem(STORAGE_KEYS.PATTERN_ABILITY) || '50');
 }
 
+// 保存比大小记录
+function saveCompareRecord(accuracy, totalTime, questionCount, score) {
+    const history = getCompareHistory();
+    history.unshift({
+        date: new Date().toLocaleString('zh-CN'),
+        accuracy: accuracy,
+        totalTime: totalTime,
+        questionCount: questionCount,
+        score: score,
+        avgTime: (totalTime / questionCount).toFixed(1)
+    });
+
+    if (history.length > 50) {
+        history.pop();
+    }
+
+    localStorage.setItem(STORAGE_KEYS.COMPARE_HISTORY, JSON.stringify(history));
+    updateCompareAbility(accuracy, totalTime / questionCount);
+}
+
+// 更新比大小能力值
+function updateCompareAbility(accuracy, avgTime) {
+    let ability = parseInt(localStorage.getItem(STORAGE_KEYS.COMPARE_ABILITY) || '50');
+
+    if (accuracy >= 95 && avgTime <= 3) {
+        ability = Math.min(100, ability + 5);
+    } else if (accuracy >= 85 && avgTime <= 5) {
+        ability = Math.min(100, ability + 3);
+    } else if (accuracy >= 70) {
+        ability = Math.min(100, ability + 1);
+    } else if (accuracy < 50) {
+        ability = Math.max(0, ability - 3);
+    }
+
+    localStorage.setItem(STORAGE_KEYS.COMPARE_ABILITY, ability.toString());
+    return ability;
+}
+
+function getCompareAbility() {
+    return parseInt(localStorage.getItem(STORAGE_KEYS.COMPARE_ABILITY) || '50');
+}
+
 // 绘制雷达图
 function drawRadarChart() {
     const canvas = document.getElementById('radar-chart');
@@ -217,19 +271,21 @@ function drawRadarChart() {
     const ctx = canvas.getContext('2d');
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    const radius = Math.min(centerX, centerY) - 50;
+    const radius = Math.min(centerX, centerY) - 55;
 
     const mathAbility = getMathAbility();
     const memoryAbility = getMemoryAbility();
     const patternAbility = getPatternAbility();
+    const compareAbility = getCompareAbility();
 
-    // 数据点（三个顶点，均匀分布在圆上）
-    const data = [mathAbility, memoryAbility, patternAbility];
-    const labels = ['算术能力', '记忆能力', '推理能力'];
+    // 数据点（四个顶点，均匀分布在圆上）
+    const data = [mathAbility, memoryAbility, patternAbility, compareAbility];
+    const labels = ['算术能力', '记忆能力', '推理能力', '比较能力'];
     const angles = [
-        Math.PI / 2,            // 上方 (90°)
-        Math.PI / 2 + 2 * Math.PI / 3, // 左下 (210°)
-        Math.PI / 2 + 4 * Math.PI / 3  // 右下 (330°)
+        Math.PI / 2,              // 上方 (90°)
+        Math.PI,                  // 左方 (180°)
+        3 * Math.PI / 2,          // 下方 (270°)
+        0                         // 右方 (0°)
     ];
 
     // 清空画布
@@ -239,27 +295,7 @@ function drawRadarChart() {
     ctx.strokeStyle = '#e0e0e0';
     ctx.lineWidth = 1;
 
-    // 绘制同心圆
-    for (let i = 1; i <= 5; i++) {
-        const r = (radius * i) / 5;
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, r, 0, Math.PI * 2);
-        ctx.stroke();
-    }
-
-    // 绘制轴线和网格三角形
-    ctx.strokeStyle = '#ccc';
-    ctx.lineWidth = 1;
-    for (let i = 0; i < angles.length; i++) {
-        const x = centerX + radius * Math.cos(angles[i]);
-        const y = centerY - radius * Math.sin(angles[i]);
-        ctx.beginPath();
-        ctx.moveTo(centerX, centerY);
-        ctx.lineTo(x, y);
-        ctx.stroke();
-    }
-
-    // 绘制网格三角形
+    // 绘制同心正方形
     for (let level = 1; level <= 5; level++) {
         const r = (radius * level) / 5;
         ctx.beginPath();
@@ -270,6 +306,18 @@ function drawRadarChart() {
             else ctx.lineTo(x, y);
         }
         ctx.closePath();
+        ctx.stroke();
+    }
+
+    // 绘制轴线
+    ctx.strokeStyle = '#ccc';
+    ctx.lineWidth = 1;
+    for (let i = 0; i < angles.length; i++) {
+        const x = centerX + radius * Math.cos(angles[i]);
+        const y = centerY - radius * Math.sin(angles[i]);
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.lineTo(x, y);
         ctx.stroke();
     }
 
@@ -309,7 +357,7 @@ function drawRadarChart() {
 
     // 绘制标签
     ctx.fillStyle = '#333';
-    ctx.font = '14px sans-serif';
+    ctx.font = '13px sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
@@ -320,12 +368,11 @@ function drawRadarChart() {
 
         ctx.fillText(labels[i], x, y);
 
-        // 显示数值
         ctx.fillStyle = '#667eea';
-        ctx.font = 'bold 16px sans-serif';
-        ctx.fillText(data[i], x, y + 20);
+        ctx.font = 'bold 15px sans-serif';
+        ctx.fillText(data[i], x, y + 18);
         ctx.fillStyle = '#333';
-        ctx.font = '14px sans-serif';
+        ctx.font = '13px sans-serif';
     }
 }
 
@@ -394,6 +441,24 @@ function showHistory(type) {
                 `;
             });
         }
+    } else if (type === 'compare') {
+        const history = getCompareHistory();
+        if (history.length === 0) {
+            html = '<div class="history-empty">暂无比大小记录</div>';
+        } else {
+            history.slice(0, 10).forEach(record => {
+                html += `
+                    <div class="history-item">
+                        <div class="history-date">${record.date}</div>
+                        <div class="history-details">
+                            <span>正确率: ${record.accuracy}%</span>
+                            <span>平均: ${record.avgTime}秒/题</span>
+                            <span>得分: ${record.score}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
     }
 
     historyList.innerHTML = html;
@@ -422,6 +487,7 @@ function updateProfilePage() {
     const mathHistory = getMathHistory();
     const memoryHistory = getMemoryHistory();
     const patternHistory = getPatternHistory();
+    const compareHistory = getCompareHistory();
 
     document.getElementById('total-math-quizzes').textContent = mathHistory.length;
     document.getElementById('total-math-correct').textContent =
@@ -435,10 +501,15 @@ function updateProfilePage() {
     document.getElementById('total-pattern-correct').textContent =
         patternHistory.reduce((sum, r) => sum + Math.round(r.accuracy * r.questionCount / 100), 0);
 
+    document.getElementById('total-compare-games').textContent = compareHistory.length;
+    document.getElementById('total-compare-correct').textContent =
+        compareHistory.reduce((sum, r) => sum + Math.round(r.accuracy * r.questionCount / 100), 0);
+
     // 更新能力值
     document.getElementById('math-ability').textContent = getMathAbility();
     document.getElementById('memory-ability').textContent = getMemoryAbility();
     document.getElementById('pattern-ability').textContent = getPatternAbility();
+    document.getElementById('compare-ability').textContent = getCompareAbility();
 
     // 更新等级显示
     document.getElementById('profile-grade-badge').textContent = gradeConfig[currentGrade].name;
@@ -461,9 +532,11 @@ function switchUser() {
         localStorage.removeItem(STORAGE_KEYS.MATH_HISTORY);
         localStorage.removeItem(STORAGE_KEYS.MEMORY_HISTORY);
         localStorage.removeItem(STORAGE_KEYS.PATTERN_HISTORY);
+        localStorage.removeItem(STORAGE_KEYS.COMPARE_HISTORY);
         localStorage.removeItem(STORAGE_KEYS.MATH_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.MEMORY_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.PATTERN_ABILITY);
+        localStorage.removeItem(STORAGE_KEYS.COMPARE_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.USER_GRADE);
         localStorage.removeItem(STORAGE_KEYS.USER_NAME);
 
@@ -478,9 +551,11 @@ function clearAllData() {
         localStorage.removeItem(STORAGE_KEYS.MATH_HISTORY);
         localStorage.removeItem(STORAGE_KEYS.MEMORY_HISTORY);
         localStorage.removeItem(STORAGE_KEYS.PATTERN_HISTORY);
+        localStorage.removeItem(STORAGE_KEYS.COMPARE_HISTORY);
         localStorage.removeItem(STORAGE_KEYS.MATH_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.MEMORY_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.PATTERN_ABILITY);
+        localStorage.removeItem(STORAGE_KEYS.COMPARE_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.USER_GRADE);
         localStorage.removeItem(STORAGE_KEYS.USER_NAME);
 

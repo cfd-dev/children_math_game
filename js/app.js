@@ -68,6 +68,16 @@ function goHome() {
         clearInterval(patternState.timerInterval);
     }
 
+    // 重置比大小页面
+    document.getElementById('compare-setup').style.display = 'block';
+    document.getElementById('compare-quiz').style.display = 'none';
+    document.getElementById('compare-result').style.display = 'none';
+
+    // 停止比大小计时器
+    if (compareState.timerInterval) {
+        clearInterval(compareState.timerInterval);
+    }
+
     // 更新首页用户信息并显示
     updateHomeUserInfo();
     showPage('home-page');
@@ -103,6 +113,17 @@ function showPatternGame() {
     if (gradeNameEl) gradeNameEl.textContent = config.name;
     if (gradeDescEl) gradeDescEl.textContent = pConfig.description;
     showPage('pattern-page');
+}
+
+// 显示比大小页面
+function showCompareGame() {
+    var config = gradeConfig[currentGrade];
+    var cConfig = compareGradeConfig[currentGrade] || compareGradeConfig['grade-1'];
+    var gradeNameEl = document.getElementById('compare-grade-name');
+    var gradeDescEl = document.getElementById('compare-grade-desc');
+    if (gradeNameEl) gradeNameEl.textContent = config.name;
+    if (gradeDescEl) gradeDescEl.textContent = cConfig.description;
+    showPage('compare-page');
 }
 
 // 页面加载完成后的初始化
