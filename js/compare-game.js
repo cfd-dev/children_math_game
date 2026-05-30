@@ -126,6 +126,7 @@ function startCompareGame() {
 
     document.getElementById('compare-setup').style.display = 'none';
     document.getElementById('compare-result').style.display = 'none';
+    document.getElementById('compare-reward').style.display = 'none';
     document.getElementById('compare-quiz').style.display = 'block';
 
     if (compareState.timerInterval) {
@@ -230,13 +231,30 @@ function finishCompareGame() {
     var totalTime = Math.floor((Date.now() - compareState.startTime) / 1000);
     var accuracy = Math.round((compareState.correctCount / compareState.totalQuestions) * 100);
 
+    // 保存记录
+    saveCompareRecord(accuracy, totalTime, compareState.totalQuestions, compareState.score);
+    assessGrade(accuracy, totalTime, compareState.totalQuestions);
+
+    // 显示奖励画面
+    document.getElementById('compare-reward-score').textContent = compareState.score;
+    document.getElementById('compare-reward-accuracy').textContent = accuracy + '%';
+    document.getElementById('compare-reward-time').textContent = totalTime;
+
+    playMemoryLevelSound();
+
+    document.getElementById('compare-quiz').style.display = 'none';
+    document.getElementById('compare-reward').style.display = 'block';
+}
+
+// 从奖励画面进入详细结果
+function showCompareRewardResult() {
+    var totalTime = Math.floor((Date.now() - compareState.startTime) / 1000);
+    var accuracy = Math.round((compareState.correctCount / compareState.totalQuestions) * 100);
+
     document.getElementById('compare-result-score').textContent = compareState.score;
     document.getElementById('compare-result-correct').textContent = accuracy + '%';
     document.getElementById('compare-result-time').textContent = totalTime + '秒';
 
-    saveCompareRecord(accuracy, totalTime, compareState.totalQuestions, compareState.score);
-    assessGrade(accuracy, totalTime, compareState.totalQuestions);
-
-    document.getElementById('compare-quiz').style.display = 'none';
+    document.getElementById('compare-reward').style.display = 'none';
     document.getElementById('compare-result').style.display = 'block';
 }

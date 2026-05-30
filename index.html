@@ -434,6 +434,21 @@
                 <button id="compare-next-btn" class="next-btn" style="display:none" onclick="showNextCompareQuestion()">下一题</button>
             </div>
 
+            <!-- 奖励画面 -->
+            <div id="compare-reward" class="result-section reward-section" style="display:none">
+                <div class="reward-stars">⭐ ⭐ ⭐</div>
+                <h3>挑战完成！</h3>
+                <div class="reward-info">
+                    <p>总得分：<span id="compare-reward-score">0</span></p>
+                    <p>正确率：<span id="compare-reward-accuracy">0%</span></p>
+                    <p>总用时：<span id="compare-reward-time">0</span> 秒</p>
+                </div>
+                <div class="result-buttons">
+                    <button class="retry-btn reward-btn" onclick="showCompareRewardResult()">查看成绩</button>
+                    <button class="home-btn" onclick="goHome()">返回首页</button>
+                </div>
+            </div>
+
             <!-- 结果页面 -->
             <div id="compare-result" class="result-section" style="display:none">
                 <h3>挑战完成！</h3>
@@ -492,6 +507,21 @@
                 <div id="sudoku-number-picker" class="sudoku-number-picker"></div>
                 <div id="sudoku-feedback" class="feedback"></div>
                 <button id="sudoku-reveal-btn" class="next-btn" style="display:none" onclick="revealSudokuAnswer()">查看答案</button>
+            </div>
+
+            <!-- 奖励画面 -->
+            <div id="sudoku-reward" class="result-section reward-section" style="display:none">
+                <div class="reward-stars">⭐ ⭐ ⭐</div>
+                <h3>数独完成！</h3>
+                <div class="reward-info">
+                    <p>得分：<span id="sudoku-reward-score">0</span></p>
+                    <p>用时：<span id="sudoku-reward-time">0</span> 秒</p>
+                    <p>错误次数：<span id="sudoku-reward-mistakes">0</span></p>
+                </div>
+                <div class="result-buttons">
+                    <button class="retry-btn reward-btn" onclick="showSudokuRewardResult()">查看成绩</button>
+                    <button class="home-btn" onclick="goHome()">返回首页</button>
+                </div>
             </div>
 
             <!-- 结果页面 -->

@@ -355,6 +355,7 @@ function startSudokuGame() {
     // 切换显示
     document.getElementById('sudoku-setup').style.display = 'none';
     document.getElementById('sudoku-result').style.display = 'none';
+    document.getElementById('sudoku-reward').style.display = 'none';
     document.getElementById('sudoku-quiz').style.display = 'block';
     document.getElementById('sudoku-feedback').textContent = '';
     document.getElementById('sudoku-feedback').className = 'feedback';
@@ -407,15 +408,29 @@ function finishSudokuGame() {
     var config = getSudokuConfig();
     var score = Math.max(0, 100 - sudokuState.mistakes * 10);
 
-    document.getElementById('sudoku-result-score').textContent = score;
-    document.getElementById('sudoku-result-time').textContent = elapsed + '秒';
-    document.getElementById('sudoku-result-mistakes').textContent = sudokuState.mistakes;
-
     // 保存记录
     saveSudokuRecord(score, elapsed, config.gridSize, sudokuState.mistakes);
+
+    // 显示奖励画面
+    document.getElementById('sudoku-reward-score').textContent = score;
+    document.getElementById('sudoku-reward-time').textContent = elapsed;
+    document.getElementById('sudoku-reward-mistakes').textContent = sudokuState.mistakes;
 
     playMemoryLevelSound();
 
     document.getElementById('sudoku-quiz').style.display = 'none';
+    document.getElementById('sudoku-reward').style.display = 'block';
+}
+
+// 从奖励画面进入详细结果
+function showSudokuRewardResult() {
+    var elapsed = Math.floor((Date.now() - sudokuState.startTime) / 1000);
+    var score = Math.max(0, 100 - sudokuState.mistakes * 10);
+
+    document.getElementById('sudoku-result-score').textContent = score;
+    document.getElementById('sudoku-result-time').textContent = elapsed + '秒';
+    document.getElementById('sudoku-result-mistakes').textContent = sudokuState.mistakes;
+
+    document.getElementById('sudoku-reward').style.display = 'none';
     document.getElementById('sudoku-result').style.display = 'block';
 }

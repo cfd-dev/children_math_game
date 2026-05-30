@@ -71,6 +71,7 @@ function goHome() {
     // 重置比大小页面
     document.getElementById('compare-setup').style.display = 'block';
     document.getElementById('compare-quiz').style.display = 'none';
+    document.getElementById('compare-reward').style.display = 'none';
     document.getElementById('compare-result').style.display = 'none';
 
     // 停止比大小计时器
@@ -81,6 +82,7 @@ function goHome() {
     // 重置数独页面
     document.getElementById('sudoku-setup').style.display = 'block';
     document.getElementById('sudoku-quiz').style.display = 'none';
+    document.getElementById('sudoku-reward').style.display = 'none';
     document.getElementById('sudoku-result').style.display = 'none';
 
     // 停止数独计时器
