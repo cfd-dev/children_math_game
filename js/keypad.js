@@ -60,6 +60,16 @@ var numpad = {
         if (!input) return;
         if (input.disabled) return;
 
+        // 追加模式：多位数输入（如猜数字游戏）
+        if (input.classList.contains('numpad-append')) {
+            if (input.value.length < 10) {
+                input.value += num;
+            }
+            input.placeholder = '';
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+            return;
+        }
+
         input.value = num;
         input.placeholder = '';
 
@@ -83,6 +93,15 @@ var numpad = {
         var input = this.currentInput;
         if (!input) return;
         if (input.disabled) return;
+
+        // 追加模式：删除最后一个字符
+        if (input.classList.contains('numpad-append')) {
+            if (input.value.length > 0) {
+                input.value = input.value.slice(0, -1);
+            }
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+            return;
+        }
 
         if (input.value !== '') {
             input.value = '';

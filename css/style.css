@@ -1921,6 +1921,20 @@ body {
         padding: 12px;
         font-size: 1.1em;
     }
+
+    .seek-range-value {
+        font-size: 1.6em;
+    }
+
+    .seek-input {
+        padding: 12px;
+        font-size: 1.1em;
+    }
+
+    .seek-submit-btn {
+        padding: 12px 20px;
+        font-size: 1.1em;
+    }
 }
 
 /* 超小屏幕 (max-width: 360px) */
@@ -2089,6 +2103,25 @@ body {
     .bt-reveal-btn {
         padding: 10px;
         font-size: 1em;
+    }
+
+    .seek-range-value {
+        font-size: 1.4em;
+    }
+
+    .seek-input {
+        padding: 10px;
+        font-size: 1em;
+    }
+
+    .seek-submit-btn {
+        padding: 10px 15px;
+        font-size: 1em;
+    }
+
+    .seek-feedback {
+        font-size: 1em;
+        padding: 10px;
     }
 }
 
@@ -2464,6 +2497,124 @@ body {
     -webkit-transform: scale(0.95);
     transform: scale(0.95);
     background: #e67e22;
+}
+
+/* ============ 数字捉迷藏游戏 ============ */
+.seek-btn .btn-text {
+    color: #27ae60;
+}
+
+.seek-range-display {
+    text-align: center;
+    background: #eafaf1;
+    border: 3px solid #27ae60;
+    border-radius: 16px;
+    padding: 20px;
+    margin: 15px 0;
+}
+
+.seek-range-label {
+    font-size: 0.9em;
+    color: #27ae60;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.seek-range-value {
+    font-size: 2em;
+    font-weight: bold;
+    color: #27ae60;
+}
+
+.seek-guess-info {
+    text-align: center;
+    font-size: 1em;
+    color: #888;
+    margin-bottom: 15px;
+}
+
+.seek-input-section {
+    display: -webkit-flex;
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.seek-input {
+    -webkit-flex: 1;
+    flex: 1;
+    padding: 15px;
+    border: 3px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 1.3em;
+    font-weight: bold;
+    text-align: center;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    background: #fff;
+}
+
+.seek-input:focus {
+    border-color: #27ae60;
+}
+
+.seek-submit-btn {
+    padding: 15px 25px;
+    border: none;
+    border-radius: 12px;
+    background: #27ae60;
+    color: white;
+    font-size: 1.3em;
+    font-weight: bold;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    touch-action: manipulation;
+    -webkit-transition: all 0.2s;
+    transition: all 0.2s;
+}
+
+.seek-submit-btn:active {
+    -webkit-transform: scale(0.95);
+    transform: scale(0.95);
+    background: #219a52;
+}
+
+.seek-feedback {
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    padding: 15px;
+    border-radius: 12px;
+    color: #888;
+    background: #f8f9fa;
+}
+
+.seek-feedback.seek-small {
+    color: #e67e22;
+    background: #fff3e0;
+}
+
+.seek-feedback.seek-big {
+    color: #3498db;
+    background: #e3f2fd;
+}
+
+.seek-feedback.seek-correct {
+    color: #27ae60;
+    background: #eafaf1;
+}
+
+.seek-feedback.seek-timeout {
+    color: #e74c3c;
+    background: #fdeaea;
+}
+
+.seek-feedback.seek-warn {
+    color: #e67e22;
+    background: #fff3e0;
 }
 
 /* ============ 数字键盘 ============ */

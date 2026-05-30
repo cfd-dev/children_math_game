@@ -22,6 +22,8 @@ const STORAGE_KEYS = {
     MATCH_ABILITY: 'mathMatchAbility',
     BRAINTEASER_HISTORY: 'brainTeaserGameHistory',
     BRAINTEASER_ABILITY: 'brainTeaserAbility',
+    SEEK_HISTORY: 'seekGameHistory',
+    SEEK_ABILITY: 'seekAbility',
     USER_GRADE: 'userGrade',
     USER_NAME: 'userName'
 };
@@ -58,6 +60,9 @@ function initStorage() {
     if (!localStorage.getItem(STORAGE_KEYS.BRAINTEASER_HISTORY)) {
         localStorage.setItem(STORAGE_KEYS.BRAINTEASER_HISTORY, JSON.stringify([]));
     }
+    if (!localStorage.getItem(STORAGE_KEYS.SEEK_HISTORY)) {
+        localStorage.setItem(STORAGE_KEYS.SEEK_HISTORY, JSON.stringify([]));
+    }
     if (!localStorage.getItem(STORAGE_KEYS.MATH_ABILITY)) {
         localStorage.setItem(STORAGE_KEYS.MATH_ABILITY, '50');
     }
@@ -87,6 +92,9 @@ function initStorage() {
     }
     if (!localStorage.getItem(STORAGE_KEYS.BRAINTEASER_ABILITY)) {
         localStorage.setItem(STORAGE_KEYS.BRAINTEASER_ABILITY, '50');
+    }
+    if (!localStorage.getItem(STORAGE_KEYS.SEEK_ABILITY)) {
+        localStorage.setItem(STORAGE_KEYS.SEEK_ABILITY, '50');
     }
 }
 
@@ -535,6 +543,41 @@ function getBTAbility() {
     return parseInt(localStorage.getItem(STORAGE_KEYS.BRAINTEASER_ABILITY) || '50');
 }
 
+// 获取数字捉迷藏历史
+function getSeekHistory() {
+    return JSON.parse(localStorage.getItem(STORAGE_KEYS.SEEK_HISTORY) || '[]');
+}
+
+// 保存数字捉迷藏记录
+function saveSeekRecord(accuracy, totalTime, questionCount, score) {
+    const history = getSeekHistory();
+    history.unshift({
+        date: new Date().toLocaleString('zh-CN'),
+        accuracy: accuracy,
+        totalTime: totalTime,
+        questionCount: questionCount,
+        score: score
+    });
+    if (history.length > 50) history.pop();
+    localStorage.setItem(STORAGE_KEYS.SEEK_HISTORY, JSON.stringify(history));
+    updateSeekAbility(accuracy);
+}
+
+// 更新数字捉迷藏能力值
+function updateSeekAbility(accuracy) {
+    let ability = parseInt(localStorage.getItem(STORAGE_KEYS.SEEK_ABILITY) || '50');
+    if (accuracy >= 90) ability = Math.min(100, ability + 5);
+    else if (accuracy >= 70) ability = Math.min(100, ability + 3);
+    else if (accuracy >= 50) ability = Math.min(100, ability + 1);
+    else if (accuracy < 30) ability = Math.max(0, ability - 3);
+    localStorage.setItem(STORAGE_KEYS.SEEK_ABILITY, ability.toString());
+    return ability;
+}
+
+function getSeekAbility() {
+    return parseInt(localStorage.getItem(STORAGE_KEYS.SEEK_ABILITY) || '50');
+}
+
 // 绘制雷达图
 function drawRadarChart() {
     const canvas = document.getElementById('radar-chart');
@@ -831,6 +874,24 @@ function showHistory(type) {
                 `;
             });
         }
+    } else if (type === 'seek') {
+        const history = getSeekHistory();
+        if (history.length === 0) {
+            html = '<div class="history-empty">暂无捉迷藏记录</div>';
+        } else {
+            history.slice(0, 10).forEach(record => {
+                html += `
+                    <div class="history-item">
+                        <div class="history-date">${record.date}</div>
+                        <div class="history-details">
+                            <span>正确率: ${record.accuracy}%</span>
+                            <span>用时: ${record.totalTime}秒</span>
+                            <span>得分: ${record.score}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
     }
 
     historyList.innerHTML = html;
@@ -866,6 +927,7 @@ function updateProfilePage() {
     document.getElementById('total-clock-games').textContent = getClockHistory().length;
     document.getElementById('total-match-games').textContent = getMatchHistory().length;
     document.getElementById('total-bt-games').textContent = getBTHistory().length;
+    document.getElementById('total-seek-games').textContent = getSeekHistory().length;
 
     // 更新能力值
     document.getElementById('math-ability').textContent = getMathAbility();
@@ -878,6 +940,7 @@ function updateProfilePage() {
     document.getElementById('clock-ability').textContent = getClockAbility();
     document.getElementById('match-ability').textContent = getMatchAbility();
     document.getElementById('bt-ability').textContent = getBTAbility();
+    document.getElementById('seek-ability').textContent = getSeekAbility();
 
     // 更新等级显示
     document.getElementById('profile-grade-badge').textContent = gradeConfig[currentGrade].name;
@@ -917,6 +980,8 @@ function switchUser() {
         localStorage.removeItem(STORAGE_KEYS.MATCH_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.BRAINTEASER_HISTORY);
         localStorage.removeItem(STORAGE_KEYS.BRAINTEASER_ABILITY);
+        localStorage.removeItem(STORAGE_KEYS.SEEK_HISTORY);
+        localStorage.removeItem(STORAGE_KEYS.SEEK_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.USER_GRADE);
         localStorage.removeItem(STORAGE_KEYS.USER_NAME);
 
@@ -948,6 +1013,8 @@ function clearAllData() {
         localStorage.removeItem(STORAGE_KEYS.MATCH_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.BRAINTEASER_HISTORY);
         localStorage.removeItem(STORAGE_KEYS.BRAINTEASER_ABILITY);
+        localStorage.removeItem(STORAGE_KEYS.SEEK_HISTORY);
+        localStorage.removeItem(STORAGE_KEYS.SEEK_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.USER_GRADE);
         localStorage.removeItem(STORAGE_KEYS.USER_NAME);
 

@@ -143,6 +143,11 @@
                     <span class="btn-text">脑筋急转弯</span>
                     <span class="btn-desc">趣味谜语</span>
                 </button>
+                <button class="menu-btn seek-btn" onclick="showSeekGame()">
+                    <span class="btn-icon">🎯</span>
+                    <span class="btn-text">数字捉迷藏</span>
+                    <span class="btn-desc">猜数推理</span>
+                </button>
                 <button class="menu-btn profile-btn" onclick="showProfile()">
                     <span class="btn-icon">👤</span>
                     <span class="btn-text">个人中心</span>
@@ -857,6 +862,9 @@
                         <option value="10">10题</option>
                         <option value="20" selected>20题</option>
                         <option value="30">30题</option>
+                        <option value="50">50题</option>
+                        <option value="80">80题</option>
+                        <option value="100">100题</option>
                     </select>
                 </div>
                 <button class="start-btn" onclick="startBTGame()">开始挑战</button>
@@ -902,6 +910,84 @@
                 </div>
                 <div class="result-buttons">
                     <button class="retry-btn" onclick="startBTGame()">再来一次</button>
+                    <button class="home-btn" onclick="goHome()">返回首页</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 数字捉迷藏页面 -->
+    <div id="seek-page" class="page">
+        <div class="container">
+            <div class="page-header">
+                <button class="back-btn" onclick="goHome()">← 返回</button>
+                <h2>数字捉迷藏</h2>
+            </div>
+
+            <div id="seek-setup" class="setup-section">
+                <h3>当前难度</h3>
+                <div class="current-grade-display">
+                    <span id="seek-grade-name">一年级</span>
+                    <span id="seek-grade-desc">1~50 猜数字</span>
+                </div>
+                <div class="rules">
+                    <p>1. 系统随机想一个数字</p>
+                    <p>2. 输入你猜的数字，系统会提示大了或小了</p>
+                    <p>3. 尽量用最少的次数猜中目标</p>
+                </div>
+                <div class="question-count">
+                    <label>题目数量：</label>
+                    <select id="seek-question-count">
+                        <option value="5">5题</option>
+                        <option value="10" selected>10题</option>
+                        <option value="15">15题</option>
+                    </select>
+                </div>
+                <button class="start-btn" onclick="startSeekGame()">开始挑战</button>
+            </div>
+
+            <div id="seek-quiz" class="quiz-section" style="display:none">
+                <div class="quiz-info">
+                    <span id="seek-progress">1/10</span>
+                    <span id="seek-timer">用时：0秒</span>
+                    <span id="seek-score-text">得分：0</span>
+                </div>
+                <div class="seek-range-display">
+                    <div class="seek-range-label">猜测范围</div>
+                    <div id="seek-range" class="seek-range-value">1 ~ 100</div>
+                </div>
+                <div class="seek-guess-info">
+                    <span id="seek-guess-count">已猜 0 / 7 次</span>
+                </div>
+                <div class="seek-input-section">
+                    <input type="text" id="seek-input" class="seek-input numpad-append" placeholder="输入数字" readonly autocomplete="off" inputmode="none">
+                    <button class="seek-submit-btn" onclick="submitSeekGuess()">猜！</button>
+                </div>
+                <div id="seek-feedback" class="seek-feedback">请输入你猜的数字</div>
+            </div>
+
+            <div id="seek-result" class="result-section" style="display:none">
+                <h3>挑战完成！</h3>
+                <div class="result-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="seek-result-score">0</div>
+                        <div class="stat-label">总得分</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="seek-result-correct">0%</div>
+                        <div class="stat-label">正确率</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="seek-result-correct-count">0/0</div>
+                        <div class="stat-label">猜对题数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="seek-result-time">0秒</div>
+                        <div class="stat-label">总用时</div>
+                    </div>
+                </div>
+                <div class="result-buttons">
+                    <button class="retry-btn" onclick="startSeekGame()">再来一次</button>
                     <button class="home-btn" onclick="goHome()">返回首页</button>
                 </div>
             </div>
@@ -1004,6 +1090,11 @@
                         <span class="ability-val" id="bt-ability">0</span>
                         <span class="ability-label">趣味</span>
                     </div>
+                    <div class="ability-cell">
+                        <span class="ability-icon">🎯</span>
+                        <span class="ability-val" id="seek-ability">0</span>
+                        <span class="ability-label">捉迷藏</span>
+                    </div>
                 </div>
             </div>
 
@@ -1081,6 +1172,13 @@
                             <div class="stat-text">脑筋急转弯</div>
                         </div>
                     </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="total-seek-games">0</div>
+                            <div class="stat-text">数字捉迷藏</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1098,6 +1196,7 @@
                     <button class="history-tab" onclick="showHistory('clock')">时钟记录</button>
                     <button class="history-tab" onclick="showHistory('match')">连线记录</button>
                     <button class="history-tab" onclick="showHistory('brainteaser')">急转弯记录</button>
+                    <button class="history-tab" onclick="showHistory('seek')">捉迷藏记录</button>
                 </div>
                 <div id="history-list" class="history-list">
                     <!-- 动态生成 -->
@@ -1139,7 +1238,7 @@
     <script>
     // 立即隐藏非欢迎页面，防止全部内容同时显示
     (function() {
-        var ids = ['home-page', 'math-page', 'memory-page', 'pattern-page', 'compare-page', 'sudoku-page', 'sort-page', 'sum-page', 'clock-page', 'match-page', 'brainteaser-page', 'profile-page'];
+        var ids = ['home-page', 'math-page', 'memory-page', 'pattern-page', 'compare-page', 'sudoku-page', 'sort-page', 'sum-page', 'clock-page', 'match-page', 'brainteaser-page', 'seek-page', 'profile-page'];
         for (var i = 0; i < ids.length; i++) {
             var el = document.getElementById(ids[i]);
             if (el) el.style.display = 'none';
@@ -1158,6 +1257,7 @@
     <script src="js/clock-game.js"></script>
     <script src="js/match-game.js"></script>
     <script src="js/brain-teaser.js"></script>
+    <script src="js/seek-game.js"></script>
     <script src="js/profile.js"></script>
     <script src="js/app.js"></script>
 </body>

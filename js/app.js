@@ -140,6 +140,16 @@ function goHome() {
         clearInterval(btState.timerInterval);
     }
 
+    // 重置数字捉迷藏页面
+    document.getElementById('seek-setup').style.display = 'block';
+    document.getElementById('seek-quiz').style.display = 'none';
+    document.getElementById('seek-result').style.display = 'none';
+
+    // 停止捉迷藏计时器
+    if (seekState.timerInterval) {
+        clearInterval(seekState.timerInterval);
+    }
+
     // 更新首页用户信息并显示
     updateHomeUserInfo();
     showPage('home-page');
@@ -252,6 +262,17 @@ function showBrainTeaserGame() {
     if (gradeNameEl) gradeNameEl.textContent = config.name;
     if (gradeDescEl) gradeDescEl.textContent = bConfig.description;
     showPage('brainteaser-page');
+}
+
+// 显示数字捉迷藏页面
+function showSeekGame() {
+    var config = gradeConfig[currentGrade];
+    var sConfig = seekGradeConfig[currentGrade] || seekGradeConfig['grade-1'];
+    var gradeNameEl = document.getElementById('seek-grade-name');
+    var gradeDescEl = document.getElementById('seek-grade-desc');
+    if (gradeNameEl) gradeNameEl.textContent = config.name;
+    if (gradeDescEl) gradeDescEl.textContent = sConfig.description;
+    showPage('seek-page');
 }
 
 // 页面加载完成后的初始化
