@@ -162,20 +162,29 @@ function showGradeChangeNotification(oldGrade, newGrade, reason) {
     const notification = document.getElementById('grade-notification');
     notification.innerHTML = `
         <div class="notification-content">
-            <span class="notification-icon">🎉</span>
+            <button class="notification-close" onclick="hideGradeChangeNotification()">×</button>
+            <div class="notification-icon">🎉</div>
             <div class="notification-text">
-                <strong>年级调整：${oldGrade} → ${newGrade}</strong>
+                <strong>${oldGrade} → ${newGrade}</strong>
                 <p>${reason}</p>
             </div>
-            <button class="notification-close" onclick="hideGradeChangeNotification()">×</button>
         </div>
     `;
-    notification.style.display = 'block';
+    notification.style.display = '-webkit-flex';
+    notification.style.display = 'flex';
+
+    // 3秒后自动消失
+    if (notification._autoTimer) clearTimeout(notification._autoTimer);
+    notification._autoTimer = setTimeout(function() {
+        hideGradeChangeNotification();
+    }, 3000);
 }
 
 // 隐藏年级变化通知
 function hideGradeChangeNotification() {
-    document.getElementById('grade-notification').style.display = 'none';
+    var notification = document.getElementById('grade-notification');
+    if (notification._autoTimer) clearTimeout(notification._autoTimer);
+    notification.style.display = 'none';
 }
 
 // 生成随机数学题
