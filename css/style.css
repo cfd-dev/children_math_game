@@ -1863,6 +1863,23 @@ body {
     .match-columns {
         gap: 10px;
     }
+
+    .bt-riddle-text {
+        font-size: 1.2em;
+    }
+
+    .bt-riddle-box {
+        padding: 20px 15px;
+    }
+
+    .bt-answer-text {
+        font-size: 1.4em;
+    }
+
+    .bt-reveal-btn {
+        padding: 12px;
+        font-size: 1.1em;
+    }
 }
 
 /* 超小屏幕 (max-width: 360px) */
@@ -1987,6 +2004,27 @@ body {
     }
 
     .clock-question-text {
+        font-size: 1em;
+    }
+
+    .bt-riddle-text {
+        font-size: 1.1em;
+    }
+
+    .bt-riddle-box {
+        padding: 15px 12px;
+    }
+
+    .bt-riddle-icon {
+        font-size: 2em;
+    }
+
+    .bt-answer-text {
+        font-size: 1.2em;
+    }
+
+    .bt-reveal-btn {
+        padding: 10px;
         font-size: 1em;
     }
 }
@@ -2275,6 +2313,94 @@ body {
 .match-item.wrong-flash {
     border-color: #e74c3c;
     background: #fdeaea;
+}
+
+/* ============ 脑筋急转弯游戏 ============ */
+.brainteaser-btn .btn-text {
+    color: #e67e22;
+}
+
+.bt-riddle-box {
+    background: #fff9e6;
+    border: 3px solid #f39c12;
+    border-radius: 16px;
+    padding: 25px 20px;
+    margin: 15px 0;
+    text-align: center;
+}
+
+.bt-riddle-icon {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+.bt-riddle-text {
+    font-size: 1.4em;
+    font-weight: bold;
+    color: #333;
+    line-height: 1.6;
+}
+
+.bt-answer-box {
+    background: #eafaf1;
+    border: 3px solid #27ae60;
+    border-radius: 16px;
+    padding: 20px;
+    margin: 15px 0;
+    text-align: center;
+}
+
+@-webkit-keyframes btReveal {
+    from { opacity: 0; -webkit-transform: scale(0.8); transform: scale(0.8); }
+    to { opacity: 1; -webkit-transform: scale(1); transform: scale(1); }
+}
+
+@keyframes btReveal {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.bt-reveal-animate {
+    -webkit-animation: btReveal 0.5s ease;
+    animation: btReveal 0.5s ease;
+}
+
+.bt-answer-label {
+    font-size: 0.9em;
+    color: #27ae60;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.bt-answer-text {
+    font-size: 1.6em;
+    font-weight: bold;
+    color: #27ae60;
+}
+
+.bt-reveal-btn {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 15px;
+    background: #f39c12;
+    color: white;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    touch-action: manipulation;
+    -webkit-transition: all 0.2s;
+    transition: all 0.2s;
+}
+
+.bt-reveal-btn:active {
+    -webkit-transform: scale(0.95);
+    transform: scale(0.95);
+    background: #e67e22;
 }
 
 /* ============ 数字键盘 ============ */

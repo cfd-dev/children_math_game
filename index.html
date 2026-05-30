@@ -138,6 +138,11 @@
                     <span class="btn-text">数学连线</span>
                     <span class="btn-desc">算式配对</span>
                 </button>
+                <button class="menu-btn brainteaser-btn" onclick="showBrainTeaserGame()">
+                    <span class="btn-icon">💡</span>
+                    <span class="btn-text">脑筋急转弯</span>
+                    <span class="btn-desc">趣味谜语</span>
+                </button>
                 <button class="menu-btn profile-btn" onclick="showProfile()">
                     <span class="btn-icon">👤</span>
                     <span class="btn-text">个人中心</span>
@@ -827,6 +832,82 @@
         </div>
     </div>
 
+    <!-- 脑筋急转弯页面 -->
+    <div id="brainteaser-page" class="page">
+        <div class="container">
+            <div class="page-header">
+                <button class="back-btn" onclick="goHome()">← 返回</button>
+                <h2>脑筋急转弯</h2>
+            </div>
+
+            <div id="brainteaser-setup" class="setup-section">
+                <h3>趣味谜语</h3>
+                <div class="current-grade-display">
+                    <span id="bt-grade-name">一年级</span>
+                    <span id="bt-grade-desc">趣味谜语</span>
+                </div>
+                <div class="rules">
+                    <p>1. 阅读有趣的脑筋急转弯</p>
+                    <p>2. 想一想答案是什么</p>
+                    <p>3. 点击"看答案"揭晓谜底</p>
+                </div>
+                <div class="question-count">
+                    <label>题目数量：</label>
+                    <select id="bt-question-count">
+                        <option value="10">10题</option>
+                        <option value="20" selected>20题</option>
+                        <option value="30">30题</option>
+                    </select>
+                </div>
+                <button class="start-btn" onclick="startBTGame()">开始挑战</button>
+            </div>
+
+            <div id="brainteaser-quiz" class="quiz-section" style="display:none">
+                <div class="quiz-info">
+                    <span id="bt-question-num">第 1 / 20 题</span>
+                    <span id="bt-timer">用时：0秒</span>
+                </div>
+                <div class="bt-riddle-box">
+                    <div class="bt-riddle-icon">🤔</div>
+                    <div id="bt-riddle-text" class="bt-riddle-text">什么有耳朵听不见？</div>
+                </div>
+                <div id="bt-answer-box" class="bt-answer-box" style="display:none">
+                    <div class="bt-answer-label">答案</div>
+                    <div id="bt-answer-text" class="bt-answer-text">玉米</div>
+                </div>
+                <button id="bt-reveal-btn" class="bt-reveal-btn" onclick="revealBTAnswer()">看答案</button>
+                <button id="bt-next-btn" class="next-btn" style="display:none" onclick="showNextBTRiddle()">下一题</button>
+                <div id="bt-feedback" class="feedback"></div>
+            </div>
+
+            <div id="brainteaser-result" class="result-section" style="display:none">
+                <h3>挑战完成！</h3>
+                <div class="result-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="bt-result-viewed">0</div>
+                        <div class="stat-label">已看题数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="bt-result-total">0</div>
+                        <div class="stat-label">总题数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="bt-result-rate">0%</div>
+                        <div class="stat-label">完成率</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="bt-result-time">0秒</div>
+                        <div class="stat-label">总用时</div>
+                    </div>
+                </div>
+                <div class="result-buttons">
+                    <button class="retry-btn" onclick="startBTGame()">再来一次</button>
+                    <button class="home-btn" onclick="goHome()">返回首页</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- 个人中心页面 -->
     <div id="profile-page" class="page">
         <div class="container">
@@ -885,6 +966,10 @@
                     <div class="ability-item">
                         <span class="ability-name">连线能力</span>
                         <span class="ability-value" id="match-ability">0</span>
+                    </div>
+                    <div class="ability-item">
+                        <span class="ability-name">趣味思维</span>
+                        <span class="ability-value" id="bt-ability">0</span>
                     </div>
                 </div>
             </div>
@@ -1019,6 +1104,20 @@
                             <div class="stat-text">连线正确配对</div>
                         </div>
                     </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💡</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="total-bt-games">0</div>
+                            <div class="stat-text">脑筋急转弯次数</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✨</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="total-bt-viewed">0</div>
+                            <div class="stat-text">已看谜题数</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1058,6 +1157,7 @@
                     <button class="history-tab" onclick="showHistory('sum')">凑十记录</button>
                     <button class="history-tab" onclick="showHistory('clock')">时钟记录</button>
                     <button class="history-tab" onclick="showHistory('match')">连线记录</button>
+                    <button class="history-tab" onclick="showHistory('brainteaser')">急转弯记录</button>
                 </div>
                 <div id="history-list" class="history-list">
                     <!-- 动态生成 -->
@@ -1099,7 +1199,7 @@
     <script>
     // 立即隐藏非欢迎页面，防止全部内容同时显示
     (function() {
-        var ids = ['home-page', 'math-page', 'memory-page', 'pattern-page', 'compare-page', 'sudoku-page', 'sort-page', 'sum-page', 'clock-page', 'match-page', 'profile-page'];
+        var ids = ['home-page', 'math-page', 'memory-page', 'pattern-page', 'compare-page', 'sudoku-page', 'sort-page', 'sum-page', 'clock-page', 'match-page', 'brainteaser-page', 'profile-page'];
         for (var i = 0; i < ids.length; i++) {
             var el = document.getElementById(ids[i]);
             if (el) el.style.display = 'none';
@@ -1117,6 +1217,7 @@
     <script src="js/sum-game.js"></script>
     <script src="js/clock-game.js"></script>
     <script src="js/match-game.js"></script>
+    <script src="js/brain-teaser.js"></script>
     <script src="js/profile.js"></script>
     <script src="js/app.js"></script>
 </body>

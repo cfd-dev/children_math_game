@@ -130,6 +130,16 @@ function goHome() {
         clearInterval(matchState.timerInterval);
     }
 
+    // 重置脑筋急转弯页面
+    document.getElementById('brainteaser-setup').style.display = 'block';
+    document.getElementById('brainteaser-quiz').style.display = 'none';
+    document.getElementById('brainteaser-result').style.display = 'none';
+
+    // 停止脑筋急转弯计时器
+    if (btState.timerInterval) {
+        clearInterval(btState.timerInterval);
+    }
+
     // 更新首页用户信息并显示
     updateHomeUserInfo();
     showPage('home-page');
@@ -231,6 +241,17 @@ function showMatchGame() {
     if (gradeNameEl) gradeNameEl.textContent = config.name;
     if (gradeDescEl) gradeDescEl.textContent = mConfig.description;
     showPage('match-page');
+}
+
+// 显示脑筋急转弯页面
+function showBrainTeaserGame() {
+    var config = gradeConfig[currentGrade];
+    var bConfig = btGradeConfig[currentGrade] || btGradeConfig['grade-1'];
+    var gradeNameEl = document.getElementById('bt-grade-name');
+    var gradeDescEl = document.getElementById('bt-grade-desc');
+    if (gradeNameEl) gradeNameEl.textContent = config.name;
+    if (gradeDescEl) gradeDescEl.textContent = bConfig.description;
+    showPage('brainteaser-page');
 }
 
 // 页面加载完成后的初始化

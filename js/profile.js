@@ -20,6 +20,8 @@ const STORAGE_KEYS = {
     SUM_ABILITY: 'sumPairsAbility',
     CLOCK_ABILITY: 'clockAbility',
     MATCH_ABILITY: 'mathMatchAbility',
+    BRAINTEASER_HISTORY: 'brainTeaserGameHistory',
+    BRAINTEASER_ABILITY: 'brainTeaserAbility',
     USER_GRADE: 'userGrade',
     USER_NAME: 'userName'
 };
@@ -53,6 +55,9 @@ function initStorage() {
     if (!localStorage.getItem(STORAGE_KEYS.MATCH_HISTORY)) {
         localStorage.setItem(STORAGE_KEYS.MATCH_HISTORY, JSON.stringify([]));
     }
+    if (!localStorage.getItem(STORAGE_KEYS.BRAINTEASER_HISTORY)) {
+        localStorage.setItem(STORAGE_KEYS.BRAINTEASER_HISTORY, JSON.stringify([]));
+    }
     if (!localStorage.getItem(STORAGE_KEYS.MATH_ABILITY)) {
         localStorage.setItem(STORAGE_KEYS.MATH_ABILITY, '50');
     }
@@ -79,6 +84,9 @@ function initStorage() {
     }
     if (!localStorage.getItem(STORAGE_KEYS.MATCH_ABILITY)) {
         localStorage.setItem(STORAGE_KEYS.MATCH_ABILITY, '50');
+    }
+    if (!localStorage.getItem(STORAGE_KEYS.BRAINTEASER_ABILITY)) {
+        localStorage.setItem(STORAGE_KEYS.BRAINTEASER_ABILITY, '50');
     }
 }
 
@@ -492,6 +500,41 @@ function getMatchAbility() {
     return parseInt(localStorage.getItem(STORAGE_KEYS.MATCH_ABILITY) || '50');
 }
 
+// 获取脑筋急转弯历史
+function getBTHistory() {
+    return JSON.parse(localStorage.getItem(STORAGE_KEYS.BRAINTEASER_HISTORY) || '[]');
+}
+
+// 保存脑筋急转弯记录
+function saveBTRecord(completionRate, totalTime, questionCount, viewedCount) {
+    const history = getBTHistory();
+    history.unshift({
+        date: new Date().toLocaleString('zh-CN'),
+        completionRate: completionRate,
+        totalTime: totalTime,
+        questionCount: questionCount,
+        viewedCount: viewedCount
+    });
+    if (history.length > 50) history.pop();
+    localStorage.setItem(STORAGE_KEYS.BRAINTEASER_HISTORY, JSON.stringify(history));
+    updateBTAbility(completionRate);
+}
+
+// 更新脑筋急转弯能力值
+function updateBTAbility(completionRate) {
+    let ability = parseInt(localStorage.getItem(STORAGE_KEYS.BRAINTEASER_ABILITY) || '50');
+    if (completionRate >= 95) ability = Math.min(100, ability + 5);
+    else if (completionRate >= 80) ability = Math.min(100, ability + 3);
+    else if (completionRate >= 60) ability = Math.min(100, ability + 1);
+    else if (completionRate < 40) ability = Math.max(0, ability - 2);
+    localStorage.setItem(STORAGE_KEYS.BRAINTEASER_ABILITY, ability.toString());
+    return ability;
+}
+
+function getBTAbility() {
+    return parseInt(localStorage.getItem(STORAGE_KEYS.BRAINTEASER_ABILITY) || '50');
+}
+
 // 绘制雷达图
 function drawRadarChart() {
     const canvas = document.getElementById('radar-chart');
@@ -770,6 +813,24 @@ function showHistory(type) {
                 `;
             });
         }
+    } else if (type === 'brainteaser') {
+        const history = getBTHistory();
+        if (history.length === 0) {
+            html = '<div class="history-empty">暂无脑筋急转弯记录</div>';
+        } else {
+            history.slice(0, 10).forEach(record => {
+                html += `
+                    <div class="history-item">
+                        <div class="history-date">${record.date}</div>
+                        <div class="history-details">
+                            <span>完成率: ${record.completionRate}%</span>
+                            <span>用时: ${record.totalTime}秒</span>
+                            <span>已看: ${record.viewedCount}/${record.questionCount}题</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
     }
 
     historyList.innerHTML = html;
@@ -841,6 +902,11 @@ function updateProfilePage() {
     document.getElementById('total-match-correct').textContent =
         matchHistory.reduce((sum, r) => sum + Math.round(r.accuracy * r.questionCount / 100), 0);
 
+    const btHistory = getBTHistory();
+    document.getElementById('total-bt-games').textContent = btHistory.length;
+    document.getElementById('total-bt-viewed').textContent =
+        btHistory.reduce((sum, r) => sum + r.viewedCount, 0);
+
     // 更新能力值
     document.getElementById('math-ability').textContent = getMathAbility();
     document.getElementById('memory-ability').textContent = getMemoryAbility();
@@ -851,6 +917,7 @@ function updateProfilePage() {
     document.getElementById('sum-ability').textContent = getSumAbility();
     document.getElementById('clock-ability').textContent = getClockAbility();
     document.getElementById('match-ability').textContent = getMatchAbility();
+    document.getElementById('bt-ability').textContent = getBTAbility();
 
     // 更新等级显示
     document.getElementById('profile-grade-badge').textContent = gradeConfig[currentGrade].name;
@@ -888,6 +955,8 @@ function switchUser() {
         localStorage.removeItem(STORAGE_KEYS.SUM_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.CLOCK_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.MATCH_ABILITY);
+        localStorage.removeItem(STORAGE_KEYS.BRAINTEASER_HISTORY);
+        localStorage.removeItem(STORAGE_KEYS.BRAINTEASER_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.USER_GRADE);
         localStorage.removeItem(STORAGE_KEYS.USER_NAME);
 
@@ -917,6 +986,8 @@ function clearAllData() {
         localStorage.removeItem(STORAGE_KEYS.SUM_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.CLOCK_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.MATCH_ABILITY);
+        localStorage.removeItem(STORAGE_KEYS.BRAINTEASER_HISTORY);
+        localStorage.removeItem(STORAGE_KEYS.BRAINTEASER_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.USER_GRADE);
         localStorage.removeItem(STORAGE_KEYS.USER_NAME);
 
