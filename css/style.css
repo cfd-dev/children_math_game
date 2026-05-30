@@ -468,28 +468,28 @@ body {
     align-items: center;
     -webkit-justify-content: center;
     justify-content: center;
-    gap: 15px;
-    margin: 30px 0;
-    padding: 20px;
+    gap: 10px;
+    margin: 20px 0;
+    padding: 10px 5px;
 }
 
 .compare-side {
-    font-size: 3em;
+    font-size: 2em;
     font-weight: bold;
     color: #333;
-    min-width: 80px;
+    min-width: 60px;
     text-align: center;
     background: #f8f9fa;
-    padding: 15px 20px;
-    border-radius: 16px;
-    word-break: break-all;
+    padding: 10px 12px;
+    border-radius: 12px;
+    white-space: nowrap;
 }
 
 .compare-symbol {
-    font-size: 3.5em;
+    font-size: 2.5em;
     font-weight: bold;
     color: #667eea;
-    min-width: 60px;
+    min-width: 40px;
     text-align: center;
     line-height: 1;
 }
@@ -737,16 +737,16 @@ body {
     }
 
     .compare-side {
-        font-size: 2.2em;
-        padding: 10px 14px;
+        font-size: 1.6em;
+        padding: 8px 10px;
     }
 
     .compare-symbol {
-        font-size: 2.8em;
+        font-size: 2em;
     }
 
     .compare-display {
-        gap: 8px;
+        gap: 6px;
     }
 
     .sudoku-cell {
@@ -1797,10 +1797,6 @@ body {
         padding: 7px 5px;
         font-size: 0.8em;
         min-width: 55px;
-    }
-
-    .compare-display {
-        gap: 10px;
     }
 
     .home-user-info {
