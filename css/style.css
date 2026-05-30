@@ -1298,3 +1298,120 @@ body {
         font-size: 1.6em;
     }
 }
+
+/* ============ 数字键盘 ============ */
+.numpad-wrap {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 900;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-justify-content: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.numpad {
+    width: 100%;
+    max-width: 500px;
+    background: #e8ecf1;
+    padding: 6px 6px 10px;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    gap: 5px;
+    -webkit-transform: translateY(100%);
+    transform: translateY(100%);
+    -webkit-transition: -webkit-transform 0.25s ease;
+    transition: transform 0.25s ease;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    -webkit-user-select: none;
+    user-select: none;
+    pointer-events: auto;
+}
+
+.numpad.show {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+}
+
+/* 键盘打开时给页面内容留出空间 */
+body.numpad-open .page.active {
+    padding-bottom: 260px;
+}
+
+.numpad-row {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-justify-content: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.numpad-key {
+    -webkit-flex: 1;
+    flex: 1;
+    height: 52px;
+    border: none;
+    border-radius: 10px;
+    background: white;
+    color: #333;
+    font-size: 1.6em;
+    font-weight: 600;
+    cursor: pointer;
+    -webkit-transition: background 0.1s;
+    transition: background 0.1s;
+    -webkit-appearance: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+
+.numpad-key:active {
+    background: #d0d5dd;
+    -webkit-transform: scale(0.95);
+    transform: scale(0.95);
+}
+
+.numpad-wide {
+    -webkit-flex: 2.15;
+    flex: 2.15;
+}
+
+.numpad-del {
+    background: #f0f0f0;
+    font-size: 1.3em;
+    color: #e74c3c;
+}
+
+.numpad-del:active {
+    background: #e0e0e0;
+}
+
+/* 输入框聚焦时不弹出系统键盘 */
+.answer-box,
+.memory-box {
+    caret-color: transparent;
+}
+
+/* 小屏手机键盘适配 */
+@media (max-width: 360px) {
+    .numpad-key {
+        height: 46px;
+        font-size: 1.4em;
+        border-radius: 8px;
+    }
+    .numpad {
+        padding: 4px 4px 8px;
+        gap: 4px;
+    }
+    .numpad-row {
+        gap: 4px;
+    }
+}

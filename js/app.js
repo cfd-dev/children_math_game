@@ -26,6 +26,9 @@ function goHome() {
         clearInterval(memoryState.timerInterval);
     }
 
+    // 隐藏数字键盘
+    if (typeof numpad !== 'undefined') numpad.hide();
+
     // 隐藏通知
     if (typeof hideGradeChangeNotification === 'function') {
         hideGradeChangeNotification();

@@ -132,15 +132,25 @@ function createMemoryAnswerBoxes() {
         if (isBlank) {
             const input = document.createElement('input');
             input.type = 'text';
-            input.inputMode = 'numeric';
+            input.inputMode = 'none';
             input.className = 'answer-box memory-box';
+            input.setAttribute('autocomplete', 'off');
+            input.setAttribute('autocorrect', 'off');
+            input.setAttribute('autocapitalize', 'off');
+            input.setAttribute('spellcheck', 'false');
             input.maxLength = 1;
             input.dataset.position = i;
             input.placeholder = '?';
 
             input.addEventListener('input', handleMemoryBoxInput);
             input.addEventListener('keydown', handleMemoryBoxKeydown);
-            input.addEventListener('focus', function() { this.select(); });
+            input.addEventListener('focus', function() {
+                this.select();
+                if (typeof numpad !== 'undefined') numpad.show(this);
+            });
+            input.addEventListener('touchstart', function() {
+                if (typeof numpad !== 'undefined') numpad.show(this);
+            }, { passive: true });
 
             container.appendChild(input);
         } else {
@@ -254,6 +264,9 @@ function submitMemoryAnswer() {
 
     memoryState.isProcessing = true;
 
+    // 隐藏数字键盘
+    if (typeof numpad !== 'undefined') numpad.hide();
+
     const feedback = document.getElementById('memory-feedback');
 
     // 比较答案
@@ -329,6 +342,9 @@ function showMemoryResult() {
     if (memoryState.timerInterval) {
         clearInterval(memoryState.timerInterval);
     }
+
+    // 隐藏数字键盘
+    if (typeof numpad !== 'undefined') numpad.hide();
 
     // 保存记录
     saveMemoryGameRecord(memoryState.score, memoryState.level, memoryState.totalCorrect);

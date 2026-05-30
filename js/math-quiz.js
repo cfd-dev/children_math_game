@@ -220,14 +220,24 @@ function createAnswerBoxes(length) {
     for (let i = 0; i < length; i++) {
         const input = document.createElement('input');
         input.type = 'text';
-        input.inputMode = 'numeric';
+        input.inputMode = 'none';
         input.className = 'answer-box';
+        input.setAttribute('autocomplete', 'off');
+        input.setAttribute('autocorrect', 'off');
+        input.setAttribute('autocapitalize', 'off');
+        input.setAttribute('spellcheck', 'false');
         input.maxLength = 1;
         input.dataset.index = i;
 
         input.addEventListener('input', handleBoxInput);
         input.addEventListener('keydown', handleBoxKeydown);
-        input.addEventListener('focus', function() { this.select(); });
+        input.addEventListener('focus', function() {
+            this.select();
+            if (typeof numpad !== 'undefined') numpad.show(this);
+        });
+        input.addEventListener('touchstart', function() {
+            if (typeof numpad !== 'undefined') numpad.show(this);
+        }, { passive: true });
 
         container.appendChild(input);
     }
@@ -297,6 +307,9 @@ function checkMathAnswer() {
     if (isNaN(userAnswer)) return;
 
     mathState.isProcessing = true;
+
+    // 隐藏数字键盘
+    if (typeof numpad !== 'undefined') numpad.hide();
 
     const feedback = document.getElementById('math-feedback');
     const inputs = document.querySelectorAll('.answer-box');
@@ -408,6 +421,9 @@ function finishMathQuiz() {
     if (mathState.timerInterval) {
         clearInterval(mathState.timerInterval);
     }
+
+    // 隐藏数字键盘
+    if (typeof numpad !== 'undefined') numpad.hide();
 
     const totalTime = Math.floor((Date.now() - mathState.startTime) / 1000);
     const accuracy = Math.round((mathState.correctCount / mathState.totalQuestions) * 100);
