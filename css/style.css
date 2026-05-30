@@ -360,10 +360,8 @@ body {
 }
 
 .menu-buttons {
-    display: -webkit-flex;
-    display: flex;
-    -webkit-flex-wrap: wrap;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 16px;
 }
 
@@ -376,9 +374,6 @@ body {
     align-items: center;
     -webkit-justify-content: center;
     justify-content: center;
-    -webkit-flex: 1 1 calc(33.33% - 12px);
-    flex: 1 1 calc(33.33% - 12px);
-    min-width: 140px;
     padding: 22px 10px;
     border: none;
     border-radius: 20px;
