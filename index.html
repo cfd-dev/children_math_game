@@ -185,9 +185,9 @@
             <div id="memory-setup" class="setup-section">
                 <h3>游戏规则</h3>
                 <div class="rules">
-                    <p>1. 屏幕会显示一串数字（10秒）</p>
-                    <p>2. 数字消失后，填出空缺位置的数字</p>
-                    <p>3. 每关3题，答对继续，答错结束</p>
+                    <p>1. 屏幕会显示一串数字，记住后填出空缺</p>
+                    <p>2. 每关10题，答对全部过关，答错结束</p>
+                    <p>3. 低难度关卡显示时间短，高难度显示时间长</p>
                     <p>4. 关卡越高，数字越长，空缺越多</p>
                 </div>
                 <button class="start-btn" onclick="startMemoryGame()">开始挑战</button>
@@ -202,8 +202,11 @@
                 </div>
                 <div class="memory-display">
                     <div id="memory-numbers" class="numbers-display">1 2 3 4</div>
-                    <div id="memory-timer" class="timer-bar">
-                        <div class="timer-fill"></div>
+                    <div class="timer-wrap">
+                        <div id="memory-timer" class="timer-bar">
+                            <div class="timer-fill"></div>
+                        </div>
+                        <span id="memory-timer-text" class="timer-text">10秒</span>
                     </div>
                     <p class="memory-hint">请记住这些数字...</p>
                 </div>
@@ -221,6 +224,23 @@
                     <div id="memory-answer-boxes" class="answer-boxes memory-answer-boxes"></div>
                 </div>
                 <div id="memory-feedback" class="feedback"></div>
+            </div>
+
+            <!-- 过关奖励页面 -->
+            <div id="memory-reward" class="result-section reward-section" style="display:none">
+                <div class="reward-stars">⭐ ⭐ ⭐</div>
+                <h3>恭喜过关！</h3>
+                <div class="reward-info">
+                    <p>第 <span id="reward-level">1</span> 关 完成！</p>
+                    <p>本关答对 <span id="reward-correct">10</span> 题</p>
+                    <p>当前总分：<span id="reward-score">0</span></p>
+                </div>
+                <div class="reward-next-hint">
+                    下一关显示时间：<span id="reward-next-time">5</span> 秒
+                </div>
+                <div class="result-buttons">
+                    <button class="retry-btn reward-btn" onclick="goToNextLevel()">进入下一关 →</button>
+                </div>
             </div>
 
             <!-- 结果页面 -->
@@ -315,6 +335,20 @@
                 <div class="current-level-display">
                     <div class="level-badge" id="profile-grade-badge">一年级</div>
                     <div class="level-desc" id="profile-grade-desc">20以内加减法</div>
+                </div>
+                <div class="grade-edit">
+                    <label for="profile-grade-select">修改等级：</label>
+                    <select id="profile-grade-select" onchange="changeGradeFromProfile(this.value)">
+                        <option value="k-small">幼儿园小班</option>
+                        <option value="k-medium">幼儿园中班</option>
+                        <option value="k-large">幼儿园大班</option>
+                        <option value="grade-1">一年级</option>
+                        <option value="grade-2">二年级</option>
+                        <option value="grade-3">三年级</option>
+                        <option value="grade-4">四年级</option>
+                        <option value="grade-5">五年级</option>
+                        <option value="grade-6">六年级</option>
+                    </select>
                 </div>
             </div>
 

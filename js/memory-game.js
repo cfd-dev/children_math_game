@@ -9,23 +9,24 @@ let memoryState = {
     totalCorrect: 0,
     timerInterval: null,
     timeLeft: 10,
+    maxTime: 10,
     isProcessing: false
 };
 
-// 关卡配置
+// 关卡配置（每关10题，难度越低显示时间越短）
 const levelConfig = [
-    { digitLength: 4, blankCount: 1 },  // 第1关
-    { digitLength: 4, blankCount: 2 },  // 第2关
-    { digitLength: 4, blankCount: 4 },  // 第3关
-    { digitLength: 6, blankCount: 2 },  // 第4关
-    { digitLength: 6, blankCount: 3 },  // 第5关
-    { digitLength: 6, blankCount: 6 },  // 第6关
-    { digitLength: 8, blankCount: 3 },  // 第7关
-    { digitLength: 8, blankCount: 4 },  // 第8关
-    { digitLength: 8, blankCount: 8 },  // 第9关
+    { digitLength: 4, blankCount: 1, displayTime: 4 },   // 第1关
+    { digitLength: 4, blankCount: 2, displayTime: 5 },   // 第2关
+    { digitLength: 4, blankCount: 4, displayTime: 6 },   // 第3关
+    { digitLength: 6, blankCount: 2, displayTime: 6 },   // 第4关
+    { digitLength: 6, blankCount: 3, displayTime: 7 },   // 第5关
+    { digitLength: 6, blankCount: 6, displayTime: 8 },   // 第6关
+    { digitLength: 8, blankCount: 3, displayTime: 8 },   // 第7关
+    { digitLength: 8, blankCount: 4, displayTime: 9 },   // 第8关
+    { digitLength: 8, blankCount: 8, displayTime: 10 },  // 第9关
 ];
 
-const ROUNDS_PER_LEVEL = 3;
+const ROUNDS_PER_LEVEL = 10;
 
 // 生成随机数字串
 function generateNumberString(length) {
@@ -97,10 +98,13 @@ function showMemoryRound() {
     const displayNumbers = memoryState.currentNumbers.split('').join(' ');
     document.getElementById('memory-numbers').textContent = displayNumbers;
 
-    // 重置计时器
-    memoryState.timeLeft = 10;
-    const timerFill = document.querySelector('.timer-fill');
+    // 根据关卡设置显示时间
+    memoryState.maxTime = config.displayTime;
+    memoryState.timeLeft = config.displayTime;
+    var timerFill = document.querySelector('.timer-fill');
+    var timerText = document.getElementById('memory-timer-text');
     timerFill.style.width = '100%';
+    if (timerText) timerText.textContent = memoryState.timeLeft + '秒';
 
     // 清除之前的定时器
     if (memoryState.timerInterval) {
@@ -110,7 +114,8 @@ function showMemoryRound() {
     // 开始倒计时
     memoryState.timerInterval = setInterval(() => {
         memoryState.timeLeft--;
-        timerFill.style.width = `${(memoryState.timeLeft / 10) * 100}%`;
+        if (timerText) timerText.textContent = memoryState.timeLeft + '秒';
+        timerFill.style.width = `${(memoryState.timeLeft / memoryState.maxTime) * 100}%`;
 
         if (memoryState.timeLeft <= 0) {
             clearInterval(memoryState.timerInterval);
@@ -300,22 +305,19 @@ function submitMemoryAnswer() {
         // 播放正确音效
         playCorrectSound();
 
-        // 延迟后进入下一题或下一关
+        // 延迟后进入下一题或显示过关奖励
         setTimeout(() => {
             memoryState.roundInLevel++;
 
             if (memoryState.roundInLevel > ROUNDS_PER_LEVEL) {
-                // 通过当前关卡，进入下一关
-                memoryState.level++;
-                memoryState.roundInLevel = 1;
-                // 播放过关音效
-                playMemoryLevelSound();
+                // 通过当前关卡，显示奖励画面
+                showLevelReward();
+            } else {
+                document.getElementById('memory-input').style.display = 'none';
+                document.getElementById('memory-show').style.display = 'block';
+                showMemoryRound();
             }
-
-            document.getElementById('memory-input').style.display = 'none';
-            document.getElementById('memory-show').style.display = 'block';
-            showMemoryRound();
-        }, 1500);
+        }, 1200);
     } else {
         // 答错了
         inputs.forEach(input => input.classList.add('wrong'));
@@ -334,6 +336,46 @@ function submitMemoryAnswer() {
         // 延迟后显示结果
         setTimeout(showMemoryResult, 2000);
     }
+}
+
+// 显示过关奖励画面
+function showLevelReward() {
+    // 停止计时器
+    if (memoryState.timerInterval) {
+        clearInterval(memoryState.timerInterval);
+    }
+
+    // 隐藏数字键盘
+    if (typeof numpad !== 'undefined') numpad.hide();
+
+    // 播放过关音效
+    playMemoryLevelSound();
+
+    // 更新奖励信息
+    document.getElementById('reward-level').textContent = memoryState.level;
+    document.getElementById('reward-score').textContent = memoryState.score;
+    document.getElementById('reward-correct').textContent = ROUNDS_PER_LEVEL;
+
+    // 计算下一关的显示时间
+    var nextConfig = levelConfig[Math.min(memoryState.level, levelConfig.length - 1)];
+    document.getElementById('reward-next-time').textContent = nextConfig.displayTime;
+
+    // 切换显示
+    document.getElementById('memory-show').style.display = 'none';
+    document.getElementById('memory-input').style.display = 'none';
+    document.getElementById('memory-reward').style.display = 'block';
+}
+
+// 进入下一关
+function goToNextLevel() {
+    memoryState.level++;
+    memoryState.roundInLevel = 1;
+
+    // 切换显示
+    document.getElementById('memory-reward').style.display = 'none';
+    document.getElementById('memory-show').style.display = 'block';
+
+    showMemoryRound();
 }
 
 // 显示游戏结果

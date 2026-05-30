@@ -294,6 +294,19 @@ function showHistory(type) {
     historyList.innerHTML = html;
 }
 
+// 从个人中心修改等级
+function changeGradeFromProfile(grade) {
+    if (!gradeConfig[grade]) return;
+
+    currentGrade = grade;
+    saveUserGrade(grade);
+    updateGradeDisplay();
+
+    // 更新个人中心显示
+    document.getElementById('profile-grade-badge').textContent = gradeConfig[grade].name;
+    document.getElementById('profile-grade-desc').textContent = gradeConfig[grade].description;
+}
+
 // 更新个人中心页面
 function updateProfilePage() {
     // 更新统计
@@ -315,6 +328,10 @@ function updateProfilePage() {
     // 更新等级显示
     document.getElementById('profile-grade-badge').textContent = gradeConfig[currentGrade].name;
     document.getElementById('profile-grade-desc').textContent = gradeConfig[currentGrade].description;
+
+    // 同步下拉选择框
+    var gradeSelect = document.getElementById('profile-grade-select');
+    if (gradeSelect) gradeSelect.value = currentGrade;
 
     // 绘制雷达图
     drawRadarChart();

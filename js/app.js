@@ -43,6 +43,7 @@ function goHome() {
     document.getElementById('memory-setup').style.display = 'block';
     document.getElementById('memory-show').style.display = 'none';
     document.getElementById('memory-input').style.display = 'none';
+    document.getElementById('memory-reward').style.display = 'none';
     document.getElementById('memory-result').style.display = 'none';
 
     // 显示首页
