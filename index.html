@@ -113,6 +113,11 @@
                     <span class="btn-text">比大小</span>
                     <span class="btn-desc">谁大谁小</span>
                 </button>
+                <button class="menu-btn sudoku-btn" onclick="showSudokuGame()">
+                    <span class="btn-icon">🔢</span>
+                    <span class="btn-text">数独</span>
+                    <span class="btn-desc">逻辑填数</span>
+                </button>
                 <button class="menu-btn profile-btn" onclick="showProfile()">
                     <span class="btn-icon">👤</span>
                     <span class="btn-text">个人中心</span>
@@ -454,6 +459,66 @@
         </div>
     </div>
 
+    <!-- 数独页面 -->
+    <div id="sudoku-page" class="page">
+        <div class="container">
+            <div class="page-header">
+                <button class="back-btn" onclick="goHome()">← 返回</button>
+                <h2>数独</h2>
+            </div>
+
+            <!-- 游戏说明 -->
+            <div id="sudoku-setup" class="setup-section">
+                <h3>当前难度</h3>
+                <div class="current-grade-display">
+                    <span id="sudoku-grade-name">一年级</span>
+                    <span id="sudoku-grade-desc">6×6 数独</span>
+                </div>
+                <div class="rules">
+                    <p>1. 每行、每列、每个小区域不能重复</p>
+                    <p>2. 点击空格，再点下方数字填入</p>
+                    <p>3. 填错3次游戏结束，可查看答案</p>
+                </div>
+                <button class="start-btn" onclick="startSudokuGame()">开始挑战</button>
+            </div>
+
+            <!-- 游戏区域 -->
+            <div id="sudoku-quiz" class="quiz-section" style="display:none">
+                <div class="quiz-info">
+                    <span id="sudoku-timer">用时：0分00秒</span>
+                    <span id="sudoku-mistakes">错误：0/3</span>
+                </div>
+                <div id="sudoku-grid" class="sudoku-grid"></div>
+                <div id="sudoku-number-picker" class="sudoku-number-picker"></div>
+                <div id="sudoku-feedback" class="feedback"></div>
+                <button id="sudoku-reveal-btn" class="next-btn" style="display:none" onclick="revealSudokuAnswer()">查看答案</button>
+            </div>
+
+            <!-- 结果页面 -->
+            <div id="sudoku-result" class="result-section" style="display:none">
+                <h3>恭喜完成！</h3>
+                <div class="result-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="sudoku-result-score">0</div>
+                        <div class="stat-label">得分</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="sudoku-result-time">0秒</div>
+                        <div class="stat-label">用时</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="sudoku-result-mistakes">0</div>
+                        <div class="stat-label">错误次数</div>
+                    </div>
+                </div>
+                <div class="result-buttons">
+                    <button class="retry-btn" onclick="startSudokuGame()">再来一次</button>
+                    <button class="home-btn" onclick="goHome()">返回首页</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- 个人中心页面 -->
     <div id="profile-page" class="page">
         <div class="container">
@@ -492,6 +557,10 @@
                     <div class="ability-item">
                         <span class="ability-name">比较能力</span>
                         <span class="ability-value" id="compare-ability">0</span>
+                    </div>
+                    <div class="ability-item">
+                        <span class="ability-name">数独能力</span>
+                        <span class="ability-value" id="sudoku-ability">0</span>
                     </div>
                 </div>
             </div>
@@ -556,6 +625,20 @@
                             <div class="stat-text">比大小答对题数</div>
                         </div>
                     </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🔢</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="total-sudoku-games">0</div>
+                            <div class="stat-text">数独游戏次数</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="total-sudoku-completed">0</div>
+                            <div class="stat-text">数独完成次数</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -590,6 +673,7 @@
                     <button class="history-tab" onclick="showHistory('memory')">记忆记录</button>
                     <button class="history-tab" onclick="showHistory('pattern')">规律记录</button>
                     <button class="history-tab" onclick="showHistory('compare')">比较记录</button>
+                    <button class="history-tab" onclick="showHistory('sudoku')">数独记录</button>
                 </div>
                 <div id="history-list" class="history-list">
                     <!-- 动态生成 -->
@@ -631,7 +715,7 @@
     <script>
     // 立即隐藏非欢迎页面，防止全部内容同时显示
     (function() {
-        var ids = ['home-page', 'math-page', 'memory-page', 'pattern-page', 'compare-page', 'profile-page'];
+        var ids = ['home-page', 'math-page', 'memory-page', 'pattern-page', 'compare-page', 'sudoku-page', 'profile-page'];
         for (var i = 0; i < ids.length; i++) {
             var el = document.getElementById(ids[i]);
             if (el) el.style.display = 'none';
@@ -644,6 +728,7 @@
     <script src="js/memory-game.js"></script>
     <script src="js/pattern-game.js"></script>
     <script src="js/compare-game.js"></script>
+    <script src="js/sudoku-game.js"></script>
     <script src="js/profile.js"></script>
     <script src="js/app.js"></script>
 </body>

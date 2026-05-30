@@ -78,6 +78,16 @@ function goHome() {
         clearInterval(compareState.timerInterval);
     }
 
+    // 重置数独页面
+    document.getElementById('sudoku-setup').style.display = 'block';
+    document.getElementById('sudoku-quiz').style.display = 'none';
+    document.getElementById('sudoku-result').style.display = 'none';
+
+    // 停止数独计时器
+    if (sudokuState.timerInterval) {
+        clearInterval(sudokuState.timerInterval);
+    }
+
     // 更新首页用户信息并显示
     updateHomeUserInfo();
     showPage('home-page');
@@ -124,6 +134,17 @@ function showCompareGame() {
     if (gradeNameEl) gradeNameEl.textContent = config.name;
     if (gradeDescEl) gradeDescEl.textContent = cConfig.description;
     showPage('compare-page');
+}
+
+// 显示数独页面
+function showSudokuGame() {
+    var config = gradeConfig[currentGrade];
+    var sConfig = sudokuGradeConfig[currentGrade] || sudokuGradeConfig['grade-1'];
+    var gradeNameEl = document.getElementById('sudoku-grade-name');
+    var gradeDescEl = document.getElementById('sudoku-grade-desc');
+    if (gradeNameEl) gradeNameEl.textContent = config.name;
+    if (gradeDescEl) gradeDescEl.textContent = sConfig.description;
+    showPage('sudoku-page');
 }
 
 // 页面加载完成后的初始化

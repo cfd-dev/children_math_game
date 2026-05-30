@@ -6,10 +6,12 @@ const STORAGE_KEYS = {
     MEMORY_HISTORY: 'memoryGameHistory',
     PATTERN_HISTORY: 'patternGameHistory',
     COMPARE_HISTORY: 'compareGameHistory',
+    SUDOKU_HISTORY: 'sudokuGameHistory',
     MATH_ABILITY: 'mathAbility',
     MEMORY_ABILITY: 'memoryAbility',
     PATTERN_ABILITY: 'patternAbility',
     COMPARE_ABILITY: 'compareAbility',
+    SUDOKU_ABILITY: 'sudokuAbility',
     USER_GRADE: 'userGrade',
     USER_NAME: 'userName'
 };
@@ -28,6 +30,9 @@ function initStorage() {
     if (!localStorage.getItem(STORAGE_KEYS.COMPARE_HISTORY)) {
         localStorage.setItem(STORAGE_KEYS.COMPARE_HISTORY, JSON.stringify([]));
     }
+    if (!localStorage.getItem(STORAGE_KEYS.SUDOKU_HISTORY)) {
+        localStorage.setItem(STORAGE_KEYS.SUDOKU_HISTORY, JSON.stringify([]));
+    }
     if (!localStorage.getItem(STORAGE_KEYS.MATH_ABILITY)) {
         localStorage.setItem(STORAGE_KEYS.MATH_ABILITY, '50');
     }
@@ -39,6 +44,9 @@ function initStorage() {
     }
     if (!localStorage.getItem(STORAGE_KEYS.COMPARE_ABILITY)) {
         localStorage.setItem(STORAGE_KEYS.COMPARE_ABILITY, '50');
+    }
+    if (!localStorage.getItem(STORAGE_KEYS.SUDOKU_ABILITY)) {
+        localStorage.setItem(STORAGE_KEYS.SUDOKU_ABILITY, '50');
     }
 }
 
@@ -82,6 +90,10 @@ function getPatternHistory() {
 
 function getCompareHistory() {
     return JSON.parse(localStorage.getItem(STORAGE_KEYS.COMPARE_HISTORY) || '[]');
+}
+
+function getSudokuHistory() {
+    return JSON.parse(localStorage.getItem(STORAGE_KEYS.SUDOKU_HISTORY) || '[]');
 }
 
 // 保存数学练习记录
@@ -263,6 +275,47 @@ function getCompareAbility() {
     return parseInt(localStorage.getItem(STORAGE_KEYS.COMPARE_ABILITY) || '50');
 }
 
+// 保存数独记录
+function saveSudokuRecord(score, totalTime, gridSize, mistakes) {
+    const history = getSudokuHistory();
+    history.unshift({
+        date: new Date().toLocaleString('zh-CN'),
+        score: score,
+        totalTime: totalTime,
+        gridSize: gridSize,
+        mistakes: mistakes
+    });
+
+    if (history.length > 50) {
+        history.pop();
+    }
+
+    localStorage.setItem(STORAGE_KEYS.SUDOKU_HISTORY, JSON.stringify(history));
+    updateSudokuAbility(score, gridSize);
+}
+
+// 更新数独能力值
+function updateSudokuAbility(score, gridSize) {
+    let ability = parseInt(localStorage.getItem(STORAGE_KEYS.SUDOKU_ABILITY) || '50');
+
+    if (score >= 90) {
+        ability = Math.min(100, ability + 5);
+    } else if (score >= 70) {
+        ability = Math.min(100, ability + 3);
+    } else if (score >= 50) {
+        ability = Math.min(100, ability + 1);
+    } else {
+        ability = Math.max(0, ability - 2);
+    }
+
+    localStorage.setItem(STORAGE_KEYS.SUDOKU_ABILITY, ability.toString());
+    return ability;
+}
+
+function getSudokuAbility() {
+    return parseInt(localStorage.getItem(STORAGE_KEYS.SUDOKU_ABILITY) || '50');
+}
+
 // 绘制雷达图
 function drawRadarChart() {
     const canvas = document.getElementById('radar-chart');
@@ -277,25 +330,24 @@ function drawRadarChart() {
     const memoryAbility = getMemoryAbility();
     const patternAbility = getPatternAbility();
     const compareAbility = getCompareAbility();
+    const sudokuAbility = getSudokuAbility();
 
-    // 数据点（四个顶点，均匀分布在圆上）
-    const data = [mathAbility, memoryAbility, patternAbility, compareAbility];
-    const labels = ['算术能力', '记忆能力', '推理能力', '比较能力'];
-    const angles = [
-        Math.PI / 2,              // 上方 (90°)
-        Math.PI,                  // 左方 (180°)
-        3 * Math.PI / 2,          // 下方 (270°)
-        0                         // 右方 (0°)
-    ];
+    // 数据点（五个顶点，均匀分布在圆上，从正上方开始逆时针）
+    const data = [mathAbility, memoryAbility, patternAbility, compareAbility, sudokuAbility];
+    const labels = ['算术', '记忆', '推理', '比较', '数独'];
+    const step = 2 * Math.PI / 5;
+    const startAngle = Math.PI / 2;
+    const angles = [];
+    for (let i = 0; i < 5; i++) {
+        angles.push(startAngle + i * step);
+    }
 
     // 清空画布
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // 绘制背景网格
+    // 绘制背景网格（五边形）
     ctx.strokeStyle = '#e0e0e0';
     ctx.lineWidth = 1;
-
-    // 绘制同心正方形
     for (let level = 1; level <= 5; level++) {
         const r = (radius * level) / 5;
         ctx.beginPath();
@@ -331,12 +383,8 @@ function drawRadarChart() {
         const value = data[i] / 100;
         const x = centerX + radius * value * Math.cos(angles[i]);
         const y = centerY - radius * value * Math.sin(angles[i]);
-
-        if (i === 0) {
-            ctx.moveTo(x, y);
-        } else {
-            ctx.lineTo(x, y);
-        }
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
     }
 
     ctx.closePath();
@@ -349,30 +397,26 @@ function drawRadarChart() {
         const value = data[i] / 100;
         const x = centerX + radius * value * Math.cos(angles[i]);
         const y = centerY - radius * value * Math.sin(angles[i]);
-
         ctx.beginPath();
-        ctx.arc(x, y, 6, 0, Math.PI * 2);
+        ctx.arc(x, y, 5, 0, Math.PI * 2);
         ctx.fill();
     }
 
     // 绘制标签
-    ctx.fillStyle = '#333';
-    ctx.font = '13px sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-
     for (let i = 0; i < labels.length; i++) {
-        const labelRadius = radius + 35;
+        const labelRadius = radius + 30;
         const x = centerX + labelRadius * Math.cos(angles[i]);
         const y = centerY - labelRadius * Math.sin(angles[i]);
 
-        ctx.fillText(labels[i], x, y);
+        ctx.fillStyle = '#333';
+        ctx.font = '12px sans-serif';
+        ctx.fillText(labels[i], x, y - 6);
 
         ctx.fillStyle = '#667eea';
-        ctx.font = 'bold 15px sans-serif';
-        ctx.fillText(data[i], x, y + 18);
-        ctx.fillStyle = '#333';
-        ctx.font = '13px sans-serif';
+        ctx.font = 'bold 14px sans-serif';
+        ctx.fillText(data[i], x, y + 10);
     }
 }
 
@@ -459,6 +503,25 @@ function showHistory(type) {
                 `;
             });
         }
+    } else if (type === 'sudoku') {
+        const history = getSudokuHistory();
+        if (history.length === 0) {
+            html = '<div class="history-empty">暂无数独记录</div>';
+        } else {
+            history.slice(0, 10).forEach(record => {
+                var size = record.gridSize + '×' + record.gridSize;
+                html += `
+                    <div class="history-item">
+                        <div class="history-date">${record.date}</div>
+                        <div class="history-details">
+                            <span>${size}</span>
+                            <span>得分: ${record.score}</span>
+                            <span>错误: ${record.mistakes}次</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
     }
 
     historyList.innerHTML = html;
@@ -505,11 +568,17 @@ function updateProfilePage() {
     document.getElementById('total-compare-correct').textContent =
         compareHistory.reduce((sum, r) => sum + Math.round(r.accuracy * r.questionCount / 100), 0);
 
+    const sudokuHistory = getSudokuHistory();
+    document.getElementById('total-sudoku-games').textContent = sudokuHistory.length;
+    document.getElementById('total-sudoku-completed').textContent =
+        sudokuHistory.filter(function(r) { return r.score > 0; }).length;
+
     // 更新能力值
     document.getElementById('math-ability').textContent = getMathAbility();
     document.getElementById('memory-ability').textContent = getMemoryAbility();
     document.getElementById('pattern-ability').textContent = getPatternAbility();
     document.getElementById('compare-ability').textContent = getCompareAbility();
+    document.getElementById('sudoku-ability').textContent = getSudokuAbility();
 
     // 更新等级显示
     document.getElementById('profile-grade-badge').textContent = gradeConfig[currentGrade].name;
@@ -533,10 +602,12 @@ function switchUser() {
         localStorage.removeItem(STORAGE_KEYS.MEMORY_HISTORY);
         localStorage.removeItem(STORAGE_KEYS.PATTERN_HISTORY);
         localStorage.removeItem(STORAGE_KEYS.COMPARE_HISTORY);
+        localStorage.removeItem(STORAGE_KEYS.SUDOKU_HISTORY);
         localStorage.removeItem(STORAGE_KEYS.MATH_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.MEMORY_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.PATTERN_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.COMPARE_ABILITY);
+        localStorage.removeItem(STORAGE_KEYS.SUDOKU_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.USER_GRADE);
         localStorage.removeItem(STORAGE_KEYS.USER_NAME);
 
@@ -552,10 +623,12 @@ function clearAllData() {
         localStorage.removeItem(STORAGE_KEYS.MEMORY_HISTORY);
         localStorage.removeItem(STORAGE_KEYS.PATTERN_HISTORY);
         localStorage.removeItem(STORAGE_KEYS.COMPARE_HISTORY);
+        localStorage.removeItem(STORAGE_KEYS.SUDOKU_HISTORY);
         localStorage.removeItem(STORAGE_KEYS.MATH_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.MEMORY_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.PATTERN_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.COMPARE_ABILITY);
+        localStorage.removeItem(STORAGE_KEYS.SUDOKU_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.USER_GRADE);
         localStorage.removeItem(STORAGE_KEYS.USER_NAME);
 
