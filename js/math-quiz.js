@@ -290,7 +290,7 @@ function handleBoxKeydown(e) {
 
 // 获取所有输入框的值
 function getAnswerValue() {
-    const inputs = document.querySelectorAll('.answer-box');
+    const inputs = document.querySelectorAll('#answer-boxes .answer-box');
     let value = '';
     inputs.forEach(input => {
         value += input.value;
@@ -312,7 +312,7 @@ function checkMathAnswer() {
     if (typeof numpad !== 'undefined') numpad.hide();
 
     const feedback = document.getElementById('math-feedback');
-    const inputs = document.querySelectorAll('.answer-box');
+    const inputs = document.querySelectorAll('#answer-boxes .answer-box');
 
     // 禁用所有输入框
     inputs.forEach(input => {
