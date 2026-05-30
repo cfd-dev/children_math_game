@@ -58,6 +58,16 @@ function goHome() {
     document.getElementById('memory-reward').style.display = 'none';
     document.getElementById('memory-result').style.display = 'none';
 
+    // 重置找规律页面
+    document.getElementById('pattern-setup').style.display = 'block';
+    document.getElementById('pattern-quiz').style.display = 'none';
+    document.getElementById('pattern-result').style.display = 'none';
+
+    // 停止找规律计时器
+    if (patternState.timerInterval) {
+        clearInterval(patternState.timerInterval);
+    }
+
     // 更新首页用户信息并显示
     updateHomeUserInfo();
     showPage('home-page');
@@ -81,6 +91,18 @@ function showMathQuiz() {
 // 显示数字记忆页面
 function showMemoryGame() {
     showPage('memory-page');
+}
+
+// 显示找规律页面
+function showPatternGame() {
+    // 更新当前难度显示
+    var config = gradeConfig[currentGrade];
+    var pConfig = patternGradeConfig[currentGrade] || patternGradeConfig['grade-1'];
+    var gradeNameEl = document.getElementById('pattern-grade-name');
+    var gradeDescEl = document.getElementById('pattern-grade-desc');
+    if (gradeNameEl) gradeNameEl.textContent = config.name;
+    if (gradeDescEl) gradeDescEl.textContent = pConfig.description;
+    showPage('pattern-page');
 }
 
 // 页面加载完成后的初始化

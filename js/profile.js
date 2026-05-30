@@ -4,8 +4,10 @@
 const STORAGE_KEYS = {
     MATH_HISTORY: 'mathQuizHistory',
     MEMORY_HISTORY: 'memoryGameHistory',
+    PATTERN_HISTORY: 'patternGameHistory',
     MATH_ABILITY: 'mathAbility',
     MEMORY_ABILITY: 'memoryAbility',
+    PATTERN_ABILITY: 'patternAbility',
     USER_GRADE: 'userGrade',
     USER_NAME: 'userName'
 };
@@ -18,11 +20,17 @@ function initStorage() {
     if (!localStorage.getItem(STORAGE_KEYS.MEMORY_HISTORY)) {
         localStorage.setItem(STORAGE_KEYS.MEMORY_HISTORY, JSON.stringify([]));
     }
+    if (!localStorage.getItem(STORAGE_KEYS.PATTERN_HISTORY)) {
+        localStorage.setItem(STORAGE_KEYS.PATTERN_HISTORY, JSON.stringify([]));
+    }
     if (!localStorage.getItem(STORAGE_KEYS.MATH_ABILITY)) {
         localStorage.setItem(STORAGE_KEYS.MATH_ABILITY, '50');
     }
     if (!localStorage.getItem(STORAGE_KEYS.MEMORY_ABILITY)) {
         localStorage.setItem(STORAGE_KEYS.MEMORY_ABILITY, '50');
+    }
+    if (!localStorage.getItem(STORAGE_KEYS.PATTERN_ABILITY)) {
+        localStorage.setItem(STORAGE_KEYS.PATTERN_ABILITY, '50');
     }
 }
 
@@ -58,6 +66,10 @@ function getMathHistory() {
 
 function getMemoryHistory() {
     return JSON.parse(localStorage.getItem(STORAGE_KEYS.MEMORY_HISTORY) || '[]');
+}
+
+function getPatternHistory() {
+    return JSON.parse(localStorage.getItem(STORAGE_KEYS.PATTERN_HISTORY) || '[]');
 }
 
 // 保存数学练习记录
@@ -105,6 +117,29 @@ function saveMemoryGameRecord(score, level, totalCorrect) {
     updateMemoryAbility(level, totalCorrect);
 }
 
+// 保存找规律记录
+function savePatternRecord(accuracy, totalTime, questionCount, score) {
+    const history = getPatternHistory();
+    history.unshift({
+        date: new Date().toLocaleString('zh-CN'),
+        accuracy: accuracy,
+        totalTime: totalTime,
+        questionCount: questionCount,
+        score: score,
+        avgTime: (totalTime / questionCount).toFixed(1)
+    });
+
+    // 只保留最近50条记录
+    if (history.length > 50) {
+        history.pop();
+    }
+
+    localStorage.setItem(STORAGE_KEYS.PATTERN_HISTORY, JSON.stringify(history));
+
+    // 更新能力值
+    updatePatternAbility(accuracy, totalTime / questionCount);
+}
+
 // 更新数学能力值
 function updateMathAbility(accuracy, avgTime) {
     let ability = parseInt(localStorage.getItem(STORAGE_KEYS.MATH_ABILITY) || '50');
@@ -143,6 +178,24 @@ function updateMemoryAbility(level, totalCorrect) {
     return ability;
 }
 
+// 更新找规律能力值
+function updatePatternAbility(accuracy, avgTime) {
+    let ability = parseInt(localStorage.getItem(STORAGE_KEYS.PATTERN_ABILITY) || '50');
+
+    if (accuracy >= 95 && avgTime <= 5) {
+        ability = Math.min(100, ability + 5);
+    } else if (accuracy >= 85 && avgTime <= 8) {
+        ability = Math.min(100, ability + 3);
+    } else if (accuracy >= 70) {
+        ability = Math.min(100, ability + 1);
+    } else if (accuracy < 50) {
+        ability = Math.max(0, ability - 3);
+    }
+
+    localStorage.setItem(STORAGE_KEYS.PATTERN_ABILITY, ability.toString());
+    return ability;
+}
+
 // 获取能力值
 function getMathAbility() {
     return parseInt(localStorage.getItem(STORAGE_KEYS.MATH_ABILITY) || '50');
@@ -150,6 +203,10 @@ function getMathAbility() {
 
 function getMemoryAbility() {
     return parseInt(localStorage.getItem(STORAGE_KEYS.MEMORY_ABILITY) || '50');
+}
+
+function getPatternAbility() {
+    return parseInt(localStorage.getItem(STORAGE_KEYS.PATTERN_ABILITY) || '50');
 }
 
 // 绘制雷达图
@@ -160,15 +217,20 @@ function drawRadarChart() {
     const ctx = canvas.getContext('2d');
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    const radius = Math.min(centerX, centerY) - 40;
+    const radius = Math.min(centerX, centerY) - 50;
 
     const mathAbility = getMathAbility();
     const memoryAbility = getMemoryAbility();
+    const patternAbility = getPatternAbility();
 
-    // 数据点
-    const data = [mathAbility, memoryAbility];
-    const labels = ['算术能力', '记忆能力'];
-    const angles = [Math.PI / 2, -Math.PI / 2]; // 两个顶点的位置
+    // 数据点（三个顶点，均匀分布在圆上）
+    const data = [mathAbility, memoryAbility, patternAbility];
+    const labels = ['算术能力', '记忆能力', '推理能力'];
+    const angles = [
+        Math.PI / 2,            // 上方 (90°)
+        Math.PI / 2 + 2 * Math.PI / 3, // 左下 (210°)
+        Math.PI / 2 + 4 * Math.PI / 3  // 右下 (330°)
+    ];
 
     // 清空画布
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -185,7 +247,7 @@ function drawRadarChart() {
         ctx.stroke();
     }
 
-    // 绘制轴线
+    // 绘制轴线和网格三角形
     ctx.strokeStyle = '#ccc';
     ctx.lineWidth = 1;
     for (let i = 0; i < angles.length; i++) {
@@ -194,6 +256,20 @@ function drawRadarChart() {
         ctx.beginPath();
         ctx.moveTo(centerX, centerY);
         ctx.lineTo(x, y);
+        ctx.stroke();
+    }
+
+    // 绘制网格三角形
+    for (let level = 1; level <= 5; level++) {
+        const r = (radius * level) / 5;
+        ctx.beginPath();
+        for (let i = 0; i < angles.length; i++) {
+            const x = centerX + r * Math.cos(angles[i]);
+            const y = centerY - r * Math.sin(angles[i]);
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
         ctx.stroke();
     }
 
@@ -238,7 +314,7 @@ function drawRadarChart() {
     ctx.textBaseline = 'middle';
 
     for (let i = 0; i < labels.length; i++) {
-        const labelRadius = radius + 30;
+        const labelRadius = radius + 35;
         const x = centerX + labelRadius * Math.cos(angles[i]);
         const y = centerY - labelRadius * Math.sin(angles[i]);
 
@@ -282,7 +358,7 @@ function showHistory(type) {
                 `;
             });
         }
-    } else {
+    } else if (type === 'memory') {
         const history = getMemoryHistory();
         if (history.length === 0) {
             html = '<div class="history-empty">暂无记忆游戏记录</div>';
@@ -295,6 +371,24 @@ function showHistory(type) {
                             <span>得分: ${record.score}</span>
                             <span>通过: ${record.level}关</span>
                             <span>答对: ${record.totalCorrect}题</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+    } else if (type === 'pattern') {
+        const history = getPatternHistory();
+        if (history.length === 0) {
+            html = '<div class="history-empty">暂无找规律记录</div>';
+        } else {
+            history.slice(0, 10).forEach(record => {
+                html += `
+                    <div class="history-item">
+                        <div class="history-date">${record.date}</div>
+                        <div class="history-details">
+                            <span>正确率: ${record.accuracy}%</span>
+                            <span>平均: ${record.avgTime}秒/题</span>
+                            <span>得分: ${record.score}</span>
                         </div>
                     </div>
                 `;
@@ -327,6 +421,7 @@ function updateProfilePage() {
     // 更新统计
     const mathHistory = getMathHistory();
     const memoryHistory = getMemoryHistory();
+    const patternHistory = getPatternHistory();
 
     document.getElementById('total-math-quizzes').textContent = mathHistory.length;
     document.getElementById('total-math-correct').textContent =
@@ -336,9 +431,14 @@ function updateProfilePage() {
     document.getElementById('total-memory-levels').textContent =
         memoryHistory.reduce((sum, r) => sum + r.level, 0);
 
+    document.getElementById('total-pattern-games').textContent = patternHistory.length;
+    document.getElementById('total-pattern-correct').textContent =
+        patternHistory.reduce((sum, r) => sum + Math.round(r.accuracy * r.questionCount / 100), 0);
+
     // 更新能力值
     document.getElementById('math-ability').textContent = getMathAbility();
     document.getElementById('memory-ability').textContent = getMemoryAbility();
+    document.getElementById('pattern-ability').textContent = getPatternAbility();
 
     // 更新等级显示
     document.getElementById('profile-grade-badge').textContent = gradeConfig[currentGrade].name;
@@ -360,8 +460,10 @@ function switchUser() {
     if (confirm('切换用户将清除当前所有数据，是否继续？')) {
         localStorage.removeItem(STORAGE_KEYS.MATH_HISTORY);
         localStorage.removeItem(STORAGE_KEYS.MEMORY_HISTORY);
+        localStorage.removeItem(STORAGE_KEYS.PATTERN_HISTORY);
         localStorage.removeItem(STORAGE_KEYS.MATH_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.MEMORY_ABILITY);
+        localStorage.removeItem(STORAGE_KEYS.PATTERN_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.USER_GRADE);
         localStorage.removeItem(STORAGE_KEYS.USER_NAME);
 
@@ -375,8 +477,10 @@ function clearAllData() {
     if (confirm('确定要清除所有学习数据吗？此操作不可恢复，需要重新选择年级。')) {
         localStorage.removeItem(STORAGE_KEYS.MATH_HISTORY);
         localStorage.removeItem(STORAGE_KEYS.MEMORY_HISTORY);
+        localStorage.removeItem(STORAGE_KEYS.PATTERN_HISTORY);
         localStorage.removeItem(STORAGE_KEYS.MATH_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.MEMORY_ABILITY);
+        localStorage.removeItem(STORAGE_KEYS.PATTERN_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.USER_GRADE);
         localStorage.removeItem(STORAGE_KEYS.USER_NAME);
 

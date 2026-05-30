@@ -103,6 +103,11 @@
                     <span class="btn-text">数字记忆</span>
                     <span class="btn-desc">挑战记忆力</span>
                 </button>
+                <button class="menu-btn pattern-btn" onclick="showPatternGame()">
+                    <span class="btn-icon">🔍</span>
+                    <span class="btn-text">找规律</span>
+                    <span class="btn-desc">数列推理</span>
+                </button>
                 <button class="menu-btn profile-btn" onclick="showProfile()">
                     <span class="btn-icon">👤</span>
                     <span class="btn-text">个人中心</span>
@@ -285,6 +290,79 @@
         </div>
     </div>
 
+    <!-- 找规律页面 -->
+    <div id="pattern-page" class="page">
+        <div class="container">
+            <div class="page-header">
+                <button class="back-btn" onclick="goHome()">← 返回</button>
+                <h2>找规律</h2>
+            </div>
+
+            <!-- 游戏说明 -->
+            <div id="pattern-setup" class="setup-section">
+                <h3>当前难度</h3>
+                <div class="current-grade-display">
+                    <span id="pattern-grade-name">一年级</span>
+                    <span id="pattern-grade-desc">等差与奇偶数列</span>
+                </div>
+                <div class="rules">
+                    <p>1. 观察数列，找出其中的规律</p>
+                    <p>2. 数列中有一个 "?"，请填出正确数字</p>
+                    <p>3. 答对得分，答错可查看正确答案</p>
+                </div>
+                <div class="question-count">
+                    <label>题目数量：</label>
+                    <select id="pattern-question-count">
+                        <option value="10">10题</option>
+                        <option value="20" selected>20题</option>
+                        <option value="30">30题</option>
+                    </select>
+                </div>
+                <button class="start-btn" onclick="startPatternGame()">开始挑战</button>
+            </div>
+
+            <!-- 答题区域 -->
+            <div id="pattern-quiz" class="quiz-section" style="display:none">
+                <div class="quiz-info">
+                    <span id="pattern-progress">1/20</span>
+                    <span id="pattern-timer">用时：0秒</span>
+                    <span id="pattern-score-text">得分：0</span>
+                </div>
+                <div class="question-display">
+                    <div id="pattern-display" class="pattern-display">1 2 ? 4 5</div>
+                </div>
+                <div class="answer-section">
+                    <div id="pattern-answer-boxes" class="answer-boxes"></div>
+                </div>
+                <div id="pattern-feedback" class="feedback"></div>
+                <button id="pattern-next-btn" class="next-btn" style="display:none" onclick="showNextPatternQuestion()">下一题</button>
+            </div>
+
+            <!-- 结果页面 -->
+            <div id="pattern-result" class="result-section" style="display:none">
+                <h3>挑战完成！</h3>
+                <div class="result-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="pattern-result-score">0</div>
+                        <div class="stat-label">总得分</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="pattern-result-correct">0%</div>
+                        <div class="stat-label">正确率</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="pattern-result-time">0秒</div>
+                        <div class="stat-label">总用时</div>
+                    </div>
+                </div>
+                <div class="result-buttons">
+                    <button class="retry-btn" onclick="startPatternGame()">再来一次</button>
+                    <button class="home-btn" onclick="goHome()">返回首页</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- 个人中心页面 -->
     <div id="profile-page" class="page">
         <div class="container">
@@ -305,7 +383,7 @@
             <div class="profile-section">
                 <h3>能力评估</h3>
                 <div class="radar-chart-container">
-                    <canvas id="radar-chart" width="300" height="300"></canvas>
+                    <canvas id="radar-chart" width="320" height="300"></canvas>
                 </div>
                 <div class="ability-scores">
                     <div class="ability-item">
@@ -315,6 +393,10 @@
                     <div class="ability-item">
                         <span class="ability-name">记忆能力</span>
                         <span class="ability-value" id="memory-ability">0</span>
+                    </div>
+                    <div class="ability-item">
+                        <span class="ability-name">推理能力</span>
+                        <span class="ability-value" id="pattern-ability">0</span>
                     </div>
                 </div>
             </div>
@@ -351,6 +433,20 @@
                             <div class="stat-text">记忆通过关卡</div>
                         </div>
                     </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🔍</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="total-pattern-games">0</div>
+                            <div class="stat-text">找规律次数</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✨</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="total-pattern-correct">0</div>
+                            <div class="stat-text">找规律答对题数</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -383,6 +479,7 @@
                 <div class="history-tabs">
                     <button class="history-tab active" onclick="showHistory('math')">计算记录</button>
                     <button class="history-tab" onclick="showHistory('memory')">记忆记录</button>
+                    <button class="history-tab" onclick="showHistory('pattern')">规律记录</button>
                 </div>
                 <div id="history-list" class="history-list">
                     <!-- 动态生成 -->
@@ -424,7 +521,7 @@
     <script>
     // 立即隐藏非欢迎页面，防止全部内容同时显示
     (function() {
-        var ids = ['home-page', 'math-page', 'memory-page', 'profile-page'];
+        var ids = ['home-page', 'math-page', 'memory-page', 'pattern-page', 'profile-page'];
         for (var i = 0; i < ids.length; i++) {
             var el = document.getElementById(ids[i]);
             if (el) el.style.display = 'none';
@@ -435,6 +532,7 @@
     <script src="js/keypad.js"></script>
     <script src="js/math-quiz.js"></script>
     <script src="js/memory-game.js"></script>
+    <script src="js/pattern-game.js"></script>
     <script src="js/profile.js"></script>
     <script src="js/app.js"></script>
 </body>
