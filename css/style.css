@@ -34,7 +34,7 @@ body {
 }
 
 .container {
-    max-width: 500px;
+    max-width: 550px;
     margin: 0 auto;
     width: 100%;
 }
@@ -362,17 +362,24 @@ body {
 .menu-buttons {
     display: -webkit-flex;
     display: flex;
-    -webkit-flex-direction: column;
-    flex-direction: column;
-    gap: 20px;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    gap: 16px;
 }
 
 .menu-btn {
     display: -webkit-flex;
     display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
     -webkit-align-items: center;
     align-items: center;
-    padding: 25px 30px;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-flex: 1 1 calc(33.33% - 12px);
+    flex: 1 1 calc(33.33% - 12px);
+    min-width: 140px;
+    padding: 22px 10px;
     border: none;
     border-radius: 20px;
     background: white;
@@ -384,6 +391,8 @@ body {
     -webkit-user-select: none;
     user-select: none;
     touch-action: manipulation;
+    text-align: center;
+    white-space: nowrap;
 }
 
 .menu-btn:hover {
@@ -396,21 +405,24 @@ body {
 }
 
 .btn-icon {
-    font-size: 3.5em;
-    margin-right: 20px;
+    font-size: 3em;
+    margin-bottom: 8px;
+    line-height: 1;
 }
 
 .btn-text {
-    font-size: 1.8em;
+    font-size: 1.4em;
     font-weight: bold;
     color: #333;
+    line-height: 1.2;
 }
 
 .btn-desc {
     display: block;
-    font-size: 1.1em;
+    font-size: 0.95em;
     color: #666;
-    margin-top: 5px;
+    margin-top: 4px;
+    line-height: 1.2;
 }
 
 .math-btn .btn-text {
@@ -1629,33 +1641,7 @@ body {
 
 /* 大屏幕平板 (768px+) */
 @media (min-width: 768px) {
-    .container {
-        max-width: 650px;
-    }
-
-    .page {
-        padding: 30px;
-    }
-
-    .menu-buttons {
-        -webkit-flex-direction: row;
-        flex-direction: row;
-        gap: 20px;
-    }
-
-    .menu-btn {
-        -webkit-flex: 1;
-        flex: 1;
-        -webkit-flex-direction: column;
-        flex-direction: column;
-        text-align: center;
-        padding: 30px 20px;
-    }
-
-    .btn-icon {
-        margin-right: 0;
-        margin-bottom: 10px;
-    }
+    /* 统一使用基础容器和按钮样式 */
 
     .grade-grid {
         grid-template-columns: repeat(3, 1fr);
@@ -1690,22 +1676,7 @@ body {
         margin-bottom: 30px;
     }
 
-    .menu-btn {
-        padding: 20px;
-    }
-
-    .btn-icon {
-        font-size: 2.8em;
-        margin-right: 15px;
-    }
-
-    .btn-text {
-        font-size: 1.5em;
-    }
-
-    .btn-desc {
-        font-size: 1em;
-    }
+    /* 统一使用基础菜单按钮样式 */
 
     .grade-section {
         padding: 15px;
@@ -1867,22 +1838,7 @@ body {
         margin-bottom: 20px;
     }
 
-    .menu-btn {
-        padding: 15px;
-    }
-
-    .btn-icon {
-        font-size: 2.2em;
-        margin-right: 12px;
-    }
-
-    .btn-text {
-        font-size: 1.3em;
-    }
-
-    .btn-desc {
-        font-size: 0.9em;
-    }
+    /* 统一使用基础菜单按钮样式 */
 
     .grade-grid {
         gap: 6px;
