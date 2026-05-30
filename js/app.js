@@ -90,6 +90,46 @@ function goHome() {
         clearInterval(sudokuState.timerInterval);
     }
 
+    // 重置数字排序页面
+    document.getElementById('sort-setup').style.display = 'block';
+    document.getElementById('sort-quiz').style.display = 'none';
+    document.getElementById('sort-result').style.display = 'none';
+
+    // 停止排序计时器
+    if (sortState.timerInterval) {
+        clearInterval(sortState.timerInterval);
+    }
+
+    // 重置凑十法页面
+    document.getElementById('sum-setup').style.display = 'block';
+    document.getElementById('sum-quiz').style.display = 'none';
+    document.getElementById('sum-result').style.display = 'none';
+
+    // 停止凑十计时器
+    if (sumState.timerInterval) {
+        clearInterval(sumState.timerInterval);
+    }
+
+    // 重置时钟认知页面
+    document.getElementById('clock-setup').style.display = 'block';
+    document.getElementById('clock-quiz').style.display = 'none';
+    document.getElementById('clock-result').style.display = 'none';
+
+    // 停止时钟计时器
+    if (clockState.timerInterval) {
+        clearInterval(clockState.timerInterval);
+    }
+
+    // 重置数学连线页面
+    document.getElementById('match-setup').style.display = 'block';
+    document.getElementById('match-quiz').style.display = 'none';
+    document.getElementById('match-result').style.display = 'none';
+
+    // 停止连线计时器
+    if (matchState.timerInterval) {
+        clearInterval(matchState.timerInterval);
+    }
+
     // 更新首页用户信息并显示
     updateHomeUserInfo();
     showPage('home-page');
@@ -147,6 +187,50 @@ function showSudokuGame() {
     if (gradeNameEl) gradeNameEl.textContent = config.name;
     if (gradeDescEl) gradeDescEl.textContent = sConfig.description;
     showPage('sudoku-page');
+}
+
+// 显示数字排序页面
+function showSortGame() {
+    var config = gradeConfig[currentGrade];
+    var sConfig = sortGradeConfig[currentGrade] || sortGradeConfig['grade-1'];
+    var gradeNameEl = document.getElementById('sort-grade-name');
+    var gradeDescEl = document.getElementById('sort-grade-desc');
+    if (gradeNameEl) gradeNameEl.textContent = config.name;
+    if (gradeDescEl) gradeDescEl.textContent = sConfig.description;
+    showPage('sort-page');
+}
+
+// 显示凑十法页面
+function showSumGame() {
+    var config = gradeConfig[currentGrade];
+    var sConfig = sumGradeConfig[currentGrade] || sumGradeConfig['grade-1'];
+    var gradeNameEl = document.getElementById('sum-grade-name');
+    var gradeDescEl = document.getElementById('sum-grade-desc');
+    if (gradeNameEl) gradeNameEl.textContent = config.name;
+    if (gradeDescEl) gradeDescEl.textContent = sConfig.description;
+    showPage('sum-page');
+}
+
+// 显示时钟认知页面
+function showClockGame() {
+    var config = gradeConfig[currentGrade];
+    var cConfig = clockGradeConfig[currentGrade] || clockGradeConfig['grade-1'];
+    var gradeNameEl = document.getElementById('clock-grade-name');
+    var gradeDescEl = document.getElementById('clock-grade-desc');
+    if (gradeNameEl) gradeNameEl.textContent = config.name;
+    if (gradeDescEl) gradeDescEl.textContent = cConfig.description;
+    showPage('clock-page');
+}
+
+// 显示数学连线页面
+function showMatchGame() {
+    var config = gradeConfig[currentGrade];
+    var mConfig = matchGradeConfig[currentGrade] || matchGradeConfig['grade-1'];
+    var gradeNameEl = document.getElementById('match-grade-name');
+    var gradeDescEl = document.getElementById('match-grade-desc');
+    if (gradeNameEl) gradeNameEl.textContent = config.name;
+    if (gradeDescEl) gradeDescEl.textContent = mConfig.description;
+    showPage('match-page');
 }
 
 // 页面加载完成后的初始化

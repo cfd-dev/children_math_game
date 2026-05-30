@@ -444,6 +444,22 @@ body {
     color: #16a085;
 }
 
+.sort-btn .btn-text {
+    color: #2980b9;
+}
+
+.sum-btn .btn-text {
+    color: #8e44ad;
+}
+
+.clock-btn .btn-text {
+    color: #d35400;
+}
+
+.match-btn .btn-text {
+    color: #1abc9c;
+}
+
 /* 找规律题目显示 */
 .pattern-display {
     font-size: 3em;
@@ -1811,6 +1827,42 @@ body {
         padding: 10px 14px;
         font-size: 1em;
     }
+
+    /* 新游戏响应式 */
+    .sort-num-btn {
+        min-width: 48px;
+        height: 48px;
+        font-size: 1.3em;
+    }
+
+    .sort-slot {
+        min-width: 48px;
+        height: 48px;
+        font-size: 1.3em;
+    }
+
+    .sum-cell {
+        height: 52px;
+        font-size: 1.3em;
+    }
+
+    .sum-grid {
+        gap: 8px;
+    }
+
+    .clock-choice-btn {
+        padding: 12px;
+        font-size: 1.1em;
+    }
+
+    .match-item {
+        padding: 10px 8px;
+        font-size: 1em;
+    }
+
+    .match-columns {
+        gap: 10px;
+    }
 }
 
 /* 超小屏幕 (max-width: 360px) */
@@ -1884,6 +1936,345 @@ body {
     .level-badge {
         font-size: 1.6em;
     }
+
+    /* 新游戏响应式 */
+    .sort-num-btn {
+        min-width: 42px;
+        height: 42px;
+        font-size: 1.1em;
+    }
+
+    .sort-slot {
+        min-width: 42px;
+        height: 42px;
+        font-size: 1.1em;
+    }
+
+    .sum-cell {
+        height: 46px;
+        font-size: 1.1em;
+    }
+
+    .sum-grid {
+        gap: 6px;
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .clock-choice-btn {
+        padding: 10px;
+        font-size: 1em;
+    }
+
+    .clock-choices {
+        gap: 8px;
+    }
+
+    .match-item {
+        padding: 8px 6px;
+        font-size: 0.9em;
+    }
+
+    .match-columns {
+        gap: 8px;
+    }
+
+    .sort-hint {
+        font-size: 1em;
+    }
+
+    .sum-target {
+        font-size: 1.1em;
+    }
+
+    .clock-question-text {
+        font-size: 1em;
+    }
+}
+
+/* ============ 数字排序游戏 ============ */
+.sort-hint {
+    text-align: center;
+    font-size: 1.2em;
+    color: #667eea;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.sort-numbers {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-justify-content: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.sort-num-btn {
+    min-width: 55px;
+    height: 55px;
+    border: 3px solid #667eea;
+    border-radius: 12px;
+    background: white;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    touch-action: manipulation;
+    -webkit-transition: all 0.2s;
+    transition: all 0.2s;
+    padding: 0 10px;
+}
+
+.sort-num-btn:active {
+    -webkit-transform: scale(0.95);
+    transform: scale(0.95);
+}
+
+.sort-num-btn.selected {
+    background: #e0e0e0;
+    border-color: #ccc;
+    opacity: 0.4;
+}
+
+.sort-slots {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-justify-content: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.sort-slot {
+    min-width: 55px;
+    height: 55px;
+    border: 3px dashed #ccc;
+    border-radius: 12px;
+    background: #f8f9fa;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #333;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    cursor: pointer;
+    -webkit-transition: all 0.2s;
+    transition: all 0.2s;
+    padding: 0 10px;
+}
+
+.sort-slot.filled {
+    border-style: solid;
+    border-color: #667eea;
+    background: #f0f0ff;
+}
+
+.sort-slot.correct {
+    border-color: #27ae60;
+    background: #eafaf1;
+}
+
+.sort-slot.wrong {
+    border-color: #e74c3c;
+    background: #fdeaea;
+}
+
+/* ============ 凑十法游戏 ============ */
+.sum-target {
+    text-align: center;
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #667eea;
+    margin-bottom: 15px;
+}
+
+.sum-target span {
+    font-size: 1.5em;
+    color: #e74c3c;
+}
+
+.sum-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    max-width: 350px;
+    margin: 0 auto 20px;
+}
+
+.sum-cell {
+    height: 60px;
+    border: 3px solid #e0e0e0;
+    border-radius: 12px;
+    background: white;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #333;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    touch-action: manipulation;
+    -webkit-transition: all 0.2s;
+    transition: all 0.2s;
+}
+
+.sum-cell.selected {
+    border-color: #667eea;
+    background: #f0f0ff;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+.sum-cell.matched {
+    border-color: #27ae60;
+    background: #eafaf1;
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.sum-cell.wrong-flash {
+    border-color: #e74c3c;
+    background: #fdeaea;
+}
+
+/* ============ 时钟认知游戏 ============ */
+.clock-display {
+    text-align: center;
+    margin: 15px 0;
+}
+
+#clock-canvas {
+    max-width: 100%;
+    height: auto;
+}
+
+.clock-question-text {
+    text-align: center;
+    font-size: 1.2em;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+.clock-choices {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    max-width: 350px;
+    margin: 0 auto;
+}
+
+.clock-choice-btn {
+    padding: 15px;
+    border: 3px solid #e0e0e0;
+    border-radius: 12px;
+    background: white;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    touch-action: manipulation;
+    -webkit-transition: all 0.2s;
+    transition: all 0.2s;
+}
+
+.clock-choice-btn:active {
+    -webkit-transform: scale(0.95);
+    transform: scale(0.95);
+}
+
+.clock-choice-btn.correct {
+    border-color: #27ae60;
+    background: #eafaf1;
+}
+
+.clock-choice-btn.wrong {
+    border-color: #e74c3c;
+    background: #fdeaea;
+}
+
+/* ============ 数学连线游戏 ============ */
+.match-columns {
+    display: -webkit-flex;
+    display: flex;
+    gap: 15px;
+    margin: 10px 0 20px;
+}
+
+.match-left-col,
+.match-right-col {
+    -webkit-flex: 1;
+    flex: 1;
+}
+
+.match-col-title {
+    text-align: center;
+    font-weight: bold;
+    color: #667eea;
+    margin-bottom: 10px;
+    font-size: 1em;
+}
+
+.match-items {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.match-item {
+    padding: 12px 10px;
+    border: 3px solid #e0e0e0;
+    border-radius: 12px;
+    background: white;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    touch-action: manipulation;
+    -webkit-transition: all 0.2s;
+    transition: all 0.2s;
+}
+
+.match-item:active {
+    -webkit-transform: scale(0.97);
+    transform: scale(0.97);
+}
+
+.match-item.selected {
+    border-color: #667eea;
+    background: #f0f0ff;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+.match-item.matched {
+    border-color: #27ae60;
+    background: #eafaf1;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.match-item.wrong-flash {
+    border-color: #e74c3c;
+    background: #fdeaea;
 }
 
 /* ============ 数字键盘 ============ */

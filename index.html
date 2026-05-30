@@ -118,6 +118,26 @@
                     <span class="btn-text">数独</span>
                     <span class="btn-desc">逻辑填数</span>
                 </button>
+                <button class="menu-btn sort-btn" onclick="showSortGame()">
+                    <span class="btn-icon">📊</span>
+                    <span class="btn-text">数字排序</span>
+                    <span class="btn-desc">从小到大</span>
+                </button>
+                <button class="menu-btn sum-btn" onclick="showSumGame()">
+                    <span class="btn-icon">🔟</span>
+                    <span class="btn-text">凑十法</span>
+                    <span class="btn-desc">配对凑数</span>
+                </button>
+                <button class="menu-btn clock-btn" onclick="showClockGame()">
+                    <span class="btn-icon">🕐</span>
+                    <span class="btn-text">时钟认知</span>
+                    <span class="btn-desc">认识时间</span>
+                </button>
+                <button class="menu-btn match-btn" onclick="showMatchGame()">
+                    <span class="btn-icon">🔗</span>
+                    <span class="btn-text">数学连线</span>
+                    <span class="btn-desc">算式配对</span>
+                </button>
                 <button class="menu-btn profile-btn" onclick="showProfile()">
                     <span class="btn-icon">👤</span>
                     <span class="btn-text">个人中心</span>
@@ -549,6 +569,264 @@
         </div>
     </div>
 
+    <!-- 数字排序页面 -->
+    <div id="sort-page" class="page">
+        <div class="container">
+            <div class="page-header">
+                <button class="back-btn" onclick="goHome()">← 返回</button>
+                <h2>数字排序</h2>
+            </div>
+
+            <div id="sort-setup" class="setup-section">
+                <h3>当前难度</h3>
+                <div class="current-grade-display">
+                    <span id="sort-grade-name">一年级</span>
+                    <span id="sort-grade-desc">5个数字升序排列</span>
+                </div>
+                <div class="rules">
+                    <p>1. 将打乱的数字按正确顺序排列</p>
+                    <p>2. 点击数字放入空格，点已放数字可撤回</p>
+                    <p>3. 全部放满后自动判断对错</p>
+                </div>
+                <div class="question-count">
+                    <label>题目数量：</label>
+                    <select id="sort-question-count">
+                        <option value="10">10题</option>
+                        <option value="20" selected>20题</option>
+                        <option value="30">30题</option>
+                    </select>
+                </div>
+                <button class="start-btn" onclick="startSortGame()">开始挑战</button>
+            </div>
+
+            <div id="sort-quiz" class="quiz-section" style="display:none">
+                <div class="quiz-info">
+                    <span id="sort-progress">1/20</span>
+                    <span id="sort-timer">用时：0秒</span>
+                    <span id="sort-score-text">得分：0</span>
+                </div>
+                <div class="sort-hint" id="sort-hint">请将数字从小到大排列</div>
+                <div id="sort-numbers" class="sort-numbers"></div>
+                <div id="sort-slots" class="sort-slots"></div>
+                <div id="sort-feedback" class="feedback"></div>
+                <button id="sort-next-btn" class="next-btn" style="display:none" onclick="showNextSortQuestion()">下一题</button>
+            </div>
+
+            <div id="sort-result" class="result-section" style="display:none">
+                <h3>挑战完成！</h3>
+                <div class="result-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="sort-result-score">0</div>
+                        <div class="stat-label">总得分</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="sort-result-correct">0%</div>
+                        <div class="stat-label">正确率</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="sort-result-time">0秒</div>
+                        <div class="stat-label">总用时</div>
+                    </div>
+                </div>
+                <div class="result-buttons">
+                    <button class="retry-btn" onclick="startSortGame()">再来一次</button>
+                    <button class="home-btn" onclick="goHome()">返回首页</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 凑十法页面 -->
+    <div id="sum-page" class="page">
+        <div class="container">
+            <div class="page-header">
+                <button class="back-btn" onclick="goHome()">← 返回</button>
+                <h2>凑十法</h2>
+            </div>
+
+            <div id="sum-setup" class="setup-section">
+                <h3>当前难度</h3>
+                <div class="current-grade-display">
+                    <span id="sum-grade-name">一年级</span>
+                    <span id="sum-grade-desc">5对凑10</span>
+                </div>
+                <div class="rules">
+                    <p>1. 找出两个数字，使它们的和等于目标数</p>
+                    <p>2. 点击第一个数字，再点第二个数字</p>
+                    <p>3. 配对正确会消除，错误会闪烁提示</p>
+                </div>
+                <button class="start-btn" onclick="startSumGame()">开始挑战</button>
+            </div>
+
+            <div id="sum-quiz" class="quiz-section" style="display:none">
+                <div class="quiz-info">
+                    <span id="sum-pairs">已找到：0/5</span>
+                    <span id="sum-timer">用时：0秒</span>
+                    <span id="sum-score-text">得分：0</span>
+                </div>
+                <div class="sum-target">目标和：<span id="sum-target-value">10</span></div>
+                <div id="sum-grid" class="sum-grid"></div>
+                <div id="sum-feedback" class="feedback"></div>
+            </div>
+
+            <div id="sum-result" class="result-section" style="display:none">
+                <h3>挑战完成！</h3>
+                <div class="result-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="sum-result-score">0</div>
+                        <div class="stat-label">总得分</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="sum-result-correct">0%</div>
+                        <div class="stat-label">完成率</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="sum-result-time">0秒</div>
+                        <div class="stat-label">总用时</div>
+                    </div>
+                </div>
+                <div class="result-buttons">
+                    <button class="retry-btn" onclick="startSumGame()">再来一次</button>
+                    <button class="home-btn" onclick="goHome()">返回首页</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 时钟认知页面 -->
+    <div id="clock-page" class="page">
+        <div class="container">
+            <div class="page-header">
+                <button class="back-btn" onclick="goHome()">← 返回</button>
+                <h2>时钟认知</h2>
+            </div>
+
+            <div id="clock-setup" class="setup-section">
+                <h3>当前难度</h3>
+                <div class="current-grade-display">
+                    <span id="clock-grade-name">一年级</span>
+                    <span id="clock-grade-desc">5分钟间隔</span>
+                </div>
+                <div class="rules">
+                    <p>1. 观察时钟上的时间</p>
+                    <p>2. 从4个选项中选出正确的时间</p>
+                    <p>3. 答对得分，答错显示正确答案</p>
+                </div>
+                <div class="question-count">
+                    <label>题目数量：</label>
+                    <select id="clock-question-count">
+                        <option value="10">10题</option>
+                        <option value="20" selected>20题</option>
+                        <option value="30">30题</option>
+                    </select>
+                </div>
+                <button class="start-btn" onclick="startClockGame()">开始挑战</button>
+            </div>
+
+            <div id="clock-quiz" class="quiz-section" style="display:none">
+                <div class="quiz-info">
+                    <span id="clock-progress">1/20</span>
+                    <span id="clock-timer">用时：0秒</span>
+                    <span id="clock-score-text">得分：0</span>
+                </div>
+                <div class="clock-display">
+                    <canvas id="clock-canvas" width="280" height="280"></canvas>
+                </div>
+                <div id="clock-question-text" class="clock-question-text">现在是几点？</div>
+                <div id="clock-choices" class="clock-choices"></div>
+                <div id="clock-feedback" class="feedback"></div>
+                <button id="clock-next-btn" class="next-btn" style="display:none" onclick="showNextClockQuestion()">下一题</button>
+            </div>
+
+            <div id="clock-result" class="result-section" style="display:none">
+                <h3>挑战完成！</h3>
+                <div class="result-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="clock-result-score">0</div>
+                        <div class="stat-label">总得分</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="clock-result-correct">0%</div>
+                        <div class="stat-label">正确率</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="clock-result-time">0秒</div>
+                        <div class="stat-label">总用时</div>
+                    </div>
+                </div>
+                <div class="result-buttons">
+                    <button class="retry-btn" onclick="startClockGame()">再来一次</button>
+                    <button class="home-btn" onclick="goHome()">返回首页</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 数学连线页面 -->
+    <div id="match-page" class="page">
+        <div class="container">
+            <div class="page-header">
+                <button class="back-btn" onclick="goHome()">← 返回</button>
+                <h2>数学连线</h2>
+            </div>
+
+            <div id="match-setup" class="setup-section">
+                <h3>当前难度</h3>
+                <div class="current-grade-display">
+                    <span id="match-grade-name">一年级</span>
+                    <span id="match-grade-desc">5对加减连线(20以内)</span>
+                </div>
+                <div class="rules">
+                    <p>1. 左边是算式，右边是答案</p>
+                    <p>2. 点击左列算式，再点右列答案配对</p>
+                    <p>3. 配对正确消除，错误闪烁提示</p>
+                </div>
+                <button class="start-btn" onclick="startMatchGame()">开始挑战</button>
+            </div>
+
+            <div id="match-quiz" class="quiz-section" style="display:none">
+                <div class="quiz-info">
+                    <span id="match-progress">已配对：0/5</span>
+                    <span id="match-timer">用时：0秒</span>
+                    <span id="match-score-text">得分：0</span>
+                </div>
+                <div class="match-columns">
+                    <div class="match-left-col">
+                        <div class="match-col-title">算式</div>
+                        <div id="match-left" class="match-items"></div>
+                    </div>
+                    <div class="match-right-col">
+                        <div class="match-col-title">答案</div>
+                        <div id="match-right" class="match-items"></div>
+                    </div>
+                </div>
+                <div id="match-feedback" class="feedback"></div>
+            </div>
+
+            <div id="match-result" class="result-section" style="display:none">
+                <h3>挑战完成！</h3>
+                <div class="result-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="match-result-score">0</div>
+                        <div class="stat-label">总得分</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="match-result-correct">0%</div>
+                        <div class="stat-label">正确率</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="match-result-time">0秒</div>
+                        <div class="stat-label">总用时</div>
+                    </div>
+                </div>
+                <div class="result-buttons">
+                    <button class="retry-btn" onclick="startMatchGame()">再来一次</button>
+                    <button class="home-btn" onclick="goHome()">返回首页</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- 个人中心页面 -->
     <div id="profile-page" class="page">
         <div class="container">
@@ -591,6 +869,22 @@
                     <div class="ability-item">
                         <span class="ability-name">数独能力</span>
                         <span class="ability-value" id="sudoku-ability">0</span>
+                    </div>
+                    <div class="ability-item">
+                        <span class="ability-name">排序能力</span>
+                        <span class="ability-value" id="sort-ability">0</span>
+                    </div>
+                    <div class="ability-item">
+                        <span class="ability-name">凑数能力</span>
+                        <span class="ability-value" id="sum-ability">0</span>
+                    </div>
+                    <div class="ability-item">
+                        <span class="ability-name">时钟能力</span>
+                        <span class="ability-value" id="clock-ability">0</span>
+                    </div>
+                    <div class="ability-item">
+                        <span class="ability-name">连线能力</span>
+                        <span class="ability-value" id="match-ability">0</span>
                     </div>
                 </div>
             </div>
@@ -669,6 +963,62 @@
                             <div class="stat-text">数独完成次数</div>
                         </div>
                     </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="total-sort-games">0</div>
+                            <div class="stat-text">排序游戏次数</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="total-sort-correct">0</div>
+                            <div class="stat-text">排序答对题数</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🔟</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="total-sum-games">0</div>
+                            <div class="stat-text">凑十游戏次数</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✨</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="total-sum-pairs">0</div>
+                            <div class="stat-text">凑十找到配对</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🕐</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="total-clock-games">0</div>
+                            <div class="stat-text">时钟游戏次数</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="total-clock-correct">0</div>
+                            <div class="stat-text">时钟答对题数</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🔗</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="total-match-games">0</div>
+                            <div class="stat-text">连线游戏次数</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="total-match-correct">0</div>
+                            <div class="stat-text">连线正确配对</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -704,6 +1054,10 @@
                     <button class="history-tab" onclick="showHistory('pattern')">规律记录</button>
                     <button class="history-tab" onclick="showHistory('compare')">比较记录</button>
                     <button class="history-tab" onclick="showHistory('sudoku')">数独记录</button>
+                    <button class="history-tab" onclick="showHistory('sort')">排序记录</button>
+                    <button class="history-tab" onclick="showHistory('sum')">凑十记录</button>
+                    <button class="history-tab" onclick="showHistory('clock')">时钟记录</button>
+                    <button class="history-tab" onclick="showHistory('match')">连线记录</button>
                 </div>
                 <div id="history-list" class="history-list">
                     <!-- 动态生成 -->
@@ -745,7 +1099,7 @@
     <script>
     // 立即隐藏非欢迎页面，防止全部内容同时显示
     (function() {
-        var ids = ['home-page', 'math-page', 'memory-page', 'pattern-page', 'compare-page', 'sudoku-page', 'profile-page'];
+        var ids = ['home-page', 'math-page', 'memory-page', 'pattern-page', 'compare-page', 'sudoku-page', 'sort-page', 'sum-page', 'clock-page', 'match-page', 'profile-page'];
         for (var i = 0; i < ids.length; i++) {
             var el = document.getElementById(ids[i]);
             if (el) el.style.display = 'none';
@@ -759,6 +1113,10 @@
     <script src="js/pattern-game.js"></script>
     <script src="js/compare-game.js"></script>
     <script src="js/sudoku-game.js"></script>
+    <script src="js/sort-game.js"></script>
+    <script src="js/sum-game.js"></script>
+    <script src="js/clock-game.js"></script>
+    <script src="js/match-game.js"></script>
     <script src="js/profile.js"></script>
     <script src="js/app.js"></script>
 </body>

@@ -7,11 +7,19 @@ const STORAGE_KEYS = {
     PATTERN_HISTORY: 'patternGameHistory',
     COMPARE_HISTORY: 'compareGameHistory',
     SUDOKU_HISTORY: 'sudokuGameHistory',
+    SORT_HISTORY: 'sortGameHistory',
+    SUM_HISTORY: 'sumPairsGameHistory',
+    CLOCK_HISTORY: 'clockGameHistory',
+    MATCH_HISTORY: 'mathMatchGameHistory',
     MATH_ABILITY: 'mathAbility',
     MEMORY_ABILITY: 'memoryAbility',
     PATTERN_ABILITY: 'patternAbility',
     COMPARE_ABILITY: 'compareAbility',
     SUDOKU_ABILITY: 'sudokuAbility',
+    SORT_ABILITY: 'sortAbility',
+    SUM_ABILITY: 'sumPairsAbility',
+    CLOCK_ABILITY: 'clockAbility',
+    MATCH_ABILITY: 'mathMatchAbility',
     USER_GRADE: 'userGrade',
     USER_NAME: 'userName'
 };
@@ -33,6 +41,18 @@ function initStorage() {
     if (!localStorage.getItem(STORAGE_KEYS.SUDOKU_HISTORY)) {
         localStorage.setItem(STORAGE_KEYS.SUDOKU_HISTORY, JSON.stringify([]));
     }
+    if (!localStorage.getItem(STORAGE_KEYS.SORT_HISTORY)) {
+        localStorage.setItem(STORAGE_KEYS.SORT_HISTORY, JSON.stringify([]));
+    }
+    if (!localStorage.getItem(STORAGE_KEYS.SUM_HISTORY)) {
+        localStorage.setItem(STORAGE_KEYS.SUM_HISTORY, JSON.stringify([]));
+    }
+    if (!localStorage.getItem(STORAGE_KEYS.CLOCK_HISTORY)) {
+        localStorage.setItem(STORAGE_KEYS.CLOCK_HISTORY, JSON.stringify([]));
+    }
+    if (!localStorage.getItem(STORAGE_KEYS.MATCH_HISTORY)) {
+        localStorage.setItem(STORAGE_KEYS.MATCH_HISTORY, JSON.stringify([]));
+    }
     if (!localStorage.getItem(STORAGE_KEYS.MATH_ABILITY)) {
         localStorage.setItem(STORAGE_KEYS.MATH_ABILITY, '50');
     }
@@ -47,6 +67,18 @@ function initStorage() {
     }
     if (!localStorage.getItem(STORAGE_KEYS.SUDOKU_ABILITY)) {
         localStorage.setItem(STORAGE_KEYS.SUDOKU_ABILITY, '50');
+    }
+    if (!localStorage.getItem(STORAGE_KEYS.SORT_ABILITY)) {
+        localStorage.setItem(STORAGE_KEYS.SORT_ABILITY, '50');
+    }
+    if (!localStorage.getItem(STORAGE_KEYS.SUM_ABILITY)) {
+        localStorage.setItem(STORAGE_KEYS.SUM_ABILITY, '50');
+    }
+    if (!localStorage.getItem(STORAGE_KEYS.CLOCK_ABILITY)) {
+        localStorage.setItem(STORAGE_KEYS.CLOCK_ABILITY, '50');
+    }
+    if (!localStorage.getItem(STORAGE_KEYS.MATCH_ABILITY)) {
+        localStorage.setItem(STORAGE_KEYS.MATCH_ABILITY, '50');
     }
 }
 
@@ -316,6 +348,150 @@ function getSudokuAbility() {
     return parseInt(localStorage.getItem(STORAGE_KEYS.SUDOKU_ABILITY) || '50');
 }
 
+// 获取排序历史
+function getSortHistory() {
+    return JSON.parse(localStorage.getItem(STORAGE_KEYS.SORT_HISTORY) || '[]');
+}
+
+// 保存排序记录
+function saveSortRecord(accuracy, totalTime, questionCount, score) {
+    const history = getSortHistory();
+    history.unshift({
+        date: new Date().toLocaleString('zh-CN'),
+        accuracy: accuracy,
+        totalTime: totalTime,
+        questionCount: questionCount,
+        score: score,
+        avgTime: (totalTime / questionCount).toFixed(1)
+    });
+    if (history.length > 50) history.pop();
+    localStorage.setItem(STORAGE_KEYS.SORT_HISTORY, JSON.stringify(history));
+    updateSortAbility(accuracy, totalTime / questionCount);
+}
+
+// 更新排序能力值
+function updateSortAbility(accuracy, avgTime) {
+    let ability = parseInt(localStorage.getItem(STORAGE_KEYS.SORT_ABILITY) || '50');
+    if (accuracy >= 95 && avgTime <= 5) ability = Math.min(100, ability + 5);
+    else if (accuracy >= 85 && avgTime <= 8) ability = Math.min(100, ability + 3);
+    else if (accuracy >= 70) ability = Math.min(100, ability + 1);
+    else if (accuracy < 50) ability = Math.max(0, ability - 3);
+    localStorage.setItem(STORAGE_KEYS.SORT_ABILITY, ability.toString());
+    return ability;
+}
+
+function getSortAbility() {
+    return parseInt(localStorage.getItem(STORAGE_KEYS.SORT_ABILITY) || '50');
+}
+
+// 获取凑十历史
+function getSumHistory() {
+    return JSON.parse(localStorage.getItem(STORAGE_KEYS.SUM_HISTORY) || '[]');
+}
+
+// 保存凑十记录
+function saveSumRecord(score, totalTime, pairsFound, totalPairs) {
+    const history = getSumHistory();
+    history.unshift({
+        date: new Date().toLocaleString('zh-CN'),
+        score: score,
+        totalTime: totalTime,
+        pairsFound: pairsFound,
+        totalPairs: totalPairs
+    });
+    if (history.length > 50) history.pop();
+    localStorage.setItem(STORAGE_KEYS.SUM_HISTORY, JSON.stringify(history));
+    updateSumAbility(pairsFound, totalPairs, totalTime);
+}
+
+// 更新凑十能力值
+function updateSumAbility(pairsFound, totalPairs, totalTime) {
+    let ability = parseInt(localStorage.getItem(STORAGE_KEYS.SUM_ABILITY) || '50');
+    var ratio = pairsFound / totalPairs;
+    if (ratio >= 1 && totalTime <= totalPairs * 5) ability = Math.min(100, ability + 5);
+    else if (ratio >= 0.8) ability = Math.min(100, ability + 3);
+    else if (ratio >= 0.6) ability = Math.min(100, ability + 1);
+    else ability = Math.max(0, ability - 2);
+    localStorage.setItem(STORAGE_KEYS.SUM_ABILITY, ability.toString());
+    return ability;
+}
+
+function getSumAbility() {
+    return parseInt(localStorage.getItem(STORAGE_KEYS.SUM_ABILITY) || '50');
+}
+
+// 获取时钟历史
+function getClockHistory() {
+    return JSON.parse(localStorage.getItem(STORAGE_KEYS.CLOCK_HISTORY) || '[]');
+}
+
+// 保存时钟记录
+function saveClockRecord(accuracy, totalTime, questionCount, score) {
+    const history = getClockHistory();
+    history.unshift({
+        date: new Date().toLocaleString('zh-CN'),
+        accuracy: accuracy,
+        totalTime: totalTime,
+        questionCount: questionCount,
+        score: score,
+        avgTime: (totalTime / questionCount).toFixed(1)
+    });
+    if (history.length > 50) history.pop();
+    localStorage.setItem(STORAGE_KEYS.CLOCK_HISTORY, JSON.stringify(history));
+    updateClockAbility(accuracy, totalTime / questionCount);
+}
+
+// 更新时钟能力值
+function updateClockAbility(accuracy, avgTime) {
+    let ability = parseInt(localStorage.getItem(STORAGE_KEYS.CLOCK_ABILITY) || '50');
+    if (accuracy >= 95 && avgTime <= 5) ability = Math.min(100, ability + 5);
+    else if (accuracy >= 85 && avgTime <= 8) ability = Math.min(100, ability + 3);
+    else if (accuracy >= 70) ability = Math.min(100, ability + 1);
+    else if (accuracy < 50) ability = Math.max(0, ability - 3);
+    localStorage.setItem(STORAGE_KEYS.CLOCK_ABILITY, ability.toString());
+    return ability;
+}
+
+function getClockAbility() {
+    return parseInt(localStorage.getItem(STORAGE_KEYS.CLOCK_ABILITY) || '50');
+}
+
+// 获取连线历史
+function getMatchHistory() {
+    return JSON.parse(localStorage.getItem(STORAGE_KEYS.MATCH_HISTORY) || '[]');
+}
+
+// 保存连线记录
+function saveMatchRecord(accuracy, totalTime, questionCount, score) {
+    const history = getMatchHistory();
+    history.unshift({
+        date: new Date().toLocaleString('zh-CN'),
+        accuracy: accuracy,
+        totalTime: totalTime,
+        questionCount: questionCount,
+        score: score,
+        avgTime: (totalTime / questionCount).toFixed(1)
+    });
+    if (history.length > 50) history.pop();
+    localStorage.setItem(STORAGE_KEYS.MATCH_HISTORY, JSON.stringify(history));
+    updateMatchAbility(accuracy, totalTime / questionCount);
+}
+
+// 更新连线能力值
+function updateMatchAbility(accuracy, avgTime) {
+    let ability = parseInt(localStorage.getItem(STORAGE_KEYS.MATCH_ABILITY) || '50');
+    if (accuracy >= 95 && avgTime <= 3) ability = Math.min(100, ability + 5);
+    else if (accuracy >= 85 && avgTime <= 5) ability = Math.min(100, ability + 3);
+    else if (accuracy >= 70) ability = Math.min(100, ability + 1);
+    else if (accuracy < 50) ability = Math.max(0, ability - 3);
+    localStorage.setItem(STORAGE_KEYS.MATCH_ABILITY, ability.toString());
+    return ability;
+}
+
+function getMatchAbility() {
+    return parseInt(localStorage.getItem(STORAGE_KEYS.MATCH_ABILITY) || '50');
+}
+
 // 绘制雷达图
 function drawRadarChart() {
     const canvas = document.getElementById('radar-chart');
@@ -522,6 +698,78 @@ function showHistory(type) {
                 `;
             });
         }
+    } else if (type === 'sort') {
+        const history = getSortHistory();
+        if (history.length === 0) {
+            html = '<div class="history-empty">暂无排序记录</div>';
+        } else {
+            history.slice(0, 10).forEach(record => {
+                html += `
+                    <div class="history-item">
+                        <div class="history-date">${record.date}</div>
+                        <div class="history-details">
+                            <span>正确率: ${record.accuracy}%</span>
+                            <span>平均: ${record.avgTime}秒/题</span>
+                            <span>得分: ${record.score}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+    } else if (type === 'sum') {
+        const history = getSumHistory();
+        if (history.length === 0) {
+            html = '<div class="history-empty">暂无凑十记录</div>';
+        } else {
+            history.slice(0, 10).forEach(record => {
+                html += `
+                    <div class="history-item">
+                        <div class="history-date">${record.date}</div>
+                        <div class="history-details">
+                            <span>得分: ${record.score}</span>
+                            <span>配对: ${record.pairsFound}/${record.totalPairs}</span>
+                            <span>用时: ${record.totalTime}秒</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+    } else if (type === 'clock') {
+        const history = getClockHistory();
+        if (history.length === 0) {
+            html = '<div class="history-empty">暂无时钟记录</div>';
+        } else {
+            history.slice(0, 10).forEach(record => {
+                html += `
+                    <div class="history-item">
+                        <div class="history-date">${record.date}</div>
+                        <div class="history-details">
+                            <span>正确率: ${record.accuracy}%</span>
+                            <span>平均: ${record.avgTime}秒/题</span>
+                            <span>得分: ${record.score}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+    } else if (type === 'match') {
+        const history = getMatchHistory();
+        if (history.length === 0) {
+            html = '<div class="history-empty">暂无连线记录</div>';
+        } else {
+            history.slice(0, 10).forEach(record => {
+                html += `
+                    <div class="history-item">
+                        <div class="history-date">${record.date}</div>
+                        <div class="history-details">
+                            <span>正确率: ${record.accuracy}%</span>
+                            <span>平均: ${record.avgTime}秒/题</span>
+                            <span>得分: ${record.score}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
     }
 
     historyList.innerHTML = html;
@@ -573,12 +821,36 @@ function updateProfilePage() {
     document.getElementById('total-sudoku-completed').textContent =
         sudokuHistory.filter(function(r) { return r.score > 0; }).length;
 
+    const sortHistory = getSortHistory();
+    document.getElementById('total-sort-games').textContent = sortHistory.length;
+    document.getElementById('total-sort-correct').textContent =
+        sortHistory.reduce((sum, r) => sum + Math.round(r.accuracy * r.questionCount / 100), 0);
+
+    const sumHistory = getSumHistory();
+    document.getElementById('total-sum-games').textContent = sumHistory.length;
+    document.getElementById('total-sum-pairs').textContent =
+        sumHistory.reduce((sum, r) => sum + r.pairsFound, 0);
+
+    const clockHistory = getClockHistory();
+    document.getElementById('total-clock-games').textContent = clockHistory.length;
+    document.getElementById('total-clock-correct').textContent =
+        clockHistory.reduce((sum, r) => sum + Math.round(r.accuracy * r.questionCount / 100), 0);
+
+    const matchHistory = getMatchHistory();
+    document.getElementById('total-match-games').textContent = matchHistory.length;
+    document.getElementById('total-match-correct').textContent =
+        matchHistory.reduce((sum, r) => sum + Math.round(r.accuracy * r.questionCount / 100), 0);
+
     // 更新能力值
     document.getElementById('math-ability').textContent = getMathAbility();
     document.getElementById('memory-ability').textContent = getMemoryAbility();
     document.getElementById('pattern-ability').textContent = getPatternAbility();
     document.getElementById('compare-ability').textContent = getCompareAbility();
     document.getElementById('sudoku-ability').textContent = getSudokuAbility();
+    document.getElementById('sort-ability').textContent = getSortAbility();
+    document.getElementById('sum-ability').textContent = getSumAbility();
+    document.getElementById('clock-ability').textContent = getClockAbility();
+    document.getElementById('match-ability').textContent = getMatchAbility();
 
     // 更新等级显示
     document.getElementById('profile-grade-badge').textContent = gradeConfig[currentGrade].name;
@@ -603,11 +875,19 @@ function switchUser() {
         localStorage.removeItem(STORAGE_KEYS.PATTERN_HISTORY);
         localStorage.removeItem(STORAGE_KEYS.COMPARE_HISTORY);
         localStorage.removeItem(STORAGE_KEYS.SUDOKU_HISTORY);
+        localStorage.removeItem(STORAGE_KEYS.SORT_HISTORY);
+        localStorage.removeItem(STORAGE_KEYS.SUM_HISTORY);
+        localStorage.removeItem(STORAGE_KEYS.CLOCK_HISTORY);
+        localStorage.removeItem(STORAGE_KEYS.MATCH_HISTORY);
         localStorage.removeItem(STORAGE_KEYS.MATH_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.MEMORY_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.PATTERN_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.COMPARE_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.SUDOKU_ABILITY);
+        localStorage.removeItem(STORAGE_KEYS.SORT_ABILITY);
+        localStorage.removeItem(STORAGE_KEYS.SUM_ABILITY);
+        localStorage.removeItem(STORAGE_KEYS.CLOCK_ABILITY);
+        localStorage.removeItem(STORAGE_KEYS.MATCH_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.USER_GRADE);
         localStorage.removeItem(STORAGE_KEYS.USER_NAME);
 
@@ -624,11 +904,19 @@ function clearAllData() {
         localStorage.removeItem(STORAGE_KEYS.PATTERN_HISTORY);
         localStorage.removeItem(STORAGE_KEYS.COMPARE_HISTORY);
         localStorage.removeItem(STORAGE_KEYS.SUDOKU_HISTORY);
+        localStorage.removeItem(STORAGE_KEYS.SORT_HISTORY);
+        localStorage.removeItem(STORAGE_KEYS.SUM_HISTORY);
+        localStorage.removeItem(STORAGE_KEYS.CLOCK_HISTORY);
+        localStorage.removeItem(STORAGE_KEYS.MATCH_HISTORY);
         localStorage.removeItem(STORAGE_KEYS.MATH_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.MEMORY_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.PATTERN_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.COMPARE_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.SUDOKU_ABILITY);
+        localStorage.removeItem(STORAGE_KEYS.SORT_ABILITY);
+        localStorage.removeItem(STORAGE_KEYS.SUM_ABILITY);
+        localStorage.removeItem(STORAGE_KEYS.CLOCK_ABILITY);
+        localStorage.removeItem(STORAGE_KEYS.MATCH_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.USER_GRADE);
         localStorage.removeItem(STORAGE_KEYS.USER_NAME);
 
