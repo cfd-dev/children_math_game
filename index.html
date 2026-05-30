@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>数学小达人</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- 首次欢迎页面（年级选择） -->
+    <div id="welcome-page" class="page">
+        <div class="container">
+            <h1 class="app-title">数学小达人</h1>
+            <p class="app-subtitle">快乐学习，快速成长</p>
+
+            <!-- 年级选择 -->
+            <div class="grade-section">
+                <h3>请选择你的年级</h3>
+                <div class="grade-grid">
+                    <button class="grade-btn" data-grade="k-small" onclick="selectWelcomeGrade(this)">
+                        <span class="grade-icon">🎒</span>
+                        <span class="grade-name">幼儿园小班</span>
+                    </button>
+                    <button class="grade-btn" data-grade="k-medium" onclick="selectWelcomeGrade(this)">
+                        <span class="grade-icon">🎒</span>
+                        <span class="grade-name">幼儿园中班</span>
+                    </button>
+                    <button class="grade-btn" data-grade="k-large" onclick="selectWelcomeGrade(this)">
+                        <span class="grade-icon">🎒</span>
+                        <span class="grade-name">幼儿园大班</span>
+                    </button>
+                    <button class="grade-btn" data-grade="grade-1" onclick="selectWelcomeGrade(this)">
+                        <span class="grade-icon">📚</span>
+                        <span class="grade-name">一年级</span>
+                    </button>
+                    <button class="grade-btn" data-grade="grade-2" onclick="selectWelcomeGrade(this)">
+                        <span class="grade-icon">📚</span>
+                        <span class="grade-name">二年级</span>
+                    </button>
+                    <button class="grade-btn" data-grade="grade-3" onclick="selectWelcomeGrade(this)">
+                        <span class="grade-icon">📚</span>
+                        <span class="grade-name">三年级</span>
+                    </button>
+                    <button class="grade-btn" data-grade="grade-4" onclick="selectWelcomeGrade(this)">
+                        <span class="grade-icon">📖</span>
+                        <span class="grade-name">四年级</span>
+                    </button>
+                    <button class="grade-btn" data-grade="grade-5" onclick="selectWelcomeGrade(this)">
+                        <span class="grade-icon">📖</span>
+                        <span class="grade-name">五年级</span>
+                    </button>
+                    <button class="grade-btn" data-grade="grade-6" onclick="selectWelcomeGrade(this)">
+                        <span class="grade-icon">📖</span>
+                        <span class="grade-name">六年级</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主页面 -->
+    <div id="home-page" class="page">
+        <div class="container">
+            <h1 class="app-title">数学小达人</h1>
+            <p class="app-subtitle">快乐学习，快速成长</p>
+
+            <div class="menu-buttons">
+                <button class="menu-btn math-btn" onclick="showMathQuiz()">
+                    <span class="btn-icon">🧮</span>
+                    <span class="btn-text">快速计算</span>
+                    <span class="btn-desc">练习加减法</span>
+                </button>
+                <button class="menu-btn memory-btn" onclick="showMemoryGame()">
+                    <span class="btn-icon">🧠</span>
+                    <span class="btn-text">数字记忆</span>
+                    <span class="btn-desc">挑战记忆力</span>
+                </button>
+                <button class="menu-btn profile-btn" onclick="showProfile()">
+                    <span class="btn-icon">👤</span>
+                    <span class="btn-text">个人中心</span>
+                    <span class="btn-desc">查看学习记录</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 年级变化通知 -->
+    <div id="grade-notification" class="grade-notification" style="display:none"></div>
+
+    <!-- 快速计算页面 -->
+    <div id="math-page" class="page">
+        <div class="container">
+            <div class="page-header">
+                <button class="back-btn" onclick="goHome()">← 返回</button>
+                <h2>快速计算</h2>
+            </div>
+
+            <!-- 难度选择 -->
+            <div id="math-setup" class="setup-section">
+                <h3>当前难度</h3>
+                <div class="current-grade-display">
+                    <span id="current-grade-name">一年级</span>
+                    <span id="current-difficulty">20以内加减法</span>
+                </div>
+                <div class="question-count">
+                    <label>题目数量：</label>
+                    <select id="question-count">
+                        <option value="10">10题</option>
+                        <option value="20" selected>20题</option>
+                        <option value="30">30题</option>
+                    </select>
+                </div>
+                <button class="start-btn" onclick="startMathQuiz()">开始练习</button>
+            </div>
+
+            <!-- 答题区域 -->
+            <div id="math-quiz" class="quiz-section" style="display:none">
+                <div class="quiz-info">
+                    <span id="math-progress">1/20</span>
+                    <span id="math-timer">用时：0秒</span>
+                    <span id="math-score">得分：0</span>
+                </div>
+                <div class="question-display">
+                    <span id="math-question">12 + 5 = ?</span>
+                </div>
+                <div class="answer-section">
+                    <div id="answer-boxes" class="answer-boxes"></div>
+                </div>
+                <div id="math-feedback" class="feedback"></div>
+                <button id="next-btn" class="next-btn" style="display:none" onclick="showNextMathQuestion()">下一题</button>
+            </div>
+
+            <!-- 结果页面 -->
+            <div id="math-result" class="result-section" style="display:none">
+                <h3>练习完成！</h3>
+                <div class="result-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="result-score">0</div>
+                        <div class="stat-label">总得分</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="result-correct">0%</div>
+                        <div class="stat-label">正确率</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="result-time">0秒</div>
+                        <div class="stat-label">总用时</div>
+                    </div>
+                </div>
+                <div class="assessment-info">
+                    <h4>能力评估标准</h4>
+                    <p>优秀（95%+，≤3秒/题）：提升两级</p>
+                    <p>良好（85%+，≤5秒/题）：提升一级</p>
+                    <p>一般（70%+）：保持当前年级</p>
+                    <p>需努力（<50%）：降低年级巩固</p>
+                </div>
+                <div class="result-buttons">
+                    <button class="retry-btn" onclick="startMathQuiz()">再来一次</button>
+                    <button class="home-btn" onclick="goHome()">返回首页</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 数字记忆页面 -->
+    <div id="memory-page" class="page">
+        <div class="container">
+            <div class="page-header">
+                <button class="back-btn" onclick="goHome()">← 返回</button>
+                <h2>数字记忆</h2>
+            </div>
+
+            <!-- 游戏说明 -->
+            <div id="memory-setup" class="setup-section">
+                <h3>游戏规则</h3>
+                <div class="rules">
+                    <p>1. 屏幕会显示一串数字（10秒）</p>
+                    <p>2. 数字消失后，填出空缺位置的数字</p>
+                    <p>3. 每关3题，答对继续，答错结束</p>
+                    <p>4. 关卡越高，数字越长，空缺越多</p>
+                </div>
+                <button class="start-btn" onclick="startMemoryGame()">开始挑战</button>
+            </div>
+
+            <!-- 记忆显示区域 -->
+            <div id="memory-show" class="memory-section" style="display:none">
+                <div class="memory-info">
+                    <span id="memory-level">第 1 关</span>
+                    <span id="memory-round">第 1/3 题</span>
+                    <span id="memory-score">得分：0</span>
+                </div>
+                <div class="memory-display">
+                    <div id="memory-numbers" class="numbers-display">1 2 3 4</div>
+                    <div id="memory-timer" class="timer-bar">
+                        <div class="timer-fill"></div>
+                    </div>
+                    <p class="memory-hint">请记住这些数字...</p>
+                </div>
+            </div>
+
+            <!-- 输入区域 -->
+            <div id="memory-input" class="memory-section" style="display:none">
+                <div class="memory-info">
+                    <span id="memory-level2">第 1 关</span>
+                    <span id="memory-round2">第 1/3 题</span>
+                    <span id="memory-score2">得分：0</span>
+                </div>
+                <div class="input-display">
+                    <p class="input-hint" id="memory-input-hint">请填出空缺位置的数字：</p>
+                    <div id="memory-answer-boxes" class="answer-boxes memory-answer-boxes"></div>
+                </div>
+                <div id="memory-feedback" class="feedback"></div>
+            </div>
+
+            <!-- 结果页面 -->
+            <div id="memory-result" class="result-section" style="display:none">
+                <h3>挑战结束！</h3>
+                <div class="result-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="memory-final-score">0</div>
+                        <div class="stat-label">总得分</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="memory-final-level">0</div>
+                        <div class="stat-label">通过关卡</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="memory-final-questions">0</div>
+                        <div class="stat-label">答对题数</div>
+                    </div>
+                </div>
+                <div class="result-buttons">
+                    <button class="retry-btn" onclick="startMemoryGame()">再来一次</button>
+                    <button class="home-btn" onclick="goHome()">返回首页</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 个人中心页面 -->
+    <div id="profile-page" class="page">
+        <div class="container">
+            <div class="page-header">
+                <button class="back-btn" onclick="goHome()">← 返回</button>
+                <h2>个人中心</h2>
+            </div>
+
+            <!-- 能力雷达图 -->
+            <div class="profile-section">
+                <h3>能力评估</h3>
+                <div class="radar-chart-container">
+                    <canvas id="radar-chart" width="300" height="300"></canvas>
+                </div>
+                <div class="ability-scores">
+                    <div class="ability-item">
+                        <span class="ability-name">算术能力</span>
+                        <span class="ability-value" id="math-ability">0</span>
+                    </div>
+                    <div class="ability-item">
+                        <span class="ability-name">记忆能力</span>
+                        <span class="ability-value" id="memory-ability">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 统计概览 -->
+            <div class="profile-section">
+                <h3>学习统计</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">🧮</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="total-math-quizzes">0</div>
+                            <div class="stat-text">计算练习次数</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="total-math-correct">0</div>
+                            <div class="stat-text">计算答对题数</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🧠</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="total-memory-games">0</div>
+                            <div class="stat-text">记忆游戏次数</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🏆</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="total-memory-levels">0</div>
+                            <div class="stat-text">记忆通过关卡</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 当前等级 -->
+            <div class="profile-section">
+                <h3>当前等级</h3>
+                <div class="current-level-display">
+                    <div class="level-badge" id="profile-grade-badge">一年级</div>
+                    <div class="level-desc" id="profile-grade-desc">20以内加减法</div>
+                </div>
+            </div>
+
+            <!-- 历史记录 -->
+            <div class="profile-section">
+                <h3>最近记录</h3>
+                <div class="history-tabs">
+                    <button class="history-tab active" onclick="showHistory('math')">计算记录</button>
+                    <button class="history-tab" onclick="showHistory('memory')">记忆记录</button>
+                </div>
+                <div id="history-list" class="history-list">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+
+            <!-- 清除数据 -->
+            <div class="profile-section">
+                <button class="clear-data-btn" onclick="clearAllData()">清除所有数据</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/sounds.js"></script>
+    <script src="js/math-quiz.js"></script>
+    <script src="js/memory-game.js"></script>
+    <script src="js/profile.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
