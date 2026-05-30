@@ -856,56 +856,16 @@ function updateProfilePage() {
     if (profileName) profileName.textContent = getUserName() || '-';
 
     // 更新统计
-    const mathHistory = getMathHistory();
-    const memoryHistory = getMemoryHistory();
-    const patternHistory = getPatternHistory();
-    const compareHistory = getCompareHistory();
-
-    document.getElementById('total-math-quizzes').textContent = mathHistory.length;
-    document.getElementById('total-math-correct').textContent =
-        mathHistory.reduce((sum, r) => sum + Math.round(r.accuracy * r.questionCount / 100), 0);
-
-    document.getElementById('total-memory-games').textContent = memoryHistory.length;
-    document.getElementById('total-memory-levels').textContent =
-        memoryHistory.reduce((sum, r) => sum + r.level, 0);
-
-    document.getElementById('total-pattern-games').textContent = patternHistory.length;
-    document.getElementById('total-pattern-correct').textContent =
-        patternHistory.reduce((sum, r) => sum + Math.round(r.accuracy * r.questionCount / 100), 0);
-
-    document.getElementById('total-compare-games').textContent = compareHistory.length;
-    document.getElementById('total-compare-correct').textContent =
-        compareHistory.reduce((sum, r) => sum + Math.round(r.accuracy * r.questionCount / 100), 0);
-
-    const sudokuHistory = getSudokuHistory();
-    document.getElementById('total-sudoku-games').textContent = sudokuHistory.length;
-    document.getElementById('total-sudoku-completed').textContent =
-        sudokuHistory.filter(function(r) { return r.score > 0; }).length;
-
-    const sortHistory = getSortHistory();
-    document.getElementById('total-sort-games').textContent = sortHistory.length;
-    document.getElementById('total-sort-correct').textContent =
-        sortHistory.reduce((sum, r) => sum + Math.round(r.accuracy * r.questionCount / 100), 0);
-
-    const sumHistory = getSumHistory();
-    document.getElementById('total-sum-games').textContent = sumHistory.length;
-    document.getElementById('total-sum-pairs').textContent =
-        sumHistory.reduce((sum, r) => sum + r.pairsFound, 0);
-
-    const clockHistory = getClockHistory();
-    document.getElementById('total-clock-games').textContent = clockHistory.length;
-    document.getElementById('total-clock-correct').textContent =
-        clockHistory.reduce((sum, r) => sum + Math.round(r.accuracy * r.questionCount / 100), 0);
-
-    const matchHistory = getMatchHistory();
-    document.getElementById('total-match-games').textContent = matchHistory.length;
-    document.getElementById('total-match-correct').textContent =
-        matchHistory.reduce((sum, r) => sum + Math.round(r.accuracy * r.questionCount / 100), 0);
-
-    const btHistory = getBTHistory();
-    document.getElementById('total-bt-games').textContent = btHistory.length;
-    document.getElementById('total-bt-viewed').textContent =
-        btHistory.reduce((sum, r) => sum + r.viewedCount, 0);
+    document.getElementById('total-math-quizzes').textContent = getMathHistory().length;
+    document.getElementById('total-memory-games').textContent = getMemoryHistory().length;
+    document.getElementById('total-pattern-games').textContent = getPatternHistory().length;
+    document.getElementById('total-compare-games').textContent = getCompareHistory().length;
+    document.getElementById('total-sudoku-games').textContent = getSudokuHistory().length;
+    document.getElementById('total-sort-games').textContent = getSortHistory().length;
+    document.getElementById('total-sum-games').textContent = getSumHistory().length;
+    document.getElementById('total-clock-games').textContent = getClockHistory().length;
+    document.getElementById('total-match-games').textContent = getMatchHistory().length;
+    document.getElementById('total-bt-games').textContent = getBTHistory().length;
 
     // 更新能力值
     document.getElementById('math-ability').textContent = getMathAbility();

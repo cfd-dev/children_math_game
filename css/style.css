@@ -770,14 +770,25 @@ body {
         font-size: 1.1em;
     }
 
-    .ability-scores {
-        -webkit-flex-wrap: wrap;
-        flex-wrap: wrap;
+    .ability-grid {
+        grid-template-columns: repeat(5, 1fr);
         gap: 8px;
     }
 
-    .ability-item {
-        font-size: 0.85em;
+    .ability-cell {
+        padding: 8px 4px;
+    }
+
+    .ability-icon {
+        font-size: 1.2em;
+    }
+
+    .ability-val {
+        font-size: 1.2em;
+    }
+
+    .ability-label {
+        font-size: 0.7em;
     }
 }
 
@@ -1428,31 +1439,40 @@ body {
     -webkit-aspect-ratio: 1;
 }
 
-.ability-scores {
-    display: -webkit-flex;
-    display: flex;
-    -webkit-justify-content: space-around;
-    justify-content: space-around;
-    -webkit-flex-wrap: wrap;
-    flex-wrap: wrap;
+.ability-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
     gap: 10px;
 }
 
-.ability-item {
-    text-align: center;
+.ability-cell {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    -webkit-align-items: center;
+    align-items: center;
+    padding: 10px 5px;
+    background: #f8f9fa;
+    border-radius: 12px;
 }
 
-.ability-name {
-    display: block;
-    font-size: 0.9em;
-    color: #666;
-    margin-bottom: 5px;
+.ability-icon {
+    font-size: 1.4em;
+    margin-bottom: 4px;
 }
 
-.ability-value {
-    font-size: 2em;
+.ability-val {
+    font-size: 1.4em;
     font-weight: bold;
     color: #667eea;
+    line-height: 1.2;
+}
+
+.ability-label {
+    font-size: 0.75em;
+    color: #888;
+    margin-top: 2px;
 }
 
 .stats-grid {
@@ -1786,6 +1806,27 @@ body {
         margin-right: 10px;
     }
 
+    .ability-grid {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 6px;
+    }
+
+    .ability-cell {
+        padding: 6px 3px;
+    }
+
+    .ability-icon {
+        font-size: 1.1em;
+    }
+
+    .ability-val {
+        font-size: 1.1em;
+    }
+
+    .ability-label {
+        font-size: 0.65em;
+    }
+
     .history-details {
         gap: 8px;
     }
@@ -1952,6 +1993,28 @@ body {
 
     .level-badge {
         font-size: 1.6em;
+    }
+
+    .ability-grid {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 4px;
+    }
+
+    .ability-cell {
+        padding: 5px 2px;
+        border-radius: 8px;
+    }
+
+    .ability-icon {
+        font-size: 1em;
+    }
+
+    .ability-val {
+        font-size: 1em;
+    }
+
+    .ability-label {
+        font-size: 0.6em;
     }
 
     /* 新游戏响应式 */
