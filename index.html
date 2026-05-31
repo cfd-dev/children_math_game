@@ -89,6 +89,7 @@
                     <span class="user-greeting" id="home-user-greeting">你好！</span>
                     <span class="user-grade-label" id="home-user-grade">一年级</span>
                 </div>
+                <button class="sound-toggle-btn" onclick="event.stopPropagation(); toggleSound()" title="声音开关" id="sound-toggle-btn"><svg id="sound-icon-on" class="sound-icon" viewBox="0 0 24 24" width="22" height="22" fill="white"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8.3v7.4a4.5 4.5 0 0 0 2.5-3.7zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1A9 9 0 0 0 14 3.2z"/></svg><svg id="sound-icon-off" class="sound-icon" viewBox="0 0 24 24" width="22" height="22" fill="white" style="display:none"><path d="M3 9v6h4l5 5V4L7 9H3z"/><line x1="16" y1="9" x2="22" y2="15" stroke="white" stroke-width="2" stroke-linecap="round"/><line x1="22" y1="9" x2="16" y2="15" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></button>
                 <button class="profile-entry-btn" onclick="event.stopPropagation(); showProfile()"><svg class="profile-entry-icon" viewBox="0 0 32 32" width="20" height="20"><defs><linearGradient id="pg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffb347"/><stop offset="100%" stop-color="#ff6b6b"/></linearGradient></defs><circle cx="16" cy="11" r="6" fill="url(#pg)"/><path d="M5 28c0-6 5-10 11-10s11 4 11 10" fill="url(#pg)" opacity="0.85"/></svg> 个人中心</button>
             </div>
 

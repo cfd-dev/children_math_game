@@ -1,5 +1,23 @@
 // 音效模块 - 使用 Web Audio API 生成适合儿童的音效
 
+let soundEnabled = localStorage.getItem('soundEnabled') !== 'off';
+
+function updateSoundIcon() {
+    var iconOn = document.getElementById('sound-icon-on');
+    var iconOff = document.getElementById('sound-icon-off');
+    if (iconOn && iconOff) {
+        iconOn.style.display = soundEnabled ? '' : 'none';
+        iconOff.style.display = soundEnabled ? 'none' : '';
+    }
+}
+
+function toggleSound() {
+    soundEnabled = !soundEnabled;
+    localStorage.setItem('soundEnabled', soundEnabled ? 'on' : 'off');
+    updateSoundIcon();
+    if (soundEnabled) playClickSound();
+}
+
 let audioCtx = null;
 
 function getAudioContext() {
@@ -14,6 +32,7 @@ function getAudioContext() {
 
 // 播放一个音符
 function playTone(frequency, duration, type, volume, delay) {
+    if (!soundEnabled) return;
     const ctx = getAudioContext();
     const startTime = ctx.currentTime + (delay || 0);
 

@@ -318,6 +318,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // 初始化存储
         initStorage();
 
+        // 初始化声音图标状态
+        if (typeof updateSoundIcon === 'function') updateSoundIcon();
+
         // 检查是否是首次用户
         if (isFirstTimeUser()) {
             // 首次用户，显示欢迎页面创建用户和选择年级
