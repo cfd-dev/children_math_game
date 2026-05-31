@@ -21,7 +21,7 @@
     <!-- 首次欢迎页面（用户创建 + 年级选择） -->
     <div id="welcome-page" class="page">
         <div class="container">
-            <h1 class="app-title">数学小达人</h1>
+            <h1 class="app-title"><img src="assets/icon.svg" class="app-title-icon" alt="图标">数学小达人</h1>
             <p class="app-subtitle">快乐学习，快速成长</p>
 
             <!-- 用户名输入 -->
@@ -80,16 +80,16 @@
     <!-- 主页面 -->
     <div id="home-page" class="page">
         <div class="container">
-            <h1 class="app-title">数学小达人</h1>
+            <h1 class="app-title"><img src="assets/icon.svg" class="app-title-icon" alt="图标">数学小达人</h1>
 
             <!-- 用户信息栏 -->
-            <div class="home-user-info">
+            <div class="home-user-info" onclick="showProfile()">
                 <div class="user-avatar">👤</div>
                 <div class="user-details">
                     <span class="user-greeting" id="home-user-greeting">你好！</span>
                     <span class="user-grade-label" id="home-user-grade">一年级</span>
                 </div>
-                <button class="switch-user-btn" onclick="switchUser()">切换用户</button>
+                <span class="profile-entry-label">个人中心 ›</span>
             </div>
 
             <div class="menu-buttons">
@@ -148,10 +148,10 @@
                     <span class="btn-text">数字捉迷藏</span>
                     <span class="btn-desc">猜数推理</span>
                 </button>
-                <button class="menu-btn profile-btn" onclick="showProfile()">
-                    <span class="btn-icon">👤</span>
-                    <span class="btn-text">个人中心</span>
-                    <span class="btn-desc">查看学习记录</span>
+                <button class="menu-btn about-btn" onclick="showAboutPage()">
+                    <span class="btn-icon">ℹ️</span>
+                    <span class="btn-text">关于软件</span>
+                    <span class="btn-desc">应用信息</span>
                 </button>
             </div>
         </div>
@@ -1099,6 +1099,141 @@
         </div>
     </div>
 
+    <!-- 关于页面 -->
+    <div id="about-page" class="page">
+        <div class="container">
+            <div class="page-header">
+                <button class="back-btn" onclick="goHome()">← 返回</button>
+                <h2>关于软件</h2>
+            </div>
+
+            <div class="about-section about-hero">
+                <div class="about-app-icon">🎮</div>
+                <h3 class="about-app-name">数学小达人</h3>
+                <p class="about-version">v1.0.0</p>
+                <p class="about-slogan">让数学学习变得有趣！</p>
+            </div>
+
+            <div class="about-section">
+                <h4>软件简介</h4>
+                <p>数学小达人是一款专为小学生设计的数学学习游戏，涵盖幼儿园到六年级的数学知识点，通过趣味游戏的方式帮助孩子提升数学能力。</p>
+            </div>
+
+            <div class="about-section">
+                <h4>功能特色</h4>
+                <div class="about-feature-list">
+                    <div class="about-feature-item">
+                        <span class="about-feature-icon">🧮</span>
+                        <div>
+                            <strong>快速计算</strong>
+                            <p>加减乘除四则运算练习</p>
+                        </div>
+                    </div>
+                    <div class="about-feature-item">
+                        <span class="about-feature-icon">🧠</span>
+                        <div>
+                            <strong>数字记忆</strong>
+                            <p>挑战数字记忆力</p>
+                        </div>
+                    </div>
+                    <div class="about-feature-item">
+                        <span class="about-feature-icon">🔍</span>
+                        <div>
+                            <strong>找规律</strong>
+                            <p>数列推理与规律发现</p>
+                        </div>
+                    </div>
+                    <div class="about-feature-item">
+                        <span class="about-feature-icon">⚖️</span>
+                        <div>
+                            <strong>比大小</strong>
+                            <p>数的大小比较</p>
+                        </div>
+                    </div>
+                    <div class="about-feature-item">
+                        <span class="about-feature-icon">🔢</span>
+                        <div>
+                            <strong>数独</strong>
+                            <p>逻辑推理填数</p>
+                        </div>
+                    </div>
+                    <div class="about-feature-item">
+                        <span class="about-feature-icon">📊</span>
+                        <div>
+                            <strong>数字排序</strong>
+                            <p>从小到大排列练习</p>
+                        </div>
+                    </div>
+                    <div class="about-feature-item">
+                        <span class="about-feature-icon">🔟</span>
+                        <div>
+                            <strong>凑十法</strong>
+                            <p>数字配对凑数游戏</p>
+                        </div>
+                    </div>
+                    <div class="about-feature-item">
+                        <span class="about-feature-icon">🕐</span>
+                        <div>
+                            <strong>时钟认知</strong>
+                            <p>认识钟表和时间</p>
+                        </div>
+                    </div>
+                    <div class="about-feature-item">
+                        <span class="about-feature-icon">🔗</span>
+                        <div>
+                            <strong>数学连线</strong>
+                            <p>算式与结果配对</p>
+                        </div>
+                    </div>
+                    <div class="about-feature-item">
+                        <span class="about-feature-icon">💡</span>
+                        <div>
+                            <strong>脑筋急转弯</strong>
+                            <p>趣味数学谜语</p>
+                        </div>
+                    </div>
+                    <div class="about-feature-item">
+                        <span class="about-feature-icon">🎯</span>
+                        <div>
+                            <strong>数字捉迷藏</strong>
+                            <p>猜数字推理游戏</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="about-section">
+                <h4>开发者</h4>
+                <p>小王子爸爸</p>
+                <p class="about-contact">用心做教育，用爱陪伴成长</p>
+            </div>
+
+            <div class="about-section donate-section">
+                <h4>☕ 请作者喝杯咖啡</h4>
+                <p>如果这个应用对您有帮助，欢迎随意打赏支持～</p>
+                <div class="donate-options">
+                    <button class="donate-option-btn" onclick="selectDonate(this, 1)">1元</button>
+                    <button class="donate-option-btn" onclick="selectDonate(this, 2)">2元</button>
+                    <button class="donate-option-btn" onclick="selectDonate(this, 3)">3元</button>
+                    <button class="donate-option-btn" onclick="selectDonate(this, 5)">5元</button>
+                    <button class="donate-option-btn" onclick="selectDonate(this, 10)">10元</button>
+                    <button class="donate-option-btn" onclick="selectDonate(this, 'x')">其他金额</button>
+                </div>
+                <div id="donate-qr-area" style="display:none">
+                    <div class="donate-qr">
+                        <img id="donate-qr-img" class="donate-qr-img" src="" alt="支付宝二维码">
+                        <p id="donate-qr-amount" class="donate-qr-amount"></p>
+                    </div>
+                </div>
+                <p class="donate-note">您的支持是持续更新的动力！</p>
+            </div>
+
+            <div class="result-buttons">
+                <button class="home-btn" onclick="goHome()">返回首页</button>
+            </div>
+        </div>
+    </div>
+
     <!-- 个人中心页面 -->
     <div id="profile-page" class="page">
         <div class="container">
@@ -1310,6 +1445,7 @@
 
             <!-- 清除数据 -->
             <div class="profile-section">
+                <button class="switch-user-btn" onclick="switchUser()">切换用户</button>
                 <button class="clear-data-btn" onclick="clearAllData()">清除所有数据</button>
             </div>
         </div>
@@ -1343,7 +1479,7 @@
     <script>
     // 立即隐藏非欢迎页面，防止全部内容同时显示
     (function() {
-        var ids = ['home-page', 'math-page', 'memory-page', 'pattern-page', 'compare-page', 'sudoku-page', 'sort-page', 'sum-page', 'clock-page', 'match-page', 'brainteaser-page', 'seek-page', 'profile-page'];
+        var ids = ['home-page', 'math-page', 'memory-page', 'pattern-page', 'compare-page', 'sudoku-page', 'sort-page', 'sum-page', 'clock-page', 'match-page', 'brainteaser-page', 'seek-page', 'about-page', 'profile-page'];
         for (var i = 0; i < ids.length; i++) {
             var el = document.getElementById(ids[i]);
             if (el) el.style.display = 'none';

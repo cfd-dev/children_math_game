@@ -157,6 +157,10 @@ function goHome() {
         clearInterval(seekState.timerInterval);
     }
 
+    // 隐藏捐赠二维码
+    var donateQr = document.getElementById('donate-qr-area');
+    if (donateQr) donateQr.style.display = 'none';
+
     // 更新首页用户信息并显示
     updateHomeUserInfo();
     showPage('home-page');
@@ -280,6 +284,30 @@ function showSeekGame() {
     if (gradeNameEl) gradeNameEl.textContent = config.name;
     if (gradeDescEl) gradeDescEl.textContent = sConfig.description;
     showPage('seek-page');
+}
+
+// 显示关于页面
+function showAboutPage() {
+    showPage('about-page');
+}
+
+// 捐赠金额选择
+function selectDonate(btn, amount) {
+    var btns = document.querySelectorAll('.donate-option-btn');
+    for (var i = 0; i < btns.length; i++) {
+        btns[i].classList.remove('selected');
+    }
+    btn.classList.add('selected');
+
+    var filename = amount === 'x'
+        ? 'assets/alipay_x.jpg'
+        : 'assets/alipay_' + amount + '.jpg';
+    var label = amount === 'x' ? '其他金额' : amount + ' 元';
+
+    document.getElementById('donate-qr-img').src = filename;
+    document.getElementById('donate-qr-amount').textContent = '支付宝扫码支付 · ' + label;
+    document.getElementById('donate-qr-area').style.display = 'block';
+    document.getElementById('donate-qr-area').scrollIntoView({ behavior: 'smooth' });
 }
 
 // 页面加载完成后的初始化
