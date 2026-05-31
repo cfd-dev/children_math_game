@@ -683,6 +683,7 @@ body {
     user-select: none;
     touch-action: manipulation;
     text-align: center;
+    min-width: 0;
     white-space: nowrap;
 }
 
@@ -2003,7 +2004,21 @@ body {
         margin-bottom: 30px;
     }
 
-    /* 统一使用基础菜单按钮样式 */
+    .menu-btn {
+        padding: 16px 6px;
+    }
+
+    .btn-icon {
+        font-size: 2.4em;
+    }
+
+    .btn-text {
+        font-size: 0.85em;
+    }
+
+    .btn-desc {
+        font-size: 0.65em;
+    }
 
     .grade-section {
         padding: 15px;
@@ -2285,7 +2300,26 @@ body {
         margin-bottom: 20px;
     }
 
-    /* 统一使用基础菜单按钮样式 */
+    .menu-buttons {
+        gap: 10px;
+    }
+
+    .menu-btn {
+        padding: 14px 4px;
+        border-radius: 16px;
+    }
+
+    .btn-icon {
+        font-size: 2em;
+    }
+
+    .btn-text {
+        font-size: 0.78em;
+    }
+
+    .btn-desc {
+        font-size: 0.6em;
+    }
 
     .grade-grid {
         gap: 6px;
