@@ -268,8 +268,12 @@ body {
 }
 
 .about-app-icon {
-    font-size: 4em;
     margin-bottom: 10px;
+}
+
+.about-app-icon-img {
+    width: 80px;
+    height: 80px;
 }
 
 .about-app-name {
@@ -729,6 +733,22 @@ body {
 
 .about-btn .btn-text {
     color: #7f8c8d;
+}
+
+.about-icon-badge {
+    display: inline-block;
+    width: 1.3em;
+    height: 1.3em;
+    line-height: 1.3em;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 0.7em;
+    text-align: center;
+    vertical-align: middle;
+    box-shadow: 0 3px 10px rgba(102,126,234,0.45);
 }
 
 .pattern-btn .btn-text {
@@ -2196,8 +2216,10 @@ body {
         font-size: 1.1em;
     }
 
-    .about-app-icon {
-        font-size: 3em;
+    .about-app-icon-img {
+        width: 64px;
+        height: 64px;
+    }
     }
 
     .about-app-name {
