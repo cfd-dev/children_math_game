@@ -341,13 +341,28 @@ function finishClockGame() {
     var totalTime = Math.floor((Date.now() - clockState.startTime) / 1000);
     var accuracy = Math.round((clockState.correctCount / clockState.totalQuestions) * 100);
 
+    saveClockRecord(accuracy, totalTime, clockState.totalQuestions, clockState.score);
+    assessGrade(accuracy, totalTime, clockState.totalQuestions);
+
+    // 显示奖励画面
+    document.getElementById('clock-reward-score').textContent = clockState.score;
+    document.getElementById('clock-reward-accuracy').textContent = accuracy + '%';
+    document.getElementById('clock-reward-time').textContent = totalTime;
+
+    playMemoryLevelSound();
+
+    document.getElementById('clock-quiz').style.display = 'none';
+    document.getElementById('clock-reward').style.display = 'block';
+}
+
+function showClockRewardResult() {
+    var totalTime = Math.floor((Date.now() - clockState.startTime) / 1000);
+    var accuracy = Math.round((clockState.correctCount / clockState.totalQuestions) * 100);
+
     document.getElementById('clock-result-score').textContent = clockState.score;
     document.getElementById('clock-result-correct').textContent = accuracy + '%';
     document.getElementById('clock-result-time').textContent = totalTime + '秒';
 
-    saveClockRecord(accuracy, totalTime, clockState.totalQuestions, clockState.score);
-    assessGrade(accuracy, totalTime, clockState.totalQuestions);
-
-    document.getElementById('clock-quiz').style.display = 'none';
+    document.getElementById('clock-reward').style.display = 'none';
     document.getElementById('clock-result').style.display = 'block';
 }

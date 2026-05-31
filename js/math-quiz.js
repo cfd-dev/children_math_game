@@ -437,19 +437,32 @@ function finishMathQuiz() {
     const totalTime = Math.floor((Date.now() - mathState.startTime) / 1000);
     const accuracy = Math.round((mathState.correctCount / mathState.totalQuestions) * 100);
 
-    // 显示结果
-    document.getElementById('result-score').textContent = mathState.score;
-    document.getElementById('result-correct').textContent = `${accuracy}%`;
-    document.getElementById('result-time').textContent = `${totalTime}秒`;
-
     // 自动评估年级
     assessGrade(accuracy, totalTime, mathState.totalQuestions);
 
     // 保存记录
     saveMathQuizRecord(accuracy, totalTime, mathState.totalQuestions, mathState.score, currentGrade);
 
-    // 切换显示
+    // 显示奖励画面
+    document.getElementById('math-reward-score').textContent = mathState.score;
+    document.getElementById('math-reward-accuracy').textContent = accuracy + '%';
+    document.getElementById('math-reward-time').textContent = totalTime;
+
+    playMemoryLevelSound();
+
     document.getElementById('math-quiz').style.display = 'none';
+    document.getElementById('math-reward').style.display = 'block';
+}
+
+function showMathRewardResult() {
+    var totalTime = Math.floor((Date.now() - mathState.startTime) / 1000);
+    var accuracy = Math.round((mathState.correctCount / mathState.totalQuestions) * 100);
+
+    document.getElementById('result-score').textContent = mathState.score;
+    document.getElementById('result-correct').textContent = accuracy + '%';
+    document.getElementById('result-time').textContent = totalTime + '秒';
+
+    document.getElementById('math-reward').style.display = 'none';
     document.getElementById('math-result').style.display = 'block';
 }
 

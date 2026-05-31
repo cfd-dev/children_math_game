@@ -359,18 +359,31 @@ function finishPatternGame() {
     var totalTime = Math.floor((Date.now() - patternState.startTime) / 1000);
     var accuracy = Math.round((patternState.correctCount / patternState.totalQuestions) * 100);
 
-    // 显示结果
-    document.getElementById('pattern-result-score').textContent = patternState.score;
-    document.getElementById('pattern-result-correct').textContent = accuracy + '%';
-    document.getElementById('pattern-result-time').textContent = totalTime + '秒';
-
     // 保存记录
     savePatternRecord(accuracy, totalTime, patternState.totalQuestions, patternState.score);
 
     // 评估年级
     assessGrade(accuracy, totalTime, patternState.totalQuestions);
 
-    // 切换显示
+    // 显示奖励画面
+    document.getElementById('pattern-reward-score').textContent = patternState.score;
+    document.getElementById('pattern-reward-accuracy').textContent = accuracy + '%';
+    document.getElementById('pattern-reward-time').textContent = totalTime;
+
+    playMemoryLevelSound();
+
     document.getElementById('pattern-quiz').style.display = 'none';
+    document.getElementById('pattern-reward').style.display = 'block';
+}
+
+function showPatternRewardResult() {
+    var totalTime = Math.floor((Date.now() - patternState.startTime) / 1000);
+    var accuracy = Math.round((patternState.correctCount / patternState.totalQuestions) * 100);
+
+    document.getElementById('pattern-result-score').textContent = patternState.score;
+    document.getElementById('pattern-result-correct').textContent = accuracy + '%';
+    document.getElementById('pattern-result-time').textContent = totalTime + '秒';
+
+    document.getElementById('pattern-reward').style.display = 'none';
     document.getElementById('pattern-result').style.display = 'block';
 }

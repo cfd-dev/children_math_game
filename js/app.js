@@ -49,6 +49,7 @@ function goHome() {
     // 重置数学练习页面
     document.getElementById('math-setup').style.display = 'block';
     document.getElementById('math-quiz').style.display = 'none';
+    document.getElementById('math-reward').style.display = 'none';
     document.getElementById('math-result').style.display = 'none';
 
     // 重置记忆游戏页面
@@ -61,6 +62,7 @@ function goHome() {
     // 重置找规律页面
     document.getElementById('pattern-setup').style.display = 'block';
     document.getElementById('pattern-quiz').style.display = 'none';
+    document.getElementById('pattern-reward').style.display = 'none';
     document.getElementById('pattern-result').style.display = 'none';
 
     // 停止找规律计时器
@@ -93,6 +95,7 @@ function goHome() {
     // 重置数字排序页面
     document.getElementById('sort-setup').style.display = 'block';
     document.getElementById('sort-quiz').style.display = 'none';
+    document.getElementById('sort-reward').style.display = 'none';
     document.getElementById('sort-result').style.display = 'none';
 
     // 停止排序计时器
@@ -103,6 +106,7 @@ function goHome() {
     // 重置凑十法页面
     document.getElementById('sum-setup').style.display = 'block';
     document.getElementById('sum-quiz').style.display = 'none';
+    document.getElementById('sum-reward').style.display = 'none';
     document.getElementById('sum-result').style.display = 'none';
 
     // 停止凑十计时器
@@ -113,6 +117,7 @@ function goHome() {
     // 重置时钟认知页面
     document.getElementById('clock-setup').style.display = 'block';
     document.getElementById('clock-quiz').style.display = 'none';
+    document.getElementById('clock-reward').style.display = 'none';
     document.getElementById('clock-result').style.display = 'none';
 
     // 停止时钟计时器
@@ -123,6 +128,7 @@ function goHome() {
     // 重置数学连线页面
     document.getElementById('match-setup').style.display = 'block';
     document.getElementById('match-quiz').style.display = 'none';
+    document.getElementById('match-reward').style.display = 'none';
     document.getElementById('match-result').style.display = 'none';
 
     // 停止连线计时器
@@ -143,6 +149,7 @@ function goHome() {
     // 重置数字捉迷藏页面
     document.getElementById('seek-setup').style.display = 'block';
     document.getElementById('seek-quiz').style.display = 'none';
+    document.getElementById('seek-reward').style.display = 'none';
     document.getElementById('seek-result').style.display = 'none';
 
     // 停止捉迷藏计时器

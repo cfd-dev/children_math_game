@@ -293,12 +293,28 @@ function finishMatchGame() {
     var matchedCount = matchState.matched.filter(function(m) { return m; }).length;
     var accuracy = Math.round((matchedCount / matchState.pairs.length) * 100);
 
+    saveMatchRecord(accuracy, totalTime, matchState.pairs.length, matchState.score);
+
+    // 显示奖励画面
+    document.getElementById('match-reward-score').textContent = matchState.score;
+    document.getElementById('match-reward-accuracy').textContent = accuracy + '%';
+    document.getElementById('match-reward-time').textContent = totalTime;
+
+    playMemoryLevelSound();
+
+    document.getElementById('match-quiz').style.display = 'none';
+    document.getElementById('match-reward').style.display = 'block';
+}
+
+function showMatchRewardResult() {
+    var totalTime = Math.floor((Date.now() - matchState.startTime) / 1000);
+    var matchedCount = matchState.matched.filter(function(m) { return m; }).length;
+    var accuracy = Math.round((matchedCount / matchState.pairs.length) * 100);
+
     document.getElementById('match-result-score').textContent = matchState.score;
     document.getElementById('match-result-correct').textContent = accuracy + '%';
     document.getElementById('match-result-time').textContent = totalTime + '秒';
 
-    saveMatchRecord(accuracy, totalTime, matchState.pairs.length, matchState.score);
-
-    document.getElementById('match-quiz').style.display = 'none';
+    document.getElementById('match-reward').style.display = 'none';
     document.getElementById('match-result').style.display = 'block';
 }

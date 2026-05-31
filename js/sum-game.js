@@ -201,12 +201,27 @@ function finishSumGame() {
     var totalTime = Math.floor((Date.now() - sumState.startTime) / 1000);
     var accuracy = Math.round((sumState.pairsFound / sumState.totalPairs) * 100);
 
+    saveSumRecord(sumState.score, totalTime, sumState.pairsFound, sumState.totalPairs);
+
+    // 显示奖励画面
+    document.getElementById('sum-reward-score').textContent = sumState.score;
+    document.getElementById('sum-reward-accuracy').textContent = accuracy + '%';
+    document.getElementById('sum-reward-time').textContent = totalTime;
+
+    playMemoryLevelSound();
+
+    document.getElementById('sum-quiz').style.display = 'none';
+    document.getElementById('sum-reward').style.display = 'block';
+}
+
+function showSumRewardResult() {
+    var totalTime = Math.floor((Date.now() - sumState.startTime) / 1000);
+    var accuracy = Math.round((sumState.pairsFound / sumState.totalPairs) * 100);
+
     document.getElementById('sum-result-score').textContent = sumState.score;
     document.getElementById('sum-result-correct').textContent = accuracy + '%';
     document.getElementById('sum-result-time').textContent = totalTime + '秒';
 
-    saveSumRecord(sumState.score, totalTime, sumState.pairsFound, sumState.totalPairs);
-
-    document.getElementById('sum-quiz').style.display = 'none';
+    document.getElementById('sum-reward').style.display = 'none';
     document.getElementById('sum-result').style.display = 'block';
 }

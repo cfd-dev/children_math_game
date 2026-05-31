@@ -203,6 +203,21 @@
                 <button id="next-btn" class="next-btn" style="display:none" onclick="showNextMathQuestion()">下一题</button>
             </div>
 
+            <!-- 奖励画面 -->
+            <div id="math-reward" class="result-section reward-section" style="display:none">
+                <div class="reward-stars">⭐ ⭐ ⭐</div>
+                <h3>练习完成！</h3>
+                <div class="reward-info">
+                    <p>总得分：<span id="math-reward-score">0</span></p>
+                    <p>正确率：<span id="math-reward-accuracy">0%</span></p>
+                    <p>总用时：<span id="math-reward-time">0</span> 秒</p>
+                </div>
+                <div class="result-buttons">
+                    <button class="retry-btn reward-btn" onclick="showMathRewardResult()">查看成绩</button>
+                    <button class="home-btn" onclick="goHome()">返回首页</button>
+                </div>
+            </div>
+
             <!-- 结果页面 -->
             <div id="math-result" class="result-section" style="display:none">
                 <h3>练习完成！</h3>
@@ -376,6 +391,21 @@
                 </div>
                 <div id="pattern-feedback" class="feedback"></div>
                 <button id="pattern-next-btn" class="next-btn" style="display:none" onclick="showNextPatternQuestion()">下一题</button>
+            </div>
+
+            <!-- 奖励画面 -->
+            <div id="pattern-reward" class="result-section reward-section" style="display:none">
+                <div class="reward-stars">⭐ ⭐ ⭐</div>
+                <h3>挑战完成！</h3>
+                <div class="reward-info">
+                    <p>总得分：<span id="pattern-reward-score">0</span></p>
+                    <p>正确率：<span id="pattern-reward-accuracy">0%</span></p>
+                    <p>总用时：<span id="pattern-reward-time">0</span> 秒</p>
+                </div>
+                <div class="result-buttons">
+                    <button class="retry-btn reward-btn" onclick="showPatternRewardResult()">查看成绩</button>
+                    <button class="home-btn" onclick="goHome()">返回首页</button>
+                </div>
             </div>
 
             <!-- 结果页面 -->
@@ -622,6 +652,21 @@
                 <button id="sort-next-btn" class="next-btn" style="display:none" onclick="showNextSortQuestion()">下一题</button>
             </div>
 
+            <!-- 奖励画面 -->
+            <div id="sort-reward" class="result-section reward-section" style="display:none">
+                <div class="reward-stars">⭐ ⭐ ⭐</div>
+                <h3>挑战完成！</h3>
+                <div class="reward-info">
+                    <p>总得分：<span id="sort-reward-score">0</span></p>
+                    <p>正确率：<span id="sort-reward-accuracy">0%</span></p>
+                    <p>总用时：<span id="sort-reward-time">0</span> 秒</p>
+                </div>
+                <div class="result-buttons">
+                    <button class="retry-btn reward-btn" onclick="showSortRewardResult()">查看成绩</button>
+                    <button class="home-btn" onclick="goHome()">返回首页</button>
+                </div>
+            </div>
+
             <div id="sort-result" class="result-section" style="display:none">
                 <h3>挑战完成！</h3>
                 <div class="result-stats">
@@ -677,6 +722,21 @@
                 <div class="sum-target">目标和：<span id="sum-target-value">10</span></div>
                 <div id="sum-grid" class="sum-grid"></div>
                 <div id="sum-feedback" class="feedback"></div>
+            </div>
+
+            <!-- 奖励画面 -->
+            <div id="sum-reward" class="result-section reward-section" style="display:none">
+                <div class="reward-stars">⭐ ⭐ ⭐</div>
+                <h3>挑战完成！</h3>
+                <div class="reward-info">
+                    <p>总得分：<span id="sum-reward-score">0</span></p>
+                    <p>完成率：<span id="sum-reward-accuracy">0%</span></p>
+                    <p>总用时：<span id="sum-reward-time">0</span> 秒</p>
+                </div>
+                <div class="result-buttons">
+                    <button class="retry-btn reward-btn" onclick="showSumRewardResult()">查看成绩</button>
+                    <button class="home-btn" onclick="goHome()">返回首页</button>
+                </div>
             </div>
 
             <div id="sum-result" class="result-section" style="display:none">
@@ -748,6 +808,21 @@
                 <button id="clock-next-btn" class="next-btn" style="display:none" onclick="showNextClockQuestion()">下一题</button>
             </div>
 
+            <!-- 奖励画面 -->
+            <div id="clock-reward" class="result-section reward-section" style="display:none">
+                <div class="reward-stars">⭐ ⭐ ⭐</div>
+                <h3>挑战完成！</h3>
+                <div class="reward-info">
+                    <p>总得分：<span id="clock-reward-score">0</span></p>
+                    <p>正确率：<span id="clock-reward-accuracy">0%</span></p>
+                    <p>总用时：<span id="clock-reward-time">0</span> 秒</p>
+                </div>
+                <div class="result-buttons">
+                    <button class="retry-btn reward-btn" onclick="showClockRewardResult()">查看成绩</button>
+                    <button class="home-btn" onclick="goHome()">返回首页</button>
+                </div>
+            </div>
+
             <div id="clock-result" class="result-section" style="display:none">
                 <h3>挑战完成！</h3>
                 <div class="result-stats">
@@ -811,6 +886,21 @@
                     </div>
                 </div>
                 <div id="match-feedback" class="feedback"></div>
+            </div>
+
+            <!-- 奖励画面 -->
+            <div id="match-reward" class="result-section reward-section" style="display:none">
+                <div class="reward-stars">⭐ ⭐ ⭐</div>
+                <h3>挑战完成！</h3>
+                <div class="reward-info">
+                    <p>总得分：<span id="match-reward-score">0</span></p>
+                    <p>正确率：<span id="match-reward-accuracy">0%</span></p>
+                    <p>总用时：<span id="match-reward-time">0</span> 秒</p>
+                </div>
+                <div class="result-buttons">
+                    <button class="retry-btn reward-btn" onclick="showMatchRewardResult()">查看成绩</button>
+                    <button class="home-btn" onclick="goHome()">返回首页</button>
+                </div>
             </div>
 
             <div id="match-result" class="result-section" style="display:none">
@@ -964,6 +1054,21 @@
                     <button class="seek-submit-btn" onclick="submitSeekGuess()">猜！</button>
                 </div>
                 <div id="seek-feedback" class="seek-feedback">请输入你猜的数字</div>
+            </div>
+
+            <!-- 奖励画面 -->
+            <div id="seek-reward" class="result-section reward-section" style="display:none">
+                <div class="reward-stars">⭐ ⭐ ⭐</div>
+                <h3>挑战完成！</h3>
+                <div class="reward-info">
+                    <p>总得分：<span id="seek-reward-score">0</span></p>
+                    <p>正确率：<span id="seek-reward-accuracy">0%</span></p>
+                    <p>总用时：<span id="seek-reward-time">0</span> 秒</p>
+                </div>
+                <div class="result-buttons">
+                    <button class="retry-btn reward-btn" onclick="showSeekRewardResult()">查看成绩</button>
+                    <button class="home-btn" onclick="goHome()">返回首页</button>
+                </div>
             </div>
 
             <div id="seek-result" class="result-section" style="display:none">

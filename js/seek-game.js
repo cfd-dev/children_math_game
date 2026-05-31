@@ -180,14 +180,29 @@ function finishSeekGame() {
     var totalTime = Math.floor((Date.now() - seekState.startTime) / 1000);
     var accuracy = Math.round((seekState.correctCount / seekState.totalQuestions) * 100);
 
+    saveSeekRecord(accuracy, totalTime, seekState.totalQuestions, seekState.score);
+
+    // 显示奖励画面
+    document.getElementById('seek-reward-score').textContent = seekState.score;
+    document.getElementById('seek-reward-accuracy').textContent = accuracy + '%';
+    document.getElementById('seek-reward-time').textContent = totalTime;
+
+    playMemoryLevelSound();
+
+    document.getElementById('seek-quiz').style.display = 'none';
+    document.getElementById('seek-reward').style.display = 'block';
+}
+
+function showSeekRewardResult() {
+    var totalTime = Math.floor((Date.now() - seekState.startTime) / 1000);
+    var accuracy = Math.round((seekState.correctCount / seekState.totalQuestions) * 100);
+
     document.getElementById('seek-result-score').textContent = seekState.score;
     document.getElementById('seek-result-correct').textContent = accuracy + '%';
     document.getElementById('seek-result-correct-count').textContent =
         seekState.correctCount + '/' + seekState.totalQuestions;
     document.getElementById('seek-result-time').textContent = totalTime + '秒';
 
-    saveSeekRecord(accuracy, totalTime, seekState.totalQuestions, seekState.score);
-
-    document.getElementById('seek-quiz').style.display = 'none';
+    document.getElementById('seek-reward').style.display = 'none';
     document.getElementById('seek-result').style.display = 'block';
 }

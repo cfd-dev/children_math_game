@@ -255,13 +255,28 @@ function finishSortGame() {
     var totalTime = Math.floor((Date.now() - sortState.startTime) / 1000);
     var accuracy = Math.round((sortState.correctCount / sortState.totalQuestions) * 100);
 
+    saveSortRecord(accuracy, totalTime, sortState.totalQuestions, sortState.score);
+    assessGrade(accuracy, totalTime, sortState.totalQuestions);
+
+    // 显示奖励画面
+    document.getElementById('sort-reward-score').textContent = sortState.score;
+    document.getElementById('sort-reward-accuracy').textContent = accuracy + '%';
+    document.getElementById('sort-reward-time').textContent = totalTime;
+
+    playMemoryLevelSound();
+
+    document.getElementById('sort-quiz').style.display = 'none';
+    document.getElementById('sort-reward').style.display = 'block';
+}
+
+function showSortRewardResult() {
+    var totalTime = Math.floor((Date.now() - sortState.startTime) / 1000);
+    var accuracy = Math.round((sortState.correctCount / sortState.totalQuestions) * 100);
+
     document.getElementById('sort-result-score').textContent = sortState.score;
     document.getElementById('sort-result-correct').textContent = accuracy + '%';
     document.getElementById('sort-result-time').textContent = totalTime + '秒';
 
-    saveSortRecord(accuracy, totalTime, sortState.totalQuestions, sortState.score);
-    assessGrade(accuracy, totalTime, sortState.totalQuestions);
-
-    document.getElementById('sort-quiz').style.display = 'none';
+    document.getElementById('sort-reward').style.display = 'none';
     document.getElementById('sort-result').style.display = 'block';
 }
