@@ -200,12 +200,14 @@ body {
     flex-direction: column;
     -webkit-flex: 1;
     flex: 1;
+    min-width: 0;
 }
 
 .user-greeting {
     color: white;
     font-size: 1.1em;
     font-weight: bold;
+    white-space: nowrap;
 }
 
 .user-grade-label {
@@ -1995,29 +1997,29 @@ body {
     }
 
     .app-title {
-        font-size: 2.8em;
+        font-size: 3em;
         margin-top: 25px;
     }
 
     .app-subtitle {
-        font-size: 1.3em;
+        font-size: 1.4em;
         margin-bottom: 30px;
     }
 
     .menu-btn {
-        padding: 18px 6px;
+        padding: 20px 6px;
     }
 
     .btn-icon {
-        font-size: 2.6em;
+        font-size: 2.8em;
     }
 
     .btn-text {
-        font-size: 1em;
+        font-size: 1.2em;
     }
 
     .btn-desc {
-        font-size: 0.75em;
+        font-size: 0.85em;
     }
 
     .grade-section {
@@ -2171,7 +2173,21 @@ body {
     }
 
     .user-greeting {
-        font-size: 1em;
+        font-size: 1.1em;
+    }
+
+    .user-grade-label {
+        font-size: 0.85em;
+    }
+
+    .sound-toggle-btn {
+        width: 34px;
+        height: 34px;
+    }
+
+    .profile-entry-btn {
+        padding: 6px 12px;
+        font-size: 0.8em;
     }
 
     .icon-btn {
@@ -2291,12 +2307,12 @@ body {
     }
 
     .app-title {
-        font-size: 2.2em;
+        font-size: 2.6em;
         margin-top: 15px;
     }
 
     .app-subtitle {
-        font-size: 1.1em;
+        font-size: 1.25em;
         margin-bottom: 20px;
     }
 
@@ -2305,20 +2321,49 @@ body {
     }
 
     .menu-btn {
-        padding: 16px 4px;
+        padding: 18px 4px;
         border-radius: 16px;
     }
 
     .btn-icon {
-        font-size: 2.3em;
+        font-size: 2.6em;
     }
 
     .btn-text {
-        font-size: 0.9em;
+        font-size: 1.1em;
     }
 
     .btn-desc {
-        font-size: 0.7em;
+        font-size: 0.8em;
+    }
+
+    .home-user-info {
+        padding: 8px 10px;
+        margin-bottom: 16px;
+    }
+
+    .user-avatar {
+        font-size: 1.6em;
+        margin-right: 8px;
+    }
+
+    .user-greeting {
+        font-size: 1em;
+    }
+
+    .user-grade-label {
+        font-size: 0.8em;
+    }
+
+    .sound-toggle-btn {
+        width: 30px;
+        height: 30px;
+    }
+
+    .profile-entry-btn {
+        padding: 5px 10px;
+        font-size: 0.72em;
+        border-radius: 16px;
     }
 
     .grade-grid {
