@@ -84,12 +84,12 @@
 
             <!-- 用户信息栏 -->
             <div class="home-user-info" onclick="showProfile()">
-                <div class="user-avatar">👤</div>
+                <div class="user-avatar">🌈</div>
                 <div class="user-details">
                     <span class="user-greeting" id="home-user-greeting">你好！</span>
                     <span class="user-grade-label" id="home-user-grade">一年级</span>
                 </div>
-                <span class="profile-entry-label">个人中心 ›</span>
+                <button class="profile-entry-btn" onclick="event.stopPropagation(); showProfile()"><svg class="profile-entry-icon" viewBox="0 0 32 32" width="20" height="20"><defs><linearGradient id="pg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffb347"/><stop offset="100%" stop-color="#ff6b6b"/></linearGradient></defs><circle cx="16" cy="11" r="6" fill="url(#pg)"/><path d="M5 28c0-6 5-10 11-10s11 4 11 10" fill="url(#pg)" opacity="0.85"/></svg> 个人中心</button>
             </div>
 
             <div class="menu-buttons">
@@ -1121,84 +1121,18 @@
 
             <div class="about-section">
                 <h4>功能特色</h4>
-                <div class="about-feature-list">
-                    <div class="about-feature-item">
-                        <span class="about-feature-icon">🧮</span>
-                        <div>
-                            <strong>快速计算</strong>
-                            <p>加减乘除四则运算练习</p>
-                        </div>
-                    </div>
-                    <div class="about-feature-item">
-                        <span class="about-feature-icon">🧠</span>
-                        <div>
-                            <strong>数字记忆</strong>
-                            <p>挑战数字记忆力</p>
-                        </div>
-                    </div>
-                    <div class="about-feature-item">
-                        <span class="about-feature-icon">🔍</span>
-                        <div>
-                            <strong>找规律</strong>
-                            <p>数列推理与规律发现</p>
-                        </div>
-                    </div>
-                    <div class="about-feature-item">
-                        <span class="about-feature-icon">⚖️</span>
-                        <div>
-                            <strong>比大小</strong>
-                            <p>数的大小比较</p>
-                        </div>
-                    </div>
-                    <div class="about-feature-item">
-                        <span class="about-feature-icon">🔢</span>
-                        <div>
-                            <strong>数独</strong>
-                            <p>逻辑推理填数</p>
-                        </div>
-                    </div>
-                    <div class="about-feature-item">
-                        <span class="about-feature-icon">📊</span>
-                        <div>
-                            <strong>数字排序</strong>
-                            <p>从小到大排列练习</p>
-                        </div>
-                    </div>
-                    <div class="about-feature-item">
-                        <span class="about-feature-icon">🔟</span>
-                        <div>
-                            <strong>凑十法</strong>
-                            <p>数字配对凑数游戏</p>
-                        </div>
-                    </div>
-                    <div class="about-feature-item">
-                        <span class="about-feature-icon">🕐</span>
-                        <div>
-                            <strong>时钟认知</strong>
-                            <p>认识钟表和时间</p>
-                        </div>
-                    </div>
-                    <div class="about-feature-item">
-                        <span class="about-feature-icon">🔗</span>
-                        <div>
-                            <strong>数学连线</strong>
-                            <p>算式与结果配对</p>
-                        </div>
-                    </div>
-                    <div class="about-feature-item">
-                        <span class="about-feature-icon">💡</span>
-                        <div>
-                            <strong>脑筋急转弯</strong>
-                            <p>趣味数学谜语</p>
-                        </div>
-                    </div>
-                    <div class="about-feature-item">
-                        <span class="about-feature-icon">🎯</span>
-                        <div>
-                            <strong>数字捉迷藏</strong>
-                            <p>猜数字推理游戏</p>
-                        </div>
-                    </div>
+                <div class="about-feature-grid">
+                    <div class="about-feature-chip"><span>🧮</span>快速计算</div>
+                    <div class="about-feature-chip"><span>🧠</span>数字记忆</div>
+                    <div class="about-feature-chip"><span>🔍</span>找规律</div>
+                    <div class="about-feature-chip"><span>⚖️</span>比大小</div>
+                    <div class="about-feature-chip"><span>🔢</span>数独</div>
+                    <div class="about-feature-chip"><span>📊</span>数字排序</div>
+                    <div class="about-feature-chip"><span>🔟</span>凑十法</div>
+                    <div class="about-feature-chip"><span>🕐</span>时钟认知</div>
+                    <div class="about-feature-chip"><span>🔗</span>数学连线</div>
+                    <div class="about-feature-chip"><span>💡</span>脑筋急转弯</div>
+                    <div class="about-feature-chip"><span>🎯</span>数字捉迷藏</div>
                 </div>
             </div>
 
