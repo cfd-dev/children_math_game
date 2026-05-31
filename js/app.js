@@ -291,6 +291,44 @@ function showAboutPage() {
     showPage('about-page');
 }
 
+// EmailJS 配置 - 请替换为你自己的值
+var EMAILJS_PUBLIC_KEY = 'nhyb3VyyrK6umNt-p';
+var EMAILJS_SERVICE_ID = 'service_3uzeqlr';
+var EMAILJS_TEMPLATE_ID = 'template_yj1gowl';
+
+// 初始化 EmailJS
+if (typeof emailjs !== 'undefined') {
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+}
+
+function submitFeedback() {
+    var text = document.getElementById('feedback-text').value.trim();
+    if (!text) {
+        alert('请输入反馈意见');
+        return;
+    }
+    if (EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
+        alert('邮件服务尚未配置，请联系开发者');
+        return;
+    }
+    var btn = document.querySelector('.feedback-submit-btn');
+    btn.textContent = '发送中...';
+    btn.disabled = true;
+    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        message: text,
+        to_email: 'cfd_dev@126.com'
+    }).then(function() {
+        alert('反馈已发送，感谢您的意见！');
+        document.getElementById('feedback-text').value = '';
+    }, function(err) {
+        alert('发送失败，请稍后再试');
+        console.error('EmailJS error:', err);
+    }).finally(function() {
+        btn.textContent = '提交反馈';
+        btn.disabled = false;
+    });
+}
+
 // 捐赠金额选择
 function selectDonate(btn, amount) {
     var btns = document.querySelectorAll('.donate-option-btn');

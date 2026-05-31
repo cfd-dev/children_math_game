@@ -16,6 +16,7 @@
     <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="assets/icon.svg">
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
     <!-- 首次欢迎页面（用户创建 + 年级选择） -->
@@ -1141,6 +1142,13 @@
                 <h4>开发者</h4>
                 <p>小王子爸爸</p>
                 <p class="about-contact">用心做教育，用爱陪伴成长</p>
+            </div>
+
+            <div class="about-section">
+                <h4>问题反馈</h4>
+                <p>如果您遇到问题或有好的建议，欢迎反馈给我们：</p>
+                <textarea id="feedback-text" class="feedback-textarea" placeholder="请输入您的反馈意见..." rows="4"></textarea>
+                <button class="feedback-submit-btn" onclick="submitFeedback()">提交反馈</button>
             </div>
 
             <div class="about-section donate-section">
