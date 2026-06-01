@@ -117,10 +117,8 @@ document.addEventListener('input', function(e) {
 
 // ============ 语音鼓励 ============
 var voiceStyles = {
-    'female-teacher': { rate: 0.95, pitch: 1.3, gender: 'female' },
-    'male-teacher':   { rate: 1.0,  pitch: 0.8, gender: 'male' },
-    'female-student': { rate: 1.0,  pitch: 1.6, gender: 'female' },
-    'male-student':   { rate: 1.05, pitch: 1.0, gender: 'male' }
+    'female-teacher': { rate: 0.95, pitch: 1.3 },
+    'female-student': { rate: 1.0,  pitch: 1.6 }
 };
 var currentVoiceStyle = localStorage.getItem('voiceStyle') || 'female-student';
 
@@ -157,20 +155,11 @@ if (window.speechSynthesis) {
     window.speechSynthesis.onvoiceschanged = function() { _voicesCache = null; };
 }
 
-var maleVoiceRe = /yunxi|yunyang|kangkang|male|男/i;
-var femaleVoiceRe = /xiaoxiao|yaoyao|huihui|lili|tian|female|女/i;
+var femaleVoiceRe = /xiaoxiao|yaoyao|huihui|lili|tian|female|女|hanhan/i;
 
-function findVoice(gender) {
+function findVoice() {
     var zhVoices = getVoicesCached().filter(function(v) { return v.lang.startsWith('zh'); });
     if (!zhVoices.length) return null;
-    if (gender === 'male') {
-        // 明确匹配已知男声
-        return zhVoices.find(function(v) { return maleVoiceRe.test(v.name); })
-            // 排除已知女声后取第一个
-            || zhVoices.find(function(v) { return !femaleVoiceRe.test(v.name); })
-            || null;
-    }
-    // 女声
     return zhVoices.find(function(v) { return femaleVoiceRe.test(v.name); })
         || zhVoices[0];
 }
@@ -178,12 +167,12 @@ function findVoice(gender) {
 function speak(text) {
     if (!soundEnabled || !window.speechSynthesis || currentVoiceStyle === 'off') return;
     if (window.speechSynthesis.speaking) window.speechSynthesis.cancel();
-    var style = voiceStyles[currentVoiceStyle] || voiceStyles['female-teacher'];
+    var style = voiceStyles[currentVoiceStyle] || voiceStyles['female-student'];
     var utter = new SpeechSynthesisUtterance(text);
     utter.lang = 'zh-CN';
     utter.rate = style.rate;
     utter.pitch = style.pitch;
-    var voice = findVoice(style.gender);
+    var voice = findVoice();
     if (voice) utter.voice = voice;
     window.speechSynthesis.speak(utter);
 }
