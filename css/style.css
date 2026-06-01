@@ -1459,7 +1459,6 @@ body {
     font-size: min(3em, 10vw);
     font-weight: bold;
     min-height: 40px;
-    white-space: nowrap;
 }
 
 .feedback.correct {
@@ -1836,6 +1835,49 @@ body {
     background: #f0f0f0;
     border-radius: 12px;
     border: 3px solid #d0d0d0;
+}
+
+.memory-answer-cross {
+    font-size: 28px;
+    color: #e74c3c;
+    margin-bottom: 5px;
+}
+
+.memory-answer-feedback {
+    display: -webkit-flex;
+    display: flex;
+    gap: 8px;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.memory-answer-box {
+    width: 50px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: bold;
+    border-radius: 12px;
+    border: 3px solid #d0d0d0;
+    color: #333;
+    background: #f0f0f0;
+}
+
+.memory-answer-box.correct {
+    border-color: #27ae60;
+    background: #eafaf1;
+    color: #27ae60;
+}
+
+.memory-answer-box.wrong {
+    border-color: #e74c3c;
+    background: #fdeaea;
+    color: #e74c3c;
 }
 
 .memory-info {
@@ -2290,6 +2332,16 @@ body {
         font-size: 1.5em;
     }
 
+    .memory-answer-box {
+        width: 45px;
+        height: 55px;
+        font-size: 24px;
+    }
+
+    .memory-answer-cross {
+        font-size: 24px;
+    }
+
     .memory-fixed-digit {
         width: 45px;
         height: 55px;
@@ -2629,6 +2681,16 @@ body {
         width: 40px;
         height: 50px;
         font-size: 1.3em;
+    }
+
+    .memory-answer-box {
+        width: 40px;
+        height: 50px;
+        font-size: 21px;
+    }
+
+    .memory-answer-cross {
+        font-size: 21px;
     }
 
     .memory-fixed-digit {
