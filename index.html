@@ -1511,9 +1511,34 @@
             <div class="twentyfour-display">
                 <div id="twentyfour-numbers" class="twentyfour-numbers"></div>
                 <div class="twentyfour-target">目标：<span id="twentyfour-target-text">24</span></div>
-                <input type="text" id="twentyfour-input" class="twentyfour-input" readonly autocomplete="off" inputmode="none" placeholder="输入算式">
+                <div id="twentyfour-expression" class="twentyfour-expression"></div>
+                <button class="twentyfour-answer-btn" id="twentyfour-answer-btn" onclick="show24Answer()">查看答案</button>
             </div>
-            <div class="twentyfour-keyboard">
+            <!-- 填空模式键盘（低年级） -->
+            <div id="twentyfour-keyboard-fill" class="twentyfour-keyboard" style="display:none">
+                <div class="twentyfour-key-row">
+                    <button class="twentyfour-key" onclick="handle24KeyInput('1')">1</button>
+                    <button class="twentyfour-key" onclick="handle24KeyInput('2')">2</button>
+                    <button class="twentyfour-key" onclick="handle24KeyInput('3')">3</button>
+                    <button class="twentyfour-key" onclick="handle24KeyInput('4')">4</button>
+                    <button class="twentyfour-key" onclick="handle24KeyInput('5')">5</button>
+                </div>
+                <div class="twentyfour-key-row">
+                    <button class="twentyfour-key" onclick="handle24KeyInput('6')">6</button>
+                    <button class="twentyfour-key" onclick="handle24KeyInput('7')">7</button>
+                    <button class="twentyfour-key" onclick="handle24KeyInput('8')">8</button>
+                    <button class="twentyfour-key" onclick="handle24KeyInput('9')">9</button>
+                    <button class="twentyfour-key" onclick="handle24KeyInput('0')">0</button>
+                </div>
+                <div class="twentyfour-key-row">
+                    <button class="twentyfour-key" onclick="handle24KeyInput('C')">C</button>
+                    <button class="twentyfour-key" onclick="handle24KeyInput('←')">←</button>
+                    <button class="twentyfour-key twentyfour-key-hint" id="twentyfour-hint-btn-fill" onclick="handle24KeyInput('hint')" style="display:none">提示</button>
+                    <button class="twentyfour-key twentyfour-key-submit" onclick="handle24KeyInput('=')">=</button>
+                </div>
+            </div>
+            <!-- 构建模式键盘（高年级） -->
+            <div id="twentyfour-keyboard-build" class="twentyfour-keyboard" style="display:none">
                 <div class="twentyfour-key-row">
                     <button class="twentyfour-key" onclick="handle24KeyInput('1')">1</button>
                     <button class="twentyfour-key" onclick="handle24KeyInput('2')">2</button>

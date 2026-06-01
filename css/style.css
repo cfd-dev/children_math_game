@@ -2579,6 +2579,12 @@ body {
         font-size: 1.6em;
     }
 
+    .twentyfour-expr-box {
+        width: 40px;
+        height: 40px;
+        font-size: 1.3em;
+    }
+
     .twentyfour-key {
         width: 48px;
         height: 42px;
@@ -3499,6 +3505,88 @@ body.numpad-open .page.active {
     appearance: none;
 }
 
+.twentyfour-expression {
+    display: -webkit-flex;
+    display: flex;
+    gap: 6px;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin: 10px 0;
+    min-height: 50px;
+    -webkit-align-items: center;
+    align-items: center;
+}
+
+.twentyfour-expr-box {
+    width: 48px;
+    height: 48px;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    font-size: 1.5em;
+    font-weight: bold;
+    border-radius: 8px;
+    border: 2px solid #ccc;
+    background: #f5f5f5;
+    color: #333;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.twentyfour-expr-box.number {
+    background: #fff;
+    border-color: #667eea;
+    color: #333;
+}
+
+.twentyfour-expr-box.operator {
+    background: #f0f0f0;
+    border-color: #bbb;
+    color: #666;
+    font-size: 1.3em;
+}
+
+.twentyfour-expr-box.blank {
+    background: #fff9c4;
+    border-color: #fbc02d;
+    color: #999;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.twentyfour-expr-box.selected {
+    border-color: #2196f3;
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.3);
+}
+
+.twentyfour-expr-box.filled {
+    background: #fff;
+    border-color: #667eea;
+    color: #333;
+}
+
+.twentyfour-expr-box.filled.selected {
+    border-color: #2196f3;
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.3);
+}
+
+.twentyfour-expr-box.correct {
+    background: #e8f5e9;
+    border-color: #4caf50;
+    color: #2e7d32;
+}
+
+.twentyfour-expr-box.wrong {
+    background: #ffebee;
+    border-color: #f44336;
+    color: #c62828;
+}
+
 .twentyfour-keyboard {
     margin-top: 10px;
 }
@@ -3547,6 +3635,23 @@ body.numpad-open .page.active {
     background: #e3f2fd;
     border-color: #2196f3;
     color: #1565c0;
+}
+
+.twentyfour-answer-btn {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 6px 16px;
+    font-size: 0.9em;
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    text-decoration: underline;
+}
+
+.twentyfour-answer-btn:active {
+    color: #666;
 }
 
 /* ========== 迷宫游戏 ========== */
@@ -3661,6 +3766,13 @@ body.numpad-open .page.active {
         width: 44px;
         height: 44px;
         font-size: 1.4em;
+    }
+
+    .twentyfour-expr-box {
+        width: 36px;
+        height: 36px;
+        font-size: 1.1em;
+        border-width: 1.5px;
     }
 
     .twentyfour-key {

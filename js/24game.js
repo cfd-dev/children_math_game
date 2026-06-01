@@ -9,20 +9,28 @@ var twentyFourState = {
     currentSolution: null,
     startTime: null,
     timerInterval: null,
-    isProcessing: false
+    isProcessing: false,
+    viewedAnswer: false,
+    // 新增：填空/构建模式
+    mode: 'fill',       // 'fill' 或 'build'
+    tokens: [],          // 解析后的表达式token数组
+    blanks: [],          // 需要填空的位置索引
+    blankValues: [],     // 每个空的正确答案
+    selectedBlank: -1,   // 当前选中的空
+    userInputs: []       // 用户填入的值
 };
 
 // 年级难度配置
 var twentyFourGradeConfig = {
-    'k-small':  { numRange: 5,  ops: ['+', '-'],            target: 10, description: '4个数算10（加减）' },
-    'k-medium': { numRange: 5,  ops: ['+', '-', '*'],        target: 12, description: '4个数算12（加减乘）' },
-    'k-large':  { numRange: 9,  ops: ['+', '-', '*'],        target: 20, description: '4个数算20（加减乘）' },
-    'grade-1':  { numRange: 9,  ops: ['+', '-', '*', '/'],   target: 24, description: '经典24点（1-9）' },
-    'grade-2':  { numRange: 13, ops: ['+', '-', '*', '/'],   target: 24, description: '经典24点（1-13）' },
-    'grade-3':  { numRange: 13, ops: ['+', '-', '*', '/'],   target: 24, description: '经典24点（1-13）' },
-    'grade-4':  { numRange: 13, ops: ['+', '-', '*', '/'],   target: 24, description: '经典24点（进阶）' },
-    'grade-5':  { numRange: 13, ops: ['+', '-', '*', '/'],   target: 24, description: '经典24点（进阶）' },
-    'grade-6':  { numRange: 13, ops: ['+', '-', '*', '/'],   target: 24, description: '经典24点（挑战）' }
+    'k-small':  { numRange: 5,  ops: ['+', '-'],            target: 10, blanks: 1, mode: 'fill',  description: '4个数算10（加减填空）' },
+    'k-medium': { numRange: 5,  ops: ['+', '-', '*'],        target: 12, blanks: 1, mode: 'fill',  description: '4个数算12（加减乘填空）' },
+    'k-large':  { numRange: 9,  ops: ['+', '-', '*'],        target: 20, blanks: 2, mode: 'fill',  description: '4个数算20（加减乘填空）' },
+    'grade-1':  { numRange: 9,  ops: ['+', '-', '*', '/'],   target: 24, blanks: 0, mode: 'build', description: '经典24点（1-9）' },
+    'grade-2':  { numRange: 13, ops: ['+', '-', '*', '/'],   target: 24, blanks: 0, mode: 'build', description: '经典24点（1-13）' },
+    'grade-3':  { numRange: 13, ops: ['+', '-', '*', '/'],   target: 24, blanks: 0, mode: 'build', description: '经典24点（1-13）' },
+    'grade-4':  { numRange: 13, ops: ['+', '-', '*', '/'],   target: 24, blanks: 0, mode: 'build', description: '经典24点（进阶）' },
+    'grade-5':  { numRange: 13, ops: ['+', '-', '*', '/'],   target: 24, blanks: 0, mode: 'build', description: '经典24点（进阶）' },
+    'grade-6':  { numRange: 13, ops: ['+', '-', '*', '/'],   target: 24, blanks: 0, mode: 'build', description: '经典24点（挑战）' }
 };
 
 function get24Config() {
@@ -162,6 +170,305 @@ function generate24Puzzle() {
     return { numbers: [1, 2, 3, 4], target: target, solution: solve24([1, 2, 3, 4], target, ops) || '1+2+3+4' };
 }
 
+// ========== 表达式分词 ==========
+function tokenize(expr) {
+    var tokens = [];
+    var i = 0;
+    while (i < expr.length) {
+        if (expr[i] === ' ') { i++; continue; }
+        if (expr[i] >= '0' && expr[i] <= '9') {
+            var num = '';
+            while (i < expr.length && expr[i] >= '0' && expr[i] <= '9') {
+                num += expr[i++];
+            }
+            tokens.push({ type: 'number', value: num });
+        } else {
+            tokens.push({ type: 'op', value: expr[i] });
+            i++;
+        }
+    }
+    return tokens;
+}
+
+// ========== 运算符显示符号 ==========
+function opDisplay(op) {
+    if (op === '*') return '×';
+    if (op === '/') return '÷';
+    if (op === '-') return '−';
+    return op;
+}
+
+// ========== 生成填空位置 ==========
+function generateBlanks(tokens, count) {
+    var numIndices = [];
+    for (var i = 0; i < tokens.length; i++) {
+        if (tokens[i].type === 'number') numIndices.push(i);
+    }
+    // 随机打乱
+    for (var j = numIndices.length - 1; j > 0; j--) {
+        var k = Math.floor(Math.random() * (j + 1));
+        var tmp = numIndices[j]; numIndices[j] = numIndices[k]; numIndices[k] = tmp;
+    }
+    return numIndices.slice(0, Math.min(count, numIndices.length));
+}
+
+// ========== 渲染算式 ==========
+function renderExpression() {
+    var container = document.getElementById('twentyfour-expression');
+    container.innerHTML = '';
+
+    for (var i = 0; i < twentyFourState.tokens.length; i++) {
+        var token = twentyFourState.tokens[i];
+        var box = document.createElement('span');
+        box.dataset.index = i;
+
+        if (token.type === 'number') {
+            var isBlank = twentyFourState.blanks.indexOf(i) !== -1;
+            if (isBlank) {
+                box.className = 'twentyfour-expr-box blank';
+                box.textContent = '';
+                box.addEventListener('click', (function(idx) {
+                    return function() { selectExprBlank(idx); };
+                })(i));
+            } else {
+                box.className = 'twentyfour-expr-box number';
+                box.textContent = token.value;
+            }
+        } else {
+            box.className = 'twentyfour-expr-box operator';
+            box.textContent = opDisplay(token.value);
+        }
+
+        container.appendChild(box);
+    }
+
+    // 填空模式自动选中第一个空
+    if (twentyFourState.mode === 'fill' && twentyFourState.blanks.length > 0) {
+        selectExprBlank(twentyFourState.blanks[0]);
+    }
+    // 构建模式选中第一个位置
+    if (twentyFourState.mode === 'build') {
+        selectExprBlank(0);
+    }
+}
+
+// ========== 选中填空/位置 ==========
+function selectExprBlank(index) {
+    twentyFourState.selectedBlank = index;
+    var boxes = document.querySelectorAll('.twentyfour-expr-box');
+    for (var i = 0; i < boxes.length; i++) {
+        boxes[i].classList.remove('selected');
+    }
+    if (boxes[index]) boxes[index].classList.add('selected');
+}
+
+// ========== 处理键盘输入 ==========
+function handle24KeyInput(key) {
+    if (twentyFourState.isProcessing) return;
+
+    if (key === 'C') {
+        clear24Input();
+        return;
+    }
+    if (key === '←') {
+        handleBackspace();
+        return;
+    }
+    if (key === '=') {
+        check24Answer();
+        return;
+    }
+    if (key === 'hint') {
+        show24Hint();
+        return;
+    }
+
+    var idx = twentyFourState.selectedBlank;
+    if (idx < 0 || idx >= twentyFourState.tokens.length) return;
+
+    if (twentyFourState.mode === 'fill') {
+        // 填空模式：只接受数字
+        if (key < '0' || key > '9') return;
+        var blankIdx = twentyFourState.blanks.indexOf(idx);
+        if (blankIdx === -1) return;
+
+        twentyFourState.userInputs[blankIdx] = key;
+        var boxes = document.querySelectorAll('.twentyfour-expr-box');
+        boxes[idx].textContent = key;
+        boxes[idx].classList.add('filled');
+        boxes[idx].classList.remove('blank');
+
+        // 自动跳到下一个空
+        var nextBlankIdx = (blankIdx + 1) % twentyFourState.blanks.length;
+        selectExprBlank(twentyFourState.blanks[nextBlankIdx]);
+
+    } else {
+        // 构建模式：接受数字和运算符
+        var boxes = document.querySelectorAll('.twentyfour-expr-box');
+        var token = twentyFourState.tokens[idx];
+
+        if (token.type === 'number') {
+            if (key >= '0' && key <= '9') {
+                // 追加数字（支持多位数）
+                if (token.value === '' || token.value === '_') {
+                    token.value = key;
+                } else if (token.value.length < 3) {
+                    token.value += key;
+                }
+                boxes[idx].textContent = token.value;
+                boxes[idx].classList.add('filled');
+            }
+        } else {
+            // 运算符位置
+            var opMap = { '+': '+', '-': '-', '*': '*', '/': '/', '×': '*', '÷': '/' };
+            if (opMap[key] || key === '(' || key === ')') {
+                if (key === '(' || key === ')') {
+                    // 括号不放在运算符位置，忽略
+                    return;
+                }
+                token.value = opMap[key] || key;
+                boxes[idx].textContent = opDisplay(token.value);
+                boxes[idx].classList.add('filled');
+            }
+        }
+
+        // 自动跳到下一个位置
+        var next = (idx + 1) % twentyFourState.tokens.length;
+        selectExprBlank(next);
+    }
+
+    playClickSound();
+}
+
+// ========== 退格处理 ==========
+function handleBackspace() {
+    var idx = twentyFourState.selectedBlank;
+    if (idx < 0) return;
+
+    var boxes = document.querySelectorAll('.twentyfour-expr-box');
+
+    if (twentyFourState.mode === 'fill') {
+        var blankIdx = twentyFourState.blanks.indexOf(idx);
+        if (blankIdx !== -1) {
+            twentyFourState.userInputs[blankIdx] = '';
+            boxes[idx].textContent = '';
+            boxes[idx].classList.remove('filled');
+            boxes[idx].classList.add('blank');
+        }
+        // 跳到前一个空
+        var prevBlankIdx = (blankIdx - 1 + twentyFourState.blanks.length) % twentyFourState.blanks.length;
+        selectExprBlank(twentyFourState.blanks[prevBlankIdx]);
+
+    } else {
+        var token = twentyFourState.tokens[idx];
+        if (token.type === 'number') {
+            if (token.value.length > 0) {
+                token.value = token.value.slice(0, -1);
+                boxes[idx].textContent = token.value || '';
+                if (!token.value) boxes[idx].classList.remove('filled');
+            }
+        } else {
+            token.value = '_';
+            boxes[idx].textContent = '';
+            boxes[idx].classList.remove('filled');
+        }
+        // 跳到前一个位置
+        var prev = (idx - 1 + twentyFourState.tokens.length) % twentyFourState.tokens.length;
+        selectExprBlank(prev);
+    }
+}
+
+// ========== 清空输入 ==========
+function clear24Input() {
+    if (twentyFourState.mode === 'fill') {
+        for (var i = 0; i < twentyFourState.blanks.length; i++) {
+            twentyFourState.userInputs[i] = '';
+        }
+        renderExpression();
+    } else {
+        for (var j = 0; j < twentyFourState.tokens.length; j++) {
+            if (twentyFourState.tokens[j].type === 'number') {
+                twentyFourState.tokens[j].value = '';
+            } else {
+                twentyFourState.tokens[j].value = '_';
+            }
+        }
+        renderExpression();
+    }
+    var hintBtn = document.getElementById('twentyfour-hint-btn');
+    if (hintBtn) hintBtn.style.display = 'none';
+    var hintBtnFill = document.getElementById('twentyfour-hint-btn-fill');
+    if (hintBtnFill) hintBtnFill.style.display = 'none';
+    twentyFourState.viewedAnswer = false;
+    var answerBtn = document.getElementById('twentyfour-answer-btn');
+    if (answerBtn) answerBtn.style.display = 'inline-block';
+}
+
+// ========== 提示 ==========
+function show24Hint() {
+    if (!twentyFourState.currentSolution) return;
+
+    if (twentyFourState.mode === 'fill') {
+        // 填空模式：填入所有空的正确值
+        for (var i = 0; i < twentyFourState.blanks.length; i++) {
+            var bi = twentyFourState.blanks[i];
+            twentyFourState.userInputs[i] = twentyFourState.blankValues[i];
+            var boxes = document.querySelectorAll('.twentyfour-expr-box');
+            boxes[bi].textContent = twentyFourState.blankValues[i];
+            boxes[bi].classList.add('filled');
+            boxes[bi].classList.remove('blank');
+        }
+    } else {
+        // 构建模式：填入完整解法
+        var solutionTokens = tokenize(twentyFourState.currentSolution);
+        for (var j = 0; j < solutionTokens.length && j < twentyFourState.tokens.length; j++) {
+            twentyFourState.tokens[j].value = solutionTokens[j].value;
+        }
+        renderExpression();
+    }
+
+    var hintBtn = document.getElementById('twentyfour-hint-btn');
+    if (hintBtn) hintBtn.style.display = 'none';
+    var hintBtnFill = document.getElementById('twentyfour-hint-btn-fill');
+    if (hintBtnFill) hintBtnFill.style.display = 'none';
+}
+
+// ========== 查看答案 ==========
+function show24Answer() {
+    if (!twentyFourState.currentSolution) return;
+
+    var solutionTokens = tokenize(twentyFourState.currentSolution);
+    var boxes = document.querySelectorAll('.twentyfour-expr-box');
+
+    if (twentyFourState.mode === 'fill') {
+        for (var i = 0; i < twentyFourState.blanks.length; i++) {
+            var bi = twentyFourState.blanks[i];
+            twentyFourState.userInputs[i] = twentyFourState.blankValues[i];
+            boxes[bi].textContent = twentyFourState.blankValues[i];
+            boxes[bi].classList.remove('blank', 'wrong');
+            boxes[bi].classList.add('filled', 'correct');
+        }
+    } else {
+        for (var j = 0; j < solutionTokens.length && j < twentyFourState.tokens.length; j++) {
+            twentyFourState.tokens[j].value = solutionTokens[j].value;
+        }
+        renderExpression();
+        boxes = document.querySelectorAll('.twentyfour-expr-box');
+        for (var k = 0; k < boxes.length; k++) {
+            boxes[k].classList.add('correct');
+        }
+    }
+
+    var feedback = document.getElementById('twentyfour-feedback');
+    feedback.textContent = '答案已显示，按 = 进入下一题';
+    feedback.className = 'feedback';
+
+    twentyFourState.viewedAnswer = true;
+
+    var answerBtn = document.getElementById('twentyfour-answer-btn');
+    if (answerBtn) answerBtn.style.display = 'none';
+}
+
 // ========== 验证玩家表达式 ==========
 function validate24Expression(expr, numbers, target) {
     // 检查非法字符
@@ -228,12 +535,44 @@ function showNext24Question() {
         return;
     }
 
+    var config = get24Config();
+    twentyFourState.mode = config.mode;
+
     var puzzle = generate24Puzzle();
     twentyFourState.currentNumbers = puzzle.numbers;
     twentyFourState.currentTarget = puzzle.target;
     twentyFourState.currentSolution = puzzle.solution;
 
+    // 分词
+    twentyFourState.tokens = tokenize(puzzle.solution);
+    twentyFourState.blanks = [];
+    twentyFourState.blankValues = [];
+    twentyFourState.userInputs = [];
+    twentyFourState.selectedBlank = -1;
+
+    if (twentyFourState.mode === 'fill') {
+        // 生成填空
+        twentyFourState.blanks = generateBlanks(twentyFourState.tokens, config.blanks);
+        for (var i = 0; i < twentyFourState.blanks.length; i++) {
+            twentyFourState.blankValues.push(twentyFourState.tokens[twentyFourState.blanks[i]].value);
+            twentyFourState.userInputs.push('');
+        }
+    } else {
+        // 构建模式：清空所有数字，运算符标记为待填写
+        for (var j = 0; j < twentyFourState.tokens.length; j++) {
+            if (twentyFourState.tokens[j].type === 'number') {
+                twentyFourState.tokens[j].value = '';
+            } else {
+                twentyFourState.tokens[j].value = '_';
+            }
+        }
+    }
+
     // 更新显示
+    twentyFourState.viewedAnswer = false;
+    var answerBtn = document.getElementById('twentyfour-answer-btn');
+    if (answerBtn) answerBtn.style.display = 'inline-block';
+
     document.getElementById('twentyfour-progress').textContent =
         '第 ' + twentyFourState.currentQuestion + '/' + twentyFourState.totalQuestions + ' 题';
     document.getElementById('twentyfour-score').textContent = '得分：' + twentyFourState.score;
@@ -249,85 +588,160 @@ function showNext24Question() {
 
     document.getElementById('twentyfour-target-text').textContent = puzzle.target;
 
-    // 清空输入
-    clear24Input();
+    // 显示/隐藏键盘
+    var fillKb = document.getElementById('twentyfour-keyboard-fill');
+    var buildKb = document.getElementById('twentyfour-keyboard-build');
+    if (twentyFourState.mode === 'fill') {
+        fillKb.style.display = 'block';
+        buildKb.style.display = 'none';
+    } else {
+        fillKb.style.display = 'none';
+        buildKb.style.display = 'block';
+    }
+
+    // 渲染算式
+    renderExpression();
+
     var feedback = document.getElementById('twentyfour-feedback');
     feedback.textContent = '';
     feedback.className = 'feedback';
+
+    var hintBtn = document.getElementById('twentyfour-hint-btn');
+    if (hintBtn) hintBtn.style.display = 'none';
+    var hintBtnFill = document.getElementById('twentyfour-hint-btn-fill');
+    if (hintBtnFill) hintBtnFill.style.display = 'none';
 }
 
 function check24Answer() {
     if (twentyFourState.isProcessing) return;
-
-    var input = document.getElementById('twentyfour-input');
-    var expr = input.value.trim();
-    if (!expr) return;
-
     twentyFourState.isProcessing = true;
+
     var feedback = document.getElementById('twentyfour-feedback');
+    var boxes = document.querySelectorAll('.twentyfour-expr-box');
 
-    var result = validate24Expression(expr, twentyFourState.currentNumbers, twentyFourState.currentTarget);
-
-    if (result.valid) {
-        twentyFourState.correctCount++;
-        var roundScore = 10;
-        twentyFourState.score += roundScore;
-
-        feedback.textContent = '✓ 正确！+' + roundScore + '分';
-        feedback.className = 'feedback correct';
-        playCorrectSound();
-        speakCorrect();
-
-        setTimeout(function() {
-            showNext24Question();
-        }, 1200);
-    } else {
-        feedback.textContent = '✗ ' + result.error;
+    // 查看答案后直接进入下一题，不得分
+    if (twentyFourState.viewedAnswer) {
+        feedback.textContent = '✗ 已查看答案，不得分';
         feedback.className = 'feedback wrong';
         playWrongSound();
-        speakWrong();
-
-        // 显示提示按钮
-        var hintBtn = document.getElementById('twentyfour-hint-btn');
-        if (hintBtn) hintBtn.style.display = 'inline-block';
-
         setTimeout(function() {
-            twentyFourState.isProcessing = false;
-        }, 500);
+            showNext24Question();
+        }, 1500);
+        return;
     }
-}
 
-function show24Hint() {
-    if (twentyFourState.currentSolution) {
-        var input = document.getElementById('twentyfour-input');
-        input.value = twentyFourState.currentSolution;
-        var hintBtn = document.getElementById('twentyfour-hint-btn');
-        if (hintBtn) hintBtn.style.display = 'none';
-    }
-}
+    if (twentyFourState.mode === 'fill') {
+        // 填空模式：检查每个空
+        var allCorrect = true;
+        for (var i = 0; i < twentyFourState.blanks.length; i++) {
+            var bi = twentyFourState.blanks[i];
+            var userInput = twentyFourState.userInputs[i];
+            var correct = twentyFourState.blankValues[i];
+            if (userInput === correct) {
+                boxes[bi].classList.add('correct');
+            } else {
+                boxes[bi].classList.add('wrong');
+                allCorrect = false;
+            }
+        }
 
-function handle24KeyInput(key) {
-    var input = document.getElementById('twentyfour-input');
-    if (key === 'C') {
-        input.value = '';
-    } else if (key === '←') {
-        input.value = input.value.slice(0, -1);
-    } else if (key === '=') {
-        check24Answer();
-    } else if (key === 'hint') {
-        show24Hint();
+        if (allCorrect) {
+            twentyFourState.correctCount++;
+            var roundScore = 10;
+            twentyFourState.score += roundScore;
+            feedback.textContent = '✓ 正确！+' + roundScore + '分';
+            feedback.className = 'feedback correct';
+            playCorrectSound();
+            speakCorrect();
+
+            setTimeout(function() {
+                showNext24Question();
+            }, 1200);
+        } else {
+            feedback.textContent = '✗ 有错误，正确答案已标出';
+            feedback.className = 'feedback wrong';
+            playWrongSound();
+            speakWrong();
+
+            // 显示正确答案
+            for (var j = 0; j < twentyFourState.blanks.length; j++) {
+                var bIdx = twentyFourState.blanks[j];
+                if (twentyFourState.userInputs[j] !== twentyFourState.blankValues[j]) {
+                    boxes[bIdx].textContent = twentyFourState.blankValues[j];
+                    boxes[bIdx].classList.remove('wrong');
+                    boxes[bIdx].classList.add('correct');
+                }
+            }
+
+            setTimeout(function() {
+                twentyFourState.isProcessing = false;
+                showNext24Question();
+            }, 2500);
+        }
+
     } else {
-        if (input.value.length < 30) {
-            input.value += key;
+        // 构建模式：拼接表达式并验证
+        var expr = '';
+        for (var k = 0; k < twentyFourState.tokens.length; k++) {
+            var t = twentyFourState.tokens[k];
+            if (t.type === 'number') {
+                if (!t.value || t.value === '_') {
+                    feedback.textContent = '✗ 请填写完整算式';
+                    feedback.className = 'feedback wrong';
+                    twentyFourState.isProcessing = false;
+                    return;
+                }
+                expr += t.value;
+            } else {
+                if (!t.value || t.value === '_') {
+                    feedback.textContent = '✗ 请选择运算符';
+                    feedback.className = 'feedback wrong';
+                    twentyFourState.isProcessing = false;
+                    return;
+                }
+                expr += t.value;
+            }
+        }
+
+        var result = validate24Expression(expr, twentyFourState.currentNumbers, twentyFourState.currentTarget);
+
+        if (result.valid) {
+            twentyFourState.correctCount++;
+            var roundScore2 = 10;
+            twentyFourState.score += roundScore2;
+
+            for (var m = 0; m < boxes.length; m++) {
+                boxes[m].classList.add('correct');
+            }
+
+            feedback.textContent = '✓ 正确！+' + roundScore2 + '分';
+            feedback.className = 'feedback correct';
+            playCorrectSound();
+            speakCorrect();
+
+            setTimeout(function() {
+                showNext24Question();
+            }, 1200);
+        } else {
+            for (var n = 0; n < boxes.length; n++) {
+                boxes[n].classList.add('wrong');
+            }
+
+            feedback.textContent = '✗ ' + result.error;
+            feedback.className = 'feedback wrong';
+            playWrongSound();
+            speakWrong();
+
+            var hintBtn = document.getElementById('twentyfour-hint-btn');
+            if (hintBtn) hintBtn.style.display = 'inline-block';
+            var hintBtnFill = document.getElementById('twentyfour-hint-btn-fill');
+            if (hintBtnFill) hintBtnFill.style.display = 'inline-block';
+
+            setTimeout(function() {
+                twentyFourState.isProcessing = false;
+            }, 500);
         }
     }
-}
-
-function clear24Input() {
-    var input = document.getElementById('twentyfour-input');
-    if (input) input.value = '';
-    var hintBtn = document.getElementById('twentyfour-hint-btn');
-    if (hintBtn) hintBtn.style.display = 'none';
 }
 
 function update24Timer() {
