@@ -946,13 +946,13 @@ body {
 
 /* 找规律题目显示 */
 .pattern-display {
-    font-size: 3em;
+    font-size: min(3em, 10vw);
     font-weight: bold;
     color: #333;
     text-align: center;
     letter-spacing: 0.1em;
     line-height: 1.4;
-    word-break: break-all;
+    white-space: nowrap;
 }
 
 /* 比大小题目显示 */
@@ -1395,9 +1395,10 @@ body {
 }
 
 #math-question {
-    font-size: 3em;
+    font-size: min(3em, 10vw);
     font-weight: bold;
     color: #333;
+    white-space: nowrap;
 }
 
 .answer-section {
@@ -1454,9 +1455,10 @@ body {
 .feedback {
     text-align: center;
     margin-top: 20px;
-    font-size: 3em;
+    font-size: min(3em, 10vw);
     font-weight: bold;
     min-height: 40px;
+    white-space: nowrap;
 }
 
 .feedback.correct {
@@ -2156,7 +2158,9 @@ body {
 
 /* 大屏幕平板 (768px+) */
 @media (min-width: 768px) {
-    /* 统一使用基础容器和按钮样式 */
+    .container {
+        max-width: 700px;
+    }
 
     .grade-grid {
         grid-template-columns: repeat(3, 1fr);
@@ -2240,7 +2244,19 @@ body {
     }
 
     #math-question {
-        font-size: 2.5em;
+        font-size: 1.8em;
+    }
+
+    .pattern-display {
+        font-size: 1.8em;
+    }
+
+    .feedback {
+        font-size: 2em;
+    }
+
+    .parent-question {
+        font-size: 1.5em;
     }
 
     .numbers-display {
@@ -2384,7 +2400,6 @@ body {
     .about-app-icon-img {
         width: 64px;
         height: 64px;
-    }
     }
 
     .about-app-name {
@@ -2570,7 +2585,19 @@ body {
     }
 
     #math-question {
-        font-size: 2em;
+        font-size: 1.5em;
+    }
+
+    .pattern-display {
+        font-size: 1.4em;
+    }
+
+    .feedback {
+        font-size: 1.6em;
+    }
+
+    .parent-question {
+        font-size: 1.3em;
     }
 
     .numbers-display {
