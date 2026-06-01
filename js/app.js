@@ -157,13 +157,101 @@ function goHome() {
         clearInterval(seekState.timerInterval);
     }
 
-    // 隐藏捐赠二维码
-    var donateQr = document.getElementById('donate-qr-area');
-    if (donateQr) donateQr.style.display = 'none';
+    // 隐藏支付区域
+    var donatePay = document.getElementById('donate-pay-area');
+    if (donatePay) donatePay.style.display = 'none';
 
-    // 更新首页用户信息并显示
+    // 更新首页用户信息
     updateHomeUserInfo();
-    showPage('home-page');
+
+    // 检查游戏时间
+    checkPlayTime(function() {
+        showPage('home-page');
+    });
+}
+
+// ========== 游戏时间控制 ==========
+var REST_THRESHOLD = 20 * 60 * 1000;   // 20分钟
+var PARENT_THRESHOLD = 40 * 60 * 1000; // 40分钟
+var REST_DURATION = 120;               // 休息120秒
+
+var restTimerInterval = null;
+var playStartTime = parseInt(sessionStorage.getItem('playStartTime')) || 0;
+var parentChallengeAnswer = 0;
+
+if (!playStartTime) {
+    playStartTime = Date.now();
+    sessionStorage.setItem('playStartTime', playStartTime);
+}
+
+function checkPlayTime(callback) {
+    var elapsed = Date.now() - playStartTime;
+    if (elapsed >= PARENT_THRESHOLD) {
+        showParentScreen(callback);
+    } else if (elapsed >= REST_THRESHOLD) {
+        showRestScreen(elapsed, callback);
+    } else {
+        callback();
+    }
+}
+
+function showRestScreen(elapsed, callback) {
+    var minutes = Math.floor(elapsed / 60000);
+    document.getElementById('rest-elapsed').textContent = minutes;
+    document.getElementById('rest-screen').style.display = 'flex';
+
+    var remaining = REST_DURATION;
+    updateRestCountdown(remaining);
+
+    restTimerInterval = setInterval(function() {
+        remaining--;
+        updateRestCountdown(remaining);
+        if (remaining <= 0) {
+            clearInterval(restTimerInterval);
+            restTimerInterval = null;
+            document.getElementById('rest-screen').style.display = 'none';
+            playStartTime = Date.now();
+            sessionStorage.setItem('playStartTime', playStartTime);
+            callback();
+        }
+    }, 1000);
+}
+
+function updateRestCountdown(seconds) {
+    var m = Math.floor(seconds / 60);
+    var s = seconds % 60;
+    document.getElementById('rest-countdown').textContent = m + ':' + (s < 10 ? '0' : '') + s;
+}
+
+function showParentScreen(callback) {
+    var a = Math.floor(Math.random() * 90) + 10; // 10~99
+    var b = Math.floor(Math.random() * 90) + 10;
+    parentChallengeAnswer = a * b;
+    document.getElementById('parent-question').textContent = a + ' × ' + b + ' = ?';
+    document.getElementById('parent-answer').value = '';
+    document.getElementById('parent-hint').textContent = '（小朋友可以请爸妈帮忙哦）';
+    document.getElementById('parent-hint').style.color = '#95a5a6';
+    document.getElementById('parent-screen').style.display = 'flex';
+    window._parentCallback = callback;
+}
+
+function verifyParent() {
+    var input = parseInt(document.getElementById('parent-answer').value);
+    if (input === parentChallengeAnswer) {
+        document.getElementById('parent-screen').style.display = 'none';
+        playStartTime = Date.now();
+        sessionStorage.setItem('playStartTime', playStartTime);
+        if (window._parentCallback) window._parentCallback();
+    } else {
+        document.getElementById('parent-hint').textContent = '答案不正确，请重试';
+        document.getElementById('parent-hint').style.color = '#e74c3c';
+        document.getElementById('parent-answer').value = '';
+        // 生成新题目
+        var a = Math.floor(Math.random() * 90) + 10;
+        var b = Math.floor(Math.random() * 90) + 10;
+        parentChallengeAnswer = a * b;
+        document.getElementById('parent-question').textContent = a + ' × ' + b + ' = ?';
+    }
 }
 
 // 确保页面加载后立即隐藏非活动页面（防止CSS/JS加载延迟导致全部显示）

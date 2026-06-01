@@ -1394,6 +1394,35 @@
         </div>
     </div>
 
+    <!-- 休息提醒 -->
+    <div id="rest-screen" class="time-control-overlay" style="display:none">
+        <div class="time-control-card">
+            <div class="rest-icon">☕</div>
+            <h2 class="rest-title">休息一下吧！</h2>
+            <p class="rest-msg">你已经玩了 <strong id="rest-elapsed">20</strong> 分钟，让眼睛休息一下。</p>
+            <div class="rest-countdown" id="rest-countdown">2:00</div>
+            <p class="rest-hint">倒计时结束后自动继续</p>
+        </div>
+    </div>
+
+    <!-- 家长验证 -->
+    <div id="parent-screen" class="time-control-overlay" style="display:none">
+        <div class="time-control-card">
+            <div class="parent-icon">👨‍👩‍👧</div>
+            <h2 class="parent-title">需要家长许可</h2>
+            <p class="parent-msg">游戏时间已超过 <strong>40</strong> 分钟，请家长验证后继续。</p>
+            <div class="parent-challenge">
+                <p>请计算：</p>
+                <div class="parent-question" id="parent-question">37 × 48 = ?</div>
+                <div class="parent-input-wrap">
+                    <input type="number" id="parent-answer" class="parent-input" placeholder="输入答案">
+                    <button class="parent-submit-btn" onclick="verifyParent()">确认</button>
+                </div>
+                <p class="parent-hint" id="parent-hint">（小朋友可以请爸妈帮忙哦）</p>
+            </div>
+        </div>
+    </div>
+
     <!-- 数字键盘 -->
     <div class="numpad-wrap">
         <div id="numpad" class="numpad">

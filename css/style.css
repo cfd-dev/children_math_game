@@ -346,6 +346,132 @@ body {
     font-size: 1.1em;
 }
 
+/* 时间控制 */
+.time-control-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.85);
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.time-control-card {
+    background: white;
+    border-radius: 24px;
+    padding: 40px 30px;
+    text-align: center;
+    max-width: 360px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.rest-icon, .parent-icon {
+    font-size: 3em;
+    margin-bottom: 12px;
+}
+
+.rest-title, .parent-title {
+    color: #2c3e50;
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.rest-msg, .parent-msg {
+    color: #555;
+    font-size: 1em;
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+.rest-countdown {
+    font-size: 3em;
+    font-weight: bold;
+    color: #e67e22;
+    margin: 16px 0;
+    font-variant-numeric: tabular-nums;
+}
+
+.rest-hint {
+    color: #95a5a6;
+    font-size: 0.85em;
+}
+
+.parent-challenge {
+    background: #f8f9fa;
+    border-radius: 16px;
+    padding: 20px;
+    margin-top: 16px;
+}
+
+.parent-challenge p {
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.parent-question {
+    font-size: 2em;
+    font-weight: bold;
+    color: #2c3e50;
+    margin: 12px 0;
+}
+
+.parent-input-wrap {
+    display: -webkit-flex;
+    display: flex;
+    gap: 8px;
+    -webkit-justify-content: center;
+    justify-content: center;
+    margin-top: 12px;
+}
+
+.parent-input {
+    width: 120px;
+    padding: 10px 12px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 1.2em;
+    text-align: center;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.parent-input:focus {
+    border-color: #667eea;
+}
+
+.parent-submit-btn {
+    padding: 10px 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    touch-action: manipulation;
+}
+
+.parent-submit-btn:active {
+    opacity: 0.85;
+}
+
+.parent-hint {
+    color: #95a5a6;
+    font-size: 0.8em;
+    margin-top: 10px;
+}
+
 .feedback-textarea {
     width: 100%;
     padding: 12px;
