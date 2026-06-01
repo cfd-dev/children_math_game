@@ -1221,15 +1221,13 @@
                 <h3>语音设置</h3>
                 <div class="grade-edit">
                     <label for="voice-style-select">语音角色：</label>
-                    <select id="voice-style-select" onchange="setVoiceStyle(this.value)">
+                    <select id="voice-style-select" onchange="setVoiceStyle(this.value)" style="max-width:140px;">
                         <option value="female-teacher">👩‍🏫 女老师</option>
                         <option value="male-teacher">👨‍🏫 男老师</option>
                         <option value="female-student">👧 女同学</option>
                         <option value="male-student">👦 男同学</option>
                     </select>
-                </div>
-                <div class="grade-edit" style="border-top:none;padding-top:0;">
-                    <button class="profile-entry-btn" onclick="previewVoice()" style="font-size:0.95em;padding:8px 20px;">🔊 试听</button>
+                    <button class="profile-entry-btn" onclick="previewVoice()" style="font-size:0.95em;padding:8px 16px;">🔊 试听</button>
                 </div>
             </div>
 
