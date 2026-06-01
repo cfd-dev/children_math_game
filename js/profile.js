@@ -24,6 +24,10 @@ const STORAGE_KEYS = {
     BRAINTEASER_ABILITY: 'brainTeaserAbility',
     SEEK_HISTORY: 'seekGameHistory',
     SEEK_ABILITY: 'seekAbility',
+    TWENTYFOUR_HISTORY: 'twentyFourGameHistory',
+    TWENTYFOUR_ABILITY: 'twentyFourAbility',
+    MAZE_HISTORY: 'mazeGameHistory',
+    MAZE_ABILITY: 'mazeAbility',
     USER_GRADE: 'userGrade',
     USER_NAME: 'userName'
 };
@@ -95,6 +99,18 @@ function initStorage() {
     }
     if (!localStorage.getItem(STORAGE_KEYS.SEEK_ABILITY)) {
         localStorage.setItem(STORAGE_KEYS.SEEK_ABILITY, '50');
+    }
+    if (!localStorage.getItem(STORAGE_KEYS.TWENTYFOUR_HISTORY)) {
+        localStorage.setItem(STORAGE_KEYS.TWENTYFOUR_HISTORY, JSON.stringify([]));
+    }
+    if (!localStorage.getItem(STORAGE_KEYS.TWENTYFOUR_ABILITY)) {
+        localStorage.setItem(STORAGE_KEYS.TWENTYFOUR_ABILITY, '50');
+    }
+    if (!localStorage.getItem(STORAGE_KEYS.MAZE_HISTORY)) {
+        localStorage.setItem(STORAGE_KEYS.MAZE_HISTORY, JSON.stringify([]));
+    }
+    if (!localStorage.getItem(STORAGE_KEYS.MAZE_ABILITY)) {
+        localStorage.setItem(STORAGE_KEYS.MAZE_ABILITY, '50');
     }
 }
 
@@ -578,6 +594,73 @@ function getSeekAbility() {
     return parseInt(localStorage.getItem(STORAGE_KEYS.SEEK_ABILITY) || '50');
 }
 
+// ========== 24点游戏记录 ==========
+function get24History() {
+    return JSON.parse(localStorage.getItem(STORAGE_KEYS.TWENTYFOUR_HISTORY) || '[]');
+}
+
+function save24Record(accuracy, totalTime, questionCount, score) {
+    const history = get24History();
+    history.unshift({
+        date: new Date().toLocaleString('zh-CN'),
+        accuracy: accuracy,
+        totalTime: totalTime,
+        questionCount: questionCount,
+        score: score,
+        avgTime: (totalTime / questionCount).toFixed(1)
+    });
+    if (history.length > 50) history.pop();
+    localStorage.setItem(STORAGE_KEYS.TWENTYFOUR_HISTORY, JSON.stringify(history));
+    update24Ability(accuracy);
+}
+
+function update24Ability(accuracy) {
+    let ability = parseInt(localStorage.getItem(STORAGE_KEYS.TWENTYFOUR_ABILITY) || '50');
+    if (accuracy >= 90) ability = Math.min(100, ability + 5);
+    else if (accuracy >= 70) ability = Math.min(100, ability + 3);
+    else if (accuracy >= 50) ability = Math.min(100, ability + 1);
+    else if (accuracy < 30) ability = Math.max(0, ability - 3);
+    localStorage.setItem(STORAGE_KEYS.TWENTYFOUR_ABILITY, ability.toString());
+    return ability;
+}
+
+function get24Ability() {
+    return parseInt(localStorage.getItem(STORAGE_KEYS.TWENTYFOUR_ABILITY) || '50');
+}
+
+// ========== 迷宫游戏记录 ==========
+function getMazeHistory() {
+    return JSON.parse(localStorage.getItem(STORAGE_KEYS.MAZE_HISTORY) || '[]');
+}
+
+function saveMazeRecord(accuracy, totalTime, mazeCount, score) {
+    const history = getMazeHistory();
+    history.unshift({
+        date: new Date().toLocaleString('zh-CN'),
+        accuracy: accuracy,
+        totalTime: totalTime,
+        mazeCount: mazeCount,
+        score: score
+    });
+    if (history.length > 50) history.pop();
+    localStorage.setItem(STORAGE_KEYS.MAZE_HISTORY, JSON.stringify(history));
+    updateMazeAbility(accuracy);
+}
+
+function updateMazeAbility(accuracy) {
+    let ability = parseInt(localStorage.getItem(STORAGE_KEYS.MAZE_ABILITY) || '50');
+    if (accuracy >= 90) ability = Math.min(100, ability + 5);
+    else if (accuracy >= 70) ability = Math.min(100, ability + 3);
+    else if (accuracy >= 50) ability = Math.min(100, ability + 1);
+    else if (accuracy < 30) ability = Math.max(0, ability - 3);
+    localStorage.setItem(STORAGE_KEYS.MAZE_ABILITY, ability.toString());
+    return ability;
+}
+
+function getMazeAbility() {
+    return parseInt(localStorage.getItem(STORAGE_KEYS.MAZE_ABILITY) || '50');
+}
+
 // 绘制雷达图
 function drawRadarChart() {
     const canvas = document.getElementById('radar-chart');
@@ -892,6 +975,42 @@ function showHistory(type) {
                 `;
             });
         }
+    } else if (type === 'twentyfour') {
+        const history = get24History();
+        if (history.length === 0) {
+            html = '<div class="history-empty">暂无24点记录</div>';
+        } else {
+            history.slice(0, 10).forEach(record => {
+                html += `
+                    <div class="history-item">
+                        <div class="history-date">${record.date}</div>
+                        <div class="history-details">
+                            <span>正确率: ${record.accuracy}%</span>
+                            <span>用时: ${record.totalTime}秒</span>
+                            <span>得分: ${record.score}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+    } else if (type === 'maze') {
+        const history = getMazeHistory();
+        if (history.length === 0) {
+            html = '<div class="history-empty">暂无迷宫记录</div>';
+        } else {
+            history.slice(0, 10).forEach(record => {
+                html += `
+                    <div class="history-item">
+                        <div class="history-date">${record.date}</div>
+                        <div class="history-details">
+                            <span>完成率: ${record.accuracy}%</span>
+                            <span>用时: ${record.totalTime}秒</span>
+                            <span>得分: ${record.score}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
     }
 
     historyList.innerHTML = html;
@@ -928,6 +1047,8 @@ function updateProfilePage() {
     document.getElementById('total-match-games').textContent = getMatchHistory().length;
     document.getElementById('total-bt-games').textContent = getBTHistory().length;
     document.getElementById('total-seek-games').textContent = getSeekHistory().length;
+    document.getElementById('total-24-games').textContent = get24History().length;
+    document.getElementById('total-maze-games').textContent = getMazeHistory().length;
 
     // 更新能力值
     document.getElementById('math-ability').textContent = getMathAbility();
@@ -941,6 +1062,8 @@ function updateProfilePage() {
     document.getElementById('match-ability').textContent = getMatchAbility();
     document.getElementById('bt-ability').textContent = getBTAbility();
     document.getElementById('seek-ability').textContent = getSeekAbility();
+    document.getElementById('twentyfour-ability').textContent = get24Ability();
+    document.getElementById('maze-ability').textContent = getMazeAbility();
 
     // 更新等级显示
     document.getElementById('profile-grade-badge').textContent = gradeConfig[currentGrade].name;
@@ -986,6 +1109,10 @@ function switchUser() {
         localStorage.removeItem(STORAGE_KEYS.BRAINTEASER_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.SEEK_HISTORY);
         localStorage.removeItem(STORAGE_KEYS.SEEK_ABILITY);
+        localStorage.removeItem(STORAGE_KEYS.TWENTYFOUR_HISTORY);
+        localStorage.removeItem(STORAGE_KEYS.TWENTYFOUR_ABILITY);
+        localStorage.removeItem(STORAGE_KEYS.MAZE_HISTORY);
+        localStorage.removeItem(STORAGE_KEYS.MAZE_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.USER_GRADE);
         localStorage.removeItem(STORAGE_KEYS.USER_NAME);
 
@@ -1019,6 +1146,10 @@ function clearAllData() {
         localStorage.removeItem(STORAGE_KEYS.BRAINTEASER_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.SEEK_HISTORY);
         localStorage.removeItem(STORAGE_KEYS.SEEK_ABILITY);
+        localStorage.removeItem(STORAGE_KEYS.TWENTYFOUR_HISTORY);
+        localStorage.removeItem(STORAGE_KEYS.TWENTYFOUR_ABILITY);
+        localStorage.removeItem(STORAGE_KEYS.MAZE_HISTORY);
+        localStorage.removeItem(STORAGE_KEYS.MAZE_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.USER_GRADE);
         localStorage.removeItem(STORAGE_KEYS.USER_NAME);
 

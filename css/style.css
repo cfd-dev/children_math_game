@@ -2572,6 +2572,24 @@ body {
         padding: 12px 20px;
         font-size: 1.1em;
     }
+
+    .twentyfour-num-box {
+        width: 50px;
+        height: 50px;
+        font-size: 1.6em;
+    }
+
+    .twentyfour-key {
+        width: 48px;
+        height: 42px;
+        font-size: 1.1em;
+    }
+
+    .maze-arrow-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 1.3em;
+    }
 }
 
 /* 超小屏幕 (max-width: 360px) */
@@ -3430,6 +3448,192 @@ body.numpad-open .page.active {
     caret-color: transparent;
 }
 
+/* ========== 24点游戏 ========== */
+.twentyfour-display {
+    text-align: center;
+    margin: 15px 0;
+}
+
+.twentyfour-numbers {
+    display: -webkit-flex;
+    display: flex;
+    gap: 12px;
+    -webkit-justify-content: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.twentyfour-num-box {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2em;
+    font-weight: bold;
+    color: #333;
+    background: #e8f4fd;
+    border: 3px solid #667eea;
+    border-radius: 12px;
+}
+
+.twentyfour-target {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #e67e22;
+    margin-bottom: 10px;
+}
+
+.twentyfour-input {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.5em;
+    font-family: monospace;
+    text-align: center;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    background: #fff;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.twentyfour-keyboard {
+    margin-top: 10px;
+}
+
+.twentyfour-key-row {
+    display: -webkit-flex;
+    display: flex;
+    gap: 6px;
+    margin-bottom: 6px;
+    -webkit-justify-content: center;
+    justify-content: center;
+}
+
+.twentyfour-key {
+    width: 55px;
+    height: 48px;
+    font-size: 1.2em;
+    font-weight: bold;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    background: #fff;
+    color: #333;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-transition: background 0.1s;
+    transition: background 0.1s;
+}
+
+.twentyfour-key:active {
+    background: #e0e0e0;
+}
+
+.twentyfour-key-op {
+    background: #fff3e0;
+    border-color: #ff9800;
+    color: #e65100;
+}
+
+.twentyfour-key-submit {
+    background: #e8f5e9;
+    border-color: #4caf50;
+    color: #2e7d32;
+}
+
+.twentyfour-key-hint {
+    background: #e3f2fd;
+    border-color: #2196f3;
+    color: #1565c0;
+}
+
+/* ========== 迷宫游戏 ========== */
+.maze-grid {
+    display: grid;
+    gap: 0;
+    margin: 15px auto;
+    max-width: 400px;
+    max-height: 400px;
+    aspect-ratio: 1;
+}
+
+.maze-cell {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8em;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-transition: background 0.15s;
+    transition: background 0.15s;
+    box-sizing: border-box;
+}
+
+.maze-cell.start {
+    background: #e8f5e9;
+}
+
+.maze-cell.end {
+    background: #fff3e0;
+}
+
+.maze-cell.end::after {
+    content: '🏁';
+    font-size: 1.2em;
+}
+
+.maze-cell.player {
+    background: #bbdefb;
+}
+
+.maze-cell.player::after {
+    content: '🔵';
+    font-size: 1em;
+}
+
+.maze-arrows {
+    margin: 15px auto;
+    text-align: center;
+}
+
+.maze-arrow-row {
+    display: -webkit-flex;
+    display: flex;
+    gap: 8px;
+    -webkit-justify-content: center;
+    justify-content: center;
+    margin-bottom: 4px;
+}
+
+.maze-arrow-btn {
+    width: 56px;
+    height: 56px;
+    font-size: 1.5em;
+    font-weight: bold;
+    border: 2px solid #667eea;
+    border-radius: 12px;
+    background: #e8eaed;
+    color: #333;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-transition: background 0.1s;
+    transition: background 0.1s;
+}
+
+.maze-arrow-btn:active {
+    background: #667eea;
+    color: #fff;
+}
+
+.maze-arrow-center {
+    background: transparent;
+    border-color: transparent;
+    cursor: default;
+}
+
 /* 小屏手机键盘适配 */
 @media (max-width: 360px) {
     .numpad-key {
@@ -3451,5 +3655,27 @@ body.numpad-open .page.active {
     .donate-option-btn {
         padding: 8px 12px;
         font-size: 0.85em;
+    }
+
+    .twentyfour-num-box {
+        width: 44px;
+        height: 44px;
+        font-size: 1.4em;
+    }
+
+    .twentyfour-key {
+        width: 42px;
+        height: 38px;
+        font-size: 1em;
+    }
+
+    .twentyfour-key-row {
+        gap: 4px;
+    }
+
+    .maze-arrow-btn {
+        width: 44px;
+        height: 44px;
+        font-size: 1.2em;
     }
 }

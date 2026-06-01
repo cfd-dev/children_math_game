@@ -150,6 +150,16 @@
                     <span class="btn-text">数字捉迷藏</span>
                     <span class="btn-desc">猜数推理</span>
                 </button>
+                <button class="menu-btn twentyfour-btn" onclick="show24Game()">
+                    <span class="btn-icon">🎴</span>
+                    <span class="btn-text">24点</span>
+                    <span class="btn-desc">算出目标数</span>
+                </button>
+                <button class="menu-btn maze-btn" onclick="showMazeGame()">
+                    <span class="btn-icon">🏰</span>
+                    <span class="btn-text">迷宫</span>
+                    <span class="btn-desc">走出迷宫</span>
+                </button>
                 <button class="menu-btn about-btn" onclick="showAboutPage()">
                     <span class="btn-icon"><span class="about-icon-badge">i</span></span>
                     <span class="btn-text">关于软件</span>
@@ -1291,6 +1301,16 @@
                         <span class="ability-val" id="seek-ability">0</span>
                         <span class="ability-label">捉迷藏</span>
                     </div>
+                    <div class="ability-cell">
+                        <span class="ability-icon">🎴</span>
+                        <span class="ability-val" id="twentyfour-ability">0</span>
+                        <span class="ability-label">24点</span>
+                    </div>
+                    <div class="ability-cell">
+                        <span class="ability-icon">🏰</span>
+                        <span class="ability-val" id="maze-ability">0</span>
+                        <span class="ability-label">迷宫</span>
+                    </div>
                 </div>
             </div>
 
@@ -1375,6 +1395,20 @@
                             <div class="stat-text">数字捉迷藏</div>
                         </div>
                     </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🎴</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="total-24-games">0</div>
+                            <div class="stat-text">24点</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🏰</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="total-maze-games">0</div>
+                            <div class="stat-text">迷宫</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1393,6 +1427,8 @@
                     <button class="history-tab" onclick="showHistory('match')">连线记录</button>
                     <button class="history-tab" onclick="showHistory('brainteaser')">急转弯记录</button>
                     <button class="history-tab" onclick="showHistory('seek')">捉迷藏记录</button>
+                    <button class="history-tab" onclick="showHistory('twentyfour')">24点记录</button>
+                    <button class="history-tab" onclick="showHistory('maze')">迷宫记录</button>
                 </div>
                 <div id="history-list" class="history-list">
                     <!-- 动态生成 -->
@@ -1436,6 +1472,211 @@
         </div>
     </div>
 
+    <!-- 24点游戏 -->
+    <div id="twentyfour-page" class="page">
+        <div class="page-header">
+            <button class="back-btn" onclick="goHome()">← 返回</button>
+            <h2>24点</h2>
+        </div>
+        <!-- 设置页面 -->
+        <div id="twentyfour-setup" class="setup-section">
+            <h3>当前难度</h3>
+            <div class="current-grade-display">
+                <span id="twentyfour-grade-name">一年级</span>
+                <span id="twentyfour-grade-desc">经典24点（1-9）</span>
+            </div>
+            <div class="rules">
+                <p>1. 用给出的4个数字，通过运算得到目标数</p>
+                <p>2. 可以使用 +、-、×、÷ 和括号</p>
+                <p>3. 每个数字必须恰好使用一次</p>
+            </div>
+            <div class="question-count">
+                <label>题目数量：</label>
+                <select id="twentyfour-question-count">
+                    <option value="5">5题</option>
+                    <option value="10" selected>10题</option>
+                    <option value="15">15题</option>
+                </select>
+            </div>
+            <button class="start-btn" onclick="start24Game()">开始挑战</button>
+        </div>
+
+        <!-- 答题页面 -->
+        <div id="twentyfour-quiz" class="quiz-section" style="display:none">
+            <div class="quiz-info">
+                <span id="twentyfour-progress">第 1/10 题</span>
+                <span id="twentyfour-timer">用时：0秒</span>
+                <span id="twentyfour-score">得分：0</span>
+            </div>
+            <div class="twentyfour-display">
+                <div id="twentyfour-numbers" class="twentyfour-numbers"></div>
+                <div class="twentyfour-target">目标：<span id="twentyfour-target-text">24</span></div>
+                <input type="text" id="twentyfour-input" class="twentyfour-input" readonly autocomplete="off" inputmode="none" placeholder="输入算式">
+            </div>
+            <div class="twentyfour-keyboard">
+                <div class="twentyfour-key-row">
+                    <button class="twentyfour-key" onclick="handle24KeyInput('1')">1</button>
+                    <button class="twentyfour-key" onclick="handle24KeyInput('2')">2</button>
+                    <button class="twentyfour-key" onclick="handle24KeyInput('3')">3</button>
+                    <button class="twentyfour-key twentyfour-key-op" onclick="handle24KeyInput('+')">+</button>
+                    <button class="twentyfour-key twentyfour-key-op" onclick="handle24KeyInput('-')">−</button>
+                </div>
+                <div class="twentyfour-key-row">
+                    <button class="twentyfour-key" onclick="handle24KeyInput('4')">4</button>
+                    <button class="twentyfour-key" onclick="handle24KeyInput('5')">5</button>
+                    <button class="twentyfour-key" onclick="handle24KeyInput('6')">6</button>
+                    <button class="twentyfour-key twentyfour-key-op" onclick="handle24KeyInput('*')">×</button>
+                    <button class="twentyfour-key twentyfour-key-op" onclick="handle24KeyInput('/')">÷</button>
+                </div>
+                <div class="twentyfour-key-row">
+                    <button class="twentyfour-key" onclick="handle24KeyInput('7')">7</button>
+                    <button class="twentyfour-key" onclick="handle24KeyInput('8')">8</button>
+                    <button class="twentyfour-key" onclick="handle24KeyInput('9')">9</button>
+                    <button class="twentyfour-key twentyfour-key-op" onclick="handle24KeyInput('(')">(</button>
+                    <button class="twentyfour-key twentyfour-key-op" onclick="handle24KeyInput(')')">)</button>
+                </div>
+                <div class="twentyfour-key-row">
+                    <button class="twentyfour-key" onclick="handle24KeyInput('C')">C</button>
+                    <button class="twentyfour-key" onclick="handle24KeyInput('0')">0</button>
+                    <button class="twentyfour-key" onclick="handle24KeyInput('←')">←</button>
+                    <button class="twentyfour-key twentyfour-key-hint" id="twentyfour-hint-btn" onclick="handle24KeyInput('hint')" style="display:none">提示</button>
+                    <button class="twentyfour-key twentyfour-key-submit" onclick="handle24KeyInput('=')">=</button>
+                </div>
+            </div>
+            <div id="twentyfour-feedback" class="feedback"></div>
+        </div>
+
+        <!-- 奖励页面 -->
+        <div id="twentyfour-reward" class="result-section reward-section" style="display:none">
+            <div id="twentyfour-reward-stars" class="reward-stars">⭐ ⭐ ⭐</div>
+            <h3>练习完成！</h3>
+            <div class="reward-info">
+                <p>总得分：<span id="twentyfour-reward-score">0</span></p>
+                <p>正确率：<span id="twentyfour-reward-accuracy">0%</span></p>
+                <p>用时：<span id="twentyfour-reward-time">0</span> 秒</p>
+            </div>
+            <div class="result-buttons">
+                <button class="next-btn" onclick="show24RewardResult()">查看成绩</button>
+                <button class="home-btn" onclick="goHome()">返回首页</button>
+            </div>
+        </div>
+
+        <!-- 结果页面 -->
+        <div id="twentyfour-result" class="result-section" style="display:none">
+            <h3>练习结果</h3>
+            <div class="result-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="twentyfour-result-score">0</div>
+                    <div class="stat-label">总得分</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="twentyfour-result-accuracy">0%</div>
+                    <div class="stat-label">正确率</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="twentyfour-result-correct">0/0</div>
+                    <div class="stat-label">答对题数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="twentyfour-result-time">0</div>
+                    <div class="stat-label">用时(秒)</div>
+                </div>
+            </div>
+            <div class="result-buttons">
+                <button class="retry-btn" onclick="start24Game()">再来一次</button>
+                <button class="home-btn" onclick="goHome()">返回首页</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 迷宫游戏 -->
+    <div id="maze-page" class="page">
+        <div class="page-header">
+            <button class="back-btn" onclick="goHome()">← 返回</button>
+            <h2>迷宫</h2>
+        </div>
+        <!-- 设置页面 -->
+        <div id="maze-setup" class="setup-section">
+            <h3>当前难度</h3>
+            <div class="current-grade-display">
+                <span id="maze-grade-name">一年级</span>
+                <span id="maze-grade-desc">9×9 迷宫</span>
+            </div>
+            <div class="rules">
+                <p>1. 从左上角起点走到右下角终点</p>
+                <p>2. 点击相邻格子或使用方向键移动</p>
+                <p>3. 用时越短、步数越少，得分越高</p>
+            </div>
+            <button class="start-btn" onclick="startMazeGame()">开始挑战</button>
+        </div>
+
+        <!-- 答题页面 -->
+        <div id="maze-quiz" class="quiz-section" style="display:none">
+            <div class="quiz-info">
+                <span id="maze-progress">第 1/3 关</span>
+                <span id="maze-timer">用时：0秒</span>
+                <span id="maze-score">得分：0</span>
+            </div>
+            <div id="maze-grid" class="maze-grid"></div>
+            <div class="maze-arrows">
+                <div class="maze-arrow-row">
+                    <button class="maze-arrow-btn" onclick="handleMazeMove('up')">↑</button>
+                </div>
+                <div class="maze-arrow-row">
+                    <button class="maze-arrow-btn" onclick="handleMazeMove('left')">←</button>
+                    <button class="maze-arrow-btn maze-arrow-center">·</button>
+                    <button class="maze-arrow-btn" onclick="handleMazeMove('right')">→</button>
+                </div>
+                <div class="maze-arrow-row">
+                    <button class="maze-arrow-btn" onclick="handleMazeMove('down')">↓</button>
+                </div>
+            </div>
+            <div id="maze-feedback" class="feedback"></div>
+        </div>
+
+        <!-- 奖励页面 -->
+        <div id="maze-reward" class="result-section reward-section" style="display:none">
+            <div id="maze-reward-stars" class="reward-stars">⭐ ⭐ ⭐</div>
+            <h3>闯关完成！</h3>
+            <div class="reward-info">
+                <p>总得分：<span id="maze-reward-score">0</span></p>
+                <p>完成率：<span id="maze-reward-accuracy">0%</span></p>
+                <p>用时：<span id="maze-reward-time">0</span> 秒</p>
+            </div>
+            <div class="result-buttons">
+                <button class="next-btn" onclick="showMazeRewardResult()">查看成绩</button>
+                <button class="home-btn" onclick="goHome()">返回首页</button>
+            </div>
+        </div>
+
+        <!-- 结果页面 -->
+        <div id="maze-result" class="result-section" style="display:none">
+            <h3>闯关结果</h3>
+            <div class="result-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="maze-result-score">0</div>
+                    <div class="stat-label">总得分</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="maze-result-accuracy">0%</div>
+                    <div class="stat-label">完成率</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="maze-result-mazes">0/0</div>
+                    <div class="stat-label">完成迷宫</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="maze-result-time">0</div>
+                    <div class="stat-label">用时(秒)</div>
+                </div>
+            </div>
+            <div class="result-buttons">
+                <button class="retry-btn" onclick="startMazeGame()">再来一次</button>
+                <button class="home-btn" onclick="goHome()">返回首页</button>
+            </div>
+        </div>
+    </div>
+
     <!-- 数字键盘 -->
     <div class="numpad-wrap">
         <div id="numpad" class="numpad">
@@ -1464,7 +1705,7 @@
     <script>
     // 立即隐藏非欢迎页面，防止全部内容同时显示
     (function() {
-        var ids = ['home-page', 'math-page', 'memory-page', 'pattern-page', 'compare-page', 'sudoku-page', 'sort-page', 'sum-page', 'clock-page', 'match-page', 'brainteaser-page', 'seek-page', 'about-page', 'profile-page'];
+        var ids = ['home-page', 'math-page', 'memory-page', 'pattern-page', 'compare-page', 'sudoku-page', 'sort-page', 'sum-page', 'clock-page', 'match-page', 'brainteaser-page', 'seek-page', 'twentyfour-page', 'maze-page', 'about-page', 'profile-page'];
         for (var i = 0; i < ids.length; i++) {
             var el = document.getElementById(ids[i]);
             if (el) el.style.display = 'none';
@@ -1484,6 +1725,8 @@
     <script src="js/match-game.js"></script>
     <script src="js/brain-teaser.js"></script>
     <script src="js/seek-game.js"></script>
+    <script src="js/24game.js"></script>
+    <script src="js/maze-game.js"></script>
     <script src="js/profile.js"></script>
     <script src="js/app.js"></script>
 </body>

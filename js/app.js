@@ -157,6 +157,33 @@ function goHome() {
         clearInterval(seekState.timerInterval);
     }
 
+    // 重置24点游戏页面
+    document.getElementById('twentyfour-setup').style.display = 'block';
+    document.getElementById('twentyfour-quiz').style.display = 'none';
+    document.getElementById('twentyfour-reward').style.display = 'none';
+    document.getElementById('twentyfour-result').style.display = 'none';
+
+    // 停止24点计时器
+    if (twentyFourState.timerInterval) {
+        clearInterval(twentyFourState.timerInterval);
+    }
+
+    // 重置迷宫游戏页面
+    document.getElementById('maze-setup').style.display = 'block';
+    document.getElementById('maze-quiz').style.display = 'none';
+    document.getElementById('maze-reward').style.display = 'none';
+    document.getElementById('maze-result').style.display = 'none';
+
+    // 停止迷宫计时器
+    if (mazeState.timerInterval) {
+        clearInterval(mazeState.timerInterval);
+    }
+    // 移除迷宫键盘事件
+    if (mazeState.keyHandler) {
+        document.removeEventListener('keydown', mazeState.keyHandler);
+        mazeState.keyHandler = null;
+    }
+
     // 隐藏捐赠二维码
     var donateQr = document.getElementById('donate-qr-area');
     if (donateQr) donateQr.style.display = 'none';
@@ -372,6 +399,28 @@ function showSeekGame() {
     if (gradeNameEl) gradeNameEl.textContent = config.name;
     if (gradeDescEl) gradeDescEl.textContent = sConfig.description;
     showPage('seek-page');
+}
+
+// 显示24点游戏页面
+function show24Game() {
+    var config = gradeConfig[currentGrade];
+    var tfConfig = twentyFourGradeConfig[currentGrade] || twentyFourGradeConfig['grade-1'];
+    var gradeNameEl = document.getElementById('twentyfour-grade-name');
+    var gradeDescEl = document.getElementById('twentyfour-grade-desc');
+    if (gradeNameEl) gradeNameEl.textContent = config.name;
+    if (gradeDescEl) gradeDescEl.textContent = tfConfig.description;
+    showPage('twentyfour-page');
+}
+
+// 显示迷宫游戏页面
+function showMazeGame() {
+    var config = gradeConfig[currentGrade];
+    var mConfig = mazeGradeConfig[currentGrade] || mazeGradeConfig['grade-1'];
+    var gradeNameEl = document.getElementById('maze-grade-name');
+    var gradeDescEl = document.getElementById('maze-grade-desc');
+    if (gradeNameEl) gradeNameEl.textContent = config.name;
+    if (gradeDescEl) gradeDescEl.textContent = mConfig.description;
+    showPage('maze-page');
 }
 
 // 显示关于页面
