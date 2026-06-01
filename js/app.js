@@ -157,9 +157,9 @@ function goHome() {
         clearInterval(seekState.timerInterval);
     }
 
-    // 隐藏支付区域
-    var donatePay = document.getElementById('donate-pay-area');
-    if (donatePay) donatePay.style.display = 'none';
+    // 隐藏捐赠二维码
+    var donateQr = document.getElementById('donate-qr-area');
+    if (donateQr) donateQr.style.display = 'none';
 
     // 更新首页用户信息
     updateHomeUserInfo();
