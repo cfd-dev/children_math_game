@@ -31,6 +31,8 @@ The game also includes a brute-force solver (`solve24`), a recursive-descent par
 
 **Maze game (`maze-game.js`)** — uses DFS recursive backtracking for maze generation and BFS for optimal path. Registers keyboard arrow keys only while active; removes handler on exit. Grid rendered as CSS grid with border-based walls.
 
+**RMB game (`rmb-game.js`)** — simulates shopping with emoji items. Three question types based on grade: "total" (calculate sum), "change" (given total, calculate change), "both" (calculate both total and change from items with quantities). Higher grades have `qtyMax > 1` (buy multiple of same item) and `showSubtotal: false` (no price hint on cards). Uses the numpad in append mode (`numpad-append` class) for multi-digit input with a submit button.
+
 ## Adding a New Game
 
 Every game follows an identical pattern:
@@ -62,7 +64,7 @@ The profile radar chart uses 5 composite dimensions, each computed by `getDimens
 - **推理** (logic): pattern + sudoku + twentyfour + brainteaser
 - **记忆** (memory): memory
 - **空间** (spatial): maze + seek
-- **数感** (numberSense): sort + clock
+- **数感** (numberSense): sort + clock + rmb
 
 Individual per-game ability values are still tracked and updated independently by each game's `update*Ability()` function. The dimension scores are computed on the fly when the profile page loads.
 

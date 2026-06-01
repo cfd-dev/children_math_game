@@ -160,6 +160,11 @@
                     <span class="btn-text">迷宫</span>
                     <span class="btn-desc">走出迷宫</span>
                 </button>
+                <button class="menu-btn rmb-btn" onclick="showRMBGame()">
+                    <span class="btn-icon">💰</span>
+                    <span class="btn-text">认识人民币</span>
+                    <span class="btn-desc">购物找零</span>
+                </button>
                 <button class="menu-btn about-btn" onclick="showAboutPage()">
                     <span class="btn-icon"><span class="about-icon-badge">i</span></span>
                     <span class="btn-text">关于软件</span>
@@ -1111,6 +1116,98 @@
         </div>
     </div>
 
+    <!-- 认识人民币页面 -->
+    <div id="rmb-page" class="page">
+        <div class="page-header">
+            <button class="back-btn" onclick="goHome()">← 返回</button>
+            <h2>认识人民币</h2>
+        </div>
+        <!-- 设置页面 -->
+        <div id="rmb-setup" class="setup-section">
+            <h3>当前难度</h3>
+            <div class="current-grade-display">
+                <span id="rmb-grade-name">一年级</span>
+                <span id="rmb-grade-desc">1-2件商品，算总价或找零</span>
+            </div>
+            <div class="rules">
+                <p>1. 看清商品和价格</p>
+                <p>2. 算出一共要付多少元，或找回多少元</p>
+                <p>3. 在下方输入答案</p>
+            </div>
+            <div class="question-count">
+                <label>题目数量：</label>
+                <select id="rmb-question-count">
+                    <option value="5">5题</option>
+                    <option value="10" selected>10题</option>
+                    <option value="15">15题</option>
+                </select>
+            </div>
+            <button class="start-btn" onclick="startRMBGame()">开始挑战</button>
+        </div>
+
+        <!-- 答题页面 -->
+        <div id="rmb-quiz" class="quiz-section" style="display:none">
+            <div class="quiz-info">
+                <span id="rmb-progress">第 1/10 题</span>
+                <span id="rmb-timer">用时：0秒</span>
+                <span id="rmb-score">得分：0</span>
+            </div>
+            <div class="rmb-scene">
+                <div id="rmb-items" class="rmb-items"></div>
+                <div class="rmb-total" id="rmb-total">合计：0 元</div>
+                <div class="rmb-question" id="rmb-question-text">一共要付多少元？</div>
+                <div class="rmb-answer-area">
+                    <input type="text" id="rmb-input" class="rmb-input numpad-append" readonly inputmode="none" placeholder="输入答案">
+                    <span class="rmb-unit">元</span>
+                    <button class="rmb-submit-btn" id="rmb-submit-btn" onclick="checkRMBAnswer()">确定</button>
+                </div>
+            </div>
+            <div id="rmb-feedback" class="feedback"></div>
+        </div>
+
+        <!-- 奖励页面 -->
+        <div id="rmb-reward" class="result-section reward-section" style="display:none">
+            <div id="rmb-reward-stars" class="reward-stars">⭐ ⭐ ⭐</div>
+            <h3>练习完成！</h3>
+            <div class="reward-info">
+                <p>总得分：<span id="rmb-reward-score">0</span></p>
+                <p>正确率：<span id="rmb-reward-accuracy">0%</span></p>
+                <p>用时：<span id="rmb-reward-time">0</span> 秒</p>
+            </div>
+            <div class="result-buttons">
+                <button class="retry-btn reward-btn" onclick="showRMBRewardResult()">查看成绩</button>
+                <button class="home-btn" onclick="goHome()">返回首页</button>
+            </div>
+        </div>
+
+        <!-- 结果页面 -->
+        <div id="rmb-result" class="result-section" style="display:none">
+            <h3>练习完成！</h3>
+            <div class="result-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="rmb-result-score">0</div>
+                    <div class="stat-label">总得分</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="rmb-result-accuracy">0%</div>
+                    <div class="stat-label">正确率</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="rmb-result-correct">0/0</div>
+                    <div class="stat-label">答对题数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="rmb-result-time">0秒</div>
+                    <div class="stat-label">总用时</div>
+                </div>
+            </div>
+            <div class="result-buttons">
+                <button class="retry-btn" onclick="startRMBGame()">再来一次</button>
+                <button class="home-btn" onclick="goHome()">返回首页</button>
+            </div>
+        </div>
+    </div>
+
     <!-- 关于页面 -->
     <div id="about-page" class="page">
         <div class="container">
@@ -1391,6 +1488,13 @@
                                 <div class="stat-text">时钟认知</div>
                             </div>
                         </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">💰</div>
+                            <div class="stat-info">
+                                <div class="stat-number" id="total-rmb-games">0</div>
+                                <div class="stat-text">认识人民币</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1412,6 +1516,7 @@
                     <button class="history-tab" onclick="showHistory('seek')">🎯 捉迷藏</button>
                     <button class="history-tab" onclick="showHistory('sort')">📊 排序</button>
                     <button class="history-tab" onclick="showHistory('clock')">🕐 时钟</button>
+                    <button class="history-tab" onclick="showHistory('rmb')">💰 人民币</button>
                 </div>
                 <div id="history-list" class="history-list">
                     <!-- 动态生成 -->
@@ -1713,7 +1818,7 @@
     <script>
     // 立即隐藏非欢迎页面，防止全部内容同时显示
     (function() {
-        var ids = ['home-page', 'math-page', 'memory-page', 'pattern-page', 'compare-page', 'sudoku-page', 'sort-page', 'sum-page', 'clock-page', 'match-page', 'brainteaser-page', 'seek-page', 'twentyfour-page', 'maze-page', 'about-page', 'profile-page'];
+        var ids = ['home-page', 'math-page', 'memory-page', 'pattern-page', 'compare-page', 'sudoku-page', 'sort-page', 'sum-page', 'clock-page', 'match-page', 'brainteaser-page', 'seek-page', 'twentyfour-page', 'maze-page', 'rmb-page', 'about-page', 'profile-page'];
         for (var i = 0; i < ids.length; i++) {
             var el = document.getElementById(ids[i]);
             if (el) el.style.display = 'none';
@@ -1735,6 +1840,7 @@
     <script src="js/seek-game.js"></script>
     <script src="js/24game.js"></script>
     <script src="js/maze-game.js"></script>
+    <script src="js/rmb-game.js"></script>
     <script src="js/profile.js"></script>
     <script src="js/app.js"></script>
 </body>

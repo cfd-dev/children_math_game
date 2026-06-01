@@ -184,6 +184,17 @@ function goHome() {
         mazeState.keyHandler = null;
     }
 
+    // 重置认识人民币页面
+    document.getElementById('rmb-setup').style.display = 'block';
+    document.getElementById('rmb-quiz').style.display = 'none';
+    document.getElementById('rmb-reward').style.display = 'none';
+    document.getElementById('rmb-result').style.display = 'none';
+
+    // 停止人民币计时器
+    if (rmbState.timerInterval) {
+        clearInterval(rmbState.timerInterval);
+    }
+
     // 隐藏捐赠二维码
     var donateQr = document.getElementById('donate-qr-area');
     if (donateQr) donateQr.style.display = 'none';
@@ -421,6 +432,17 @@ function showMazeGame() {
     if (gradeNameEl) gradeNameEl.textContent = config.name;
     if (gradeDescEl) gradeDescEl.textContent = mConfig.description;
     showPage('maze-page');
+}
+
+// 显示认识人民币页面
+function showRMBGame() {
+    var config = gradeConfig[currentGrade];
+    var rConfig = rmbGradeConfig[currentGrade] || rmbGradeConfig['grade-1'];
+    var gradeNameEl = document.getElementById('rmb-grade-name');
+    var gradeDescEl = document.getElementById('rmb-grade-desc');
+    if (gradeNameEl) gradeNameEl.textContent = config.name;
+    if (gradeDescEl) gradeDescEl.textContent = rConfig.description;
+    showPage('rmb-page');
 }
 
 // 显示关于页面

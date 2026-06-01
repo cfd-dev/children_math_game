@@ -28,6 +28,8 @@ const STORAGE_KEYS = {
     TWENTYFOUR_ABILITY: 'twentyFourAbility',
     MAZE_HISTORY: 'mazeGameHistory',
     MAZE_ABILITY: 'mazeAbility',
+    RMB_HISTORY: 'rmbGameHistory',
+    RMB_ABILITY: 'rmbAbility',
     USER_GRADE: 'userGrade',
     USER_NAME: 'userName'
 };
@@ -111,6 +113,12 @@ function initStorage() {
     }
     if (!localStorage.getItem(STORAGE_KEYS.MAZE_ABILITY)) {
         localStorage.setItem(STORAGE_KEYS.MAZE_ABILITY, '50');
+    }
+    if (!localStorage.getItem(STORAGE_KEYS.RMB_HISTORY)) {
+        localStorage.setItem(STORAGE_KEYS.RMB_HISTORY, JSON.stringify([]));
+    }
+    if (!localStorage.getItem(STORAGE_KEYS.RMB_ABILITY)) {
+        localStorage.setItem(STORAGE_KEYS.RMB_ABILITY, '50');
     }
 }
 
@@ -661,6 +669,40 @@ function getMazeAbility() {
     return parseInt(localStorage.getItem(STORAGE_KEYS.MAZE_ABILITY) || '50');
 }
 
+// ========== 认识人民币游戏记录 ==========
+function getRMBHistory() {
+    return JSON.parse(localStorage.getItem(STORAGE_KEYS.RMB_HISTORY) || '[]');
+}
+
+function saveRMBRecord(accuracy, totalTime, questionCount, score) {
+    const history = getRMBHistory();
+    history.unshift({
+        date: new Date().toLocaleString('zh-CN'),
+        accuracy: accuracy,
+        totalTime: totalTime,
+        questionCount: questionCount,
+        score: score,
+        avgTime: (totalTime / questionCount).toFixed(1)
+    });
+    if (history.length > 50) history.pop();
+    localStorage.setItem(STORAGE_KEYS.RMB_HISTORY, JSON.stringify(history));
+    updateRMBAbility(accuracy);
+}
+
+function updateRMBAbility(accuracy) {
+    let ability = parseInt(localStorage.getItem(STORAGE_KEYS.RMB_ABILITY) || '50');
+    if (accuracy >= 90) ability = Math.min(100, ability + 5);
+    else if (accuracy >= 70) ability = Math.min(100, ability + 3);
+    else if (accuracy >= 50) ability = Math.min(100, ability + 1);
+    else if (accuracy < 30) ability = Math.max(0, ability - 3);
+    localStorage.setItem(STORAGE_KEYS.RMB_ABILITY, ability.toString());
+    return ability;
+}
+
+function getRMBAbility() {
+    return parseInt(localStorage.getItem(STORAGE_KEYS.RMB_ABILITY) || '50');
+}
+
 // ========== 五维能力评估 ==========
 // 计算能力: 快速计算, 比大小, 凑十法, 数学连线
 // 逻辑推理: 找规律, 数独, 24点, 脑筋急转弯
@@ -673,7 +715,7 @@ function getDimensionScores() {
     var logic = Math.round((getPatternAbility() + getSudokuAbility() + get24Ability() + getBTAbility()) / 4);
     var memory = getMemoryAbility();
     var spatial = Math.round((getMazeAbility() + getSeekAbility()) / 2);
-    var numberSense = Math.round((getSortAbility() + getClockAbility()) / 2);
+    var numberSense = Math.round((getSortAbility() + getClockAbility() + getRMBAbility()) / 3);
     return {
         calc: calc,
         logic: logic,
@@ -1029,6 +1071,24 @@ function showHistory(type) {
                 `;
             });
         }
+    } else if (type === 'rmb') {
+        const history = getRMBHistory();
+        if (history.length === 0) {
+            html = '<div class="history-empty">暂无人民币记录</div>';
+        } else {
+            history.slice(0, 10).forEach(record => {
+                html += `
+                    <div class="history-item">
+                        <div class="history-date">${record.date}</div>
+                        <div class="history-details">
+                            <span>正确率: ${record.accuracy}%</span>
+                            <span>用时: ${record.totalTime}秒</span>
+                            <span>得分: ${record.score}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
     }
 
     historyList.innerHTML = html;
@@ -1067,6 +1127,7 @@ function updateProfilePage() {
     document.getElementById('total-seek-games').textContent = getSeekHistory().length;
     document.getElementById('total-24-games').textContent = get24History().length;
     document.getElementById('total-maze-games').textContent = getMazeHistory().length;
+    document.getElementById('total-rmb-games').textContent = getRMBHistory().length;
 
     // 更新五维能力值
     var dim = getDimensionScores();
@@ -1124,6 +1185,8 @@ function switchUser() {
         localStorage.removeItem(STORAGE_KEYS.TWENTYFOUR_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.MAZE_HISTORY);
         localStorage.removeItem(STORAGE_KEYS.MAZE_ABILITY);
+        localStorage.removeItem(STORAGE_KEYS.RMB_HISTORY);
+        localStorage.removeItem(STORAGE_KEYS.RMB_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.USER_GRADE);
         localStorage.removeItem(STORAGE_KEYS.USER_NAME);
 
@@ -1161,6 +1224,8 @@ function clearAllData() {
         localStorage.removeItem(STORAGE_KEYS.TWENTYFOUR_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.MAZE_HISTORY);
         localStorage.removeItem(STORAGE_KEYS.MAZE_ABILITY);
+        localStorage.removeItem(STORAGE_KEYS.RMB_HISTORY);
+        localStorage.removeItem(STORAGE_KEYS.RMB_ABILITY);
         localStorage.removeItem(STORAGE_KEYS.USER_GRADE);
         localStorage.removeItem(STORAGE_KEYS.USER_NAME);
 

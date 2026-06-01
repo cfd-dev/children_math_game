@@ -2613,6 +2613,23 @@ body {
         height: 50px;
         font-size: 1.3em;
     }
+
+    .rmb-item {
+        padding: 8px 6px;
+        min-width: 70px;
+    }
+
+    .rmb-item-emoji {
+        font-size: 1.8em;
+    }
+
+    .rmb-item-name {
+        font-size: 0.75em;
+    }
+
+    .rmb-item-price {
+        font-size: 0.9em;
+    }
 }
 
 /* 超小屏幕 (max-width: 360px) */
@@ -3756,6 +3773,114 @@ body.numpad-open .page.active {
     cursor: default;
 }
 
+/* ========== 认识人民币游戏 ========== */
+.rmb-scene {
+    text-align: center;
+    margin: 10px 0;
+}
+
+.rmb-items {
+    display: -webkit-flex;
+    display: flex;
+    gap: 10px;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.rmb-item {
+    background: #fff;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 10px 14px;
+    min-width: 80px;
+    text-align: center;
+}
+
+.rmb-item-emoji {
+    font-size: 2em;
+    margin-bottom: 4px;
+}
+
+.rmb-item-name {
+    font-size: 0.9em;
+    color: #555;
+    margin-bottom: 2px;
+}
+
+.rmb-item-price {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #e67e22;
+}
+
+.rmb-total {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 8px;
+    padding: 6px 12px;
+    background: #fff9c4;
+    border-radius: 8px;
+    display: inline-block;
+}
+
+.rmb-question {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+.rmb-answer-area {
+    display: -webkit-flex;
+    display: flex;
+    gap: 8px;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-align-items: center;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.rmb-input {
+    width: 100px;
+    padding: 10px;
+    font-size: 1.3em;
+    text-align: center;
+    border: 2px solid #667eea;
+    border-radius: 10px;
+    background: #fff;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.rmb-unit {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #555;
+}
+
+.rmb-submit-btn {
+    padding: 10px 20px;
+    font-size: 1.1em;
+    font-weight: bold;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.rmb-submit-btn:active {
+    background: #5a6fd6;
+}
+
 /* 小屏手机键盘适配 */
 @media (max-width: 360px) {
     .numpad-key {
@@ -3806,5 +3931,22 @@ body.numpad-open .page.active {
         width: 44px;
         height: 44px;
         font-size: 1.2em;
+    }
+
+    .rmb-item {
+        padding: 6px 4px;
+        min-width: 60px;
+    }
+
+    .rmb-item-emoji {
+        font-size: 1.5em;
+    }
+
+    .rmb-item-name {
+        font-size: 0.7em;
+    }
+
+    .rmb-item-price {
+        font-size: 0.85em;
     }
 }
