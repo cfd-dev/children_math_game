@@ -661,6 +661,28 @@ function getMazeAbility() {
     return parseInt(localStorage.getItem(STORAGE_KEYS.MAZE_ABILITY) || '50');
 }
 
+// ========== 五维能力评估 ==========
+// 计算能力: 快速计算, 比大小, 凑十法, 数学连线
+// 逻辑推理: 找规律, 数独, 24点, 脑筋急转弯
+// 记忆力:   数字记忆
+// 空间感知: 迷宫, 数字捉迷藏
+// 数感与时间: 数字排序, 时钟认知
+
+function getDimensionScores() {
+    var calc = Math.round((getMathAbility() + getCompareAbility() + getSumAbility() + getMatchAbility()) / 4);
+    var logic = Math.round((getPatternAbility() + getSudokuAbility() + get24Ability() + getBTAbility()) / 4);
+    var memory = getMemoryAbility();
+    var spatial = Math.round((getMazeAbility() + getSeekAbility()) / 2);
+    var numberSense = Math.round((getSortAbility() + getClockAbility()) / 2);
+    return {
+        calc: calc,
+        logic: logic,
+        memory: memory,
+        spatial: spatial,
+        numberSense: numberSense
+    };
+}
+
 // 绘制雷达图
 function drawRadarChart() {
     const canvas = document.getElementById('radar-chart');
@@ -671,15 +693,11 @@ function drawRadarChart() {
     const centerY = canvas.height / 2;
     const radius = Math.min(centerX, centerY) - 55;
 
-    const mathAbility = getMathAbility();
-    const memoryAbility = getMemoryAbility();
-    const patternAbility = getPatternAbility();
-    const compareAbility = getCompareAbility();
-    const sudokuAbility = getSudokuAbility();
+    var dim = getDimensionScores();
 
     // 数据点（五个顶点，均匀分布在圆上，从正上方开始逆时针）
-    const data = [mathAbility, memoryAbility, patternAbility, compareAbility, sudokuAbility];
-    const labels = ['算术', '记忆', '推理', '比较', '数独'];
+    const data = [dim.calc, dim.logic, dim.memory, dim.spatial, dim.numberSense];
+    const labels = ['计算', '推理', '记忆', '空间', '数感'];
     const step = 2 * Math.PI / 5;
     const startAngle = Math.PI / 2;
     const angles = [];
@@ -1050,20 +1068,13 @@ function updateProfilePage() {
     document.getElementById('total-24-games').textContent = get24History().length;
     document.getElementById('total-maze-games').textContent = getMazeHistory().length;
 
-    // 更新能力值
-    document.getElementById('math-ability').textContent = getMathAbility();
-    document.getElementById('memory-ability').textContent = getMemoryAbility();
-    document.getElementById('pattern-ability').textContent = getPatternAbility();
-    document.getElementById('compare-ability').textContent = getCompareAbility();
-    document.getElementById('sudoku-ability').textContent = getSudokuAbility();
-    document.getElementById('sort-ability').textContent = getSortAbility();
-    document.getElementById('sum-ability').textContent = getSumAbility();
-    document.getElementById('clock-ability').textContent = getClockAbility();
-    document.getElementById('match-ability').textContent = getMatchAbility();
-    document.getElementById('bt-ability').textContent = getBTAbility();
-    document.getElementById('seek-ability').textContent = getSeekAbility();
-    document.getElementById('twentyfour-ability').textContent = get24Ability();
-    document.getElementById('maze-ability').textContent = getMazeAbility();
+    // 更新五维能力值
+    var dim = getDimensionScores();
+    document.getElementById('dim-calc').textContent = dim.calc;
+    document.getElementById('dim-logic').textContent = dim.logic;
+    document.getElementById('dim-memory').textContent = dim.memory;
+    document.getElementById('dim-spatial').textContent = dim.spatial;
+    document.getElementById('dim-numbersense').textContent = dim.numberSense;
 
     // 更新等级显示
     document.getElementById('profile-grade-badge').textContent = gradeConfig[currentGrade].name;

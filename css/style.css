@@ -2023,6 +2023,23 @@ body {
     margin-top: 2px;
 }
 
+.dimension-group {
+    margin-bottom: 18px;
+}
+
+.dimension-group:last-child {
+    margin-bottom: 0;
+}
+
+.dimension-group-title {
+    font-size: 0.95em;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #eee;
+}
+
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
