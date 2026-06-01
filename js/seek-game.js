@@ -191,6 +191,7 @@ function finishSeekGame() {
 
     playMemoryLevelSound();
     speakReward(accuracy);
+    setRewardStars('seek-reward-stars', accuracy);
 
     document.getElementById('seek-quiz').style.display = 'none';
     document.getElementById('seek-reward').style.display = 'block';

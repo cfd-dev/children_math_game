@@ -353,6 +353,7 @@ function showLevelReward() {
     // 播放过关音效
     playMemoryLevelSound();
     speakReward(100);
+    setRewardStars('memory-reward-stars', 100);
 
     // 更新奖励信息
     document.getElementById('reward-level').textContent = memoryState.level;

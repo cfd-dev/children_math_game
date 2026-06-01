@@ -452,6 +452,7 @@ function finishMathQuiz() {
 
     playMemoryLevelSound();
     speakReward(accuracy);
+    setRewardStars('math-reward-stars', accuracy);
 
     document.getElementById('math-quiz').style.display = 'none';
     document.getElementById('math-reward').style.display = 'block';

@@ -244,6 +244,7 @@ function finishCompareGame() {
 
     playMemoryLevelSound();
     speakReward(accuracy);
+    setRewardStars('compare-reward-stars', accuracy);
 
     document.getElementById('compare-quiz').style.display = 'none';
     document.getElementById('compare-reward').style.display = 'block';

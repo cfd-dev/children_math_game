@@ -353,6 +353,7 @@ function finishClockGame() {
 
     playMemoryLevelSound();
     speakReward(accuracy);
+    setRewardStars('clock-reward-stars', accuracy);
 
     document.getElementById('clock-quiz').style.display = 'none';
     document.getElementById('clock-reward').style.display = 'block';

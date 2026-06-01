@@ -188,3 +188,31 @@ function speakReward(accuracy) {
     speak(pickRandom(rewardPhrases[tier]));
 }
 
+// 根据正确率设置奖励星星（0-3颗，以0.5为单位）
+function setRewardStars(containerId, accuracy) {
+    var stars;
+    if (accuracy >= 95) stars = 3;
+    else if (accuracy >= 85) stars = 2.5;
+    else if (accuracy >= 70) stars = 2;
+    else if (accuracy >= 50) stars = 1.5;
+    else if (accuracy >= 30) stars = 1;
+    else if (accuracy >= 10) stars = 0.5;
+    else stars = 0;
+
+    var fullStars = Math.floor(stars);
+    var hasHalf = (stars % 1) !== 0;
+    var emptyStars = 3 - fullStars - (hasHalf ? 1 : 0);
+
+    var html = '';
+    for (var i = 0; i < fullStars; i++) {
+        html += '<span class="reward-star">&#11088;</span>';
+    }
+    if (hasHalf) {
+        html += '<span class="reward-star half">&#11088;</span>';
+    }
+    for (var j = 0; j < emptyStars; j++) {
+        html += '<span class="reward-star empty">&#11088;</span>';
+    }
+
+    document.getElementById(containerId).innerHTML = html;
+}

@@ -212,6 +212,7 @@ function finishSumGame() {
 
     playMemoryLevelSound();
     speakReward(accuracy);
+    setRewardStars('sum-reward-stars', accuracy);
 
     document.getElementById('sum-quiz').style.display = 'none';
     document.getElementById('sum-reward').style.display = 'block';

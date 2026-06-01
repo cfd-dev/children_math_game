@@ -304,6 +304,7 @@ function finishMatchGame() {
 
     playMemoryLevelSound();
     speakReward(accuracy);
+    setRewardStars('match-reward-stars', accuracy);
 
     document.getElementById('match-quiz').style.display = 'none';
     document.getElementById('match-reward').style.display = 'block';

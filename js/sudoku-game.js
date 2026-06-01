@@ -420,6 +420,7 @@ function finishSudokuGame() {
 
     playMemoryLevelSound();
     speakReward(score);
+    setRewardStars('sudoku-reward-stars', score);
 
     document.getElementById('sudoku-quiz').style.display = 'none';
     document.getElementById('sudoku-reward').style.display = 'block';

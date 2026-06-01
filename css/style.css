@@ -1680,6 +1680,25 @@ body {
     animation: pulse 0.6s ease-in-out 3;
 }
 
+.reward-star {
+    display: inline-block;
+    color: #f1c40f;
+    -webkit-text-stroke: 1px #e67e22;
+}
+
+.reward-star.half {
+    background: linear-gradient(90deg, #f1c40f 50%, #ccc 50%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 0;
+}
+
+.reward-star.empty {
+    color: #ccc;
+    -webkit-text-stroke: 1px #bbb;
+}
+
 .reward-section h3 {
     color: #e67e22;
     font-size: 2em;

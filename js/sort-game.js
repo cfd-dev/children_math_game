@@ -267,6 +267,7 @@ function finishSortGame() {
 
     playMemoryLevelSound();
     speakReward(accuracy);
+    setRewardStars('sort-reward-stars', accuracy);
 
     document.getElementById('sort-quiz').style.display = 'none';
     document.getElementById('sort-reward').style.display = 'block';

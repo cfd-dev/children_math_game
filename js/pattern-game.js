@@ -374,6 +374,7 @@ function finishPatternGame() {
 
     playMemoryLevelSound();
     speakReward(accuracy);
+    setRewardStars('pattern-reward-stars', accuracy);
 
     document.getElementById('pattern-quiz').style.display = 'none';
     document.getElementById('pattern-reward').style.display = 'block';
