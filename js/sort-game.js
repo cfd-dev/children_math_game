@@ -232,12 +232,14 @@ function checkSortAnswer() {
         feedback.className = 'feedback correct';
         slots.forEach(function(s) { s.classList.add('correct'); });
         playCorrectSound();
+        speakCorrect();
         setTimeout(showNextSortQuestion, 1000);
     } else {
         feedback.textContent = '✗ 正确顺序：' + sortState.correctOrder.map(formatSortNum).join(' → ');
         feedback.className = 'feedback wrong';
         slots.forEach(function(s) { s.classList.add('wrong'); });
         playWrongSound();
+        speakWrong();
         document.getElementById('sort-next-btn').style.display = 'block';
     }
 }
@@ -264,6 +266,7 @@ function finishSortGame() {
     document.getElementById('sort-reward-time').textContent = totalTime;
 
     playMemoryLevelSound();
+    speakReward(accuracy);
 
     document.getElementById('sort-quiz').style.display = 'none';
     document.getElementById('sort-reward').style.display = 'block';

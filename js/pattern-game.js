@@ -331,6 +331,7 @@ function checkPatternAnswer() {
         feedback.className = 'feedback correct';
         inputs.forEach(function(input) { input.classList.add('correct'); });
         playCorrectSound();
+        speakCorrect();
         setTimeout(showNextPatternQuestion, 1000);
     } else {
         // 答错了
@@ -338,6 +339,7 @@ function checkPatternAnswer() {
         feedback.className = 'feedback wrong';
         inputs.forEach(function(input) { input.classList.add('wrong'); });
         playWrongSound();
+        speakWrong();
         document.getElementById('pattern-next-btn').style.display = 'block';
     }
 }
@@ -371,6 +373,7 @@ function finishPatternGame() {
     document.getElementById('pattern-reward-time').textContent = totalTime;
 
     playMemoryLevelSound();
+    speakReward(accuracy);
 
     document.getElementById('pattern-quiz').style.display = 'none';
     document.getElementById('pattern-reward').style.display = 'block';

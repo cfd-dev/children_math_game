@@ -360,6 +360,7 @@ function finishBTGame() {
     document.getElementById('bt-result-time').textContent = totalTime + '秒';
 
     saveBTRecord(completionRate, totalTime, btState.totalQuestions, btState.viewedCount);
+    speakReward(completionRate);
 
     document.getElementById('brainteaser-quiz').style.display = 'none';
     document.getElementById('brainteaser-result').style.display = 'block';

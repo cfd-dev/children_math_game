@@ -129,6 +129,7 @@ function submitSeekGuess() {
         document.getElementById('seek-score-text').textContent = '得分：' + seekState.score;
 
         playCorrectSound();
+        speakCorrect();
         seekState.isProcessing = true;
 
         setTimeout(function() {
@@ -141,6 +142,7 @@ function submitSeekGuess() {
         feedbackEl.className = 'seek-feedback seek-timeout';
 
         playWrongSound();
+        speakWrong();
         seekState.isProcessing = true;
 
         setTimeout(function() {
@@ -188,6 +190,7 @@ function finishSeekGame() {
     document.getElementById('seek-reward-time').textContent = totalTime;
 
     playMemoryLevelSound();
+    speakReward(accuracy);
 
     document.getElementById('seek-quiz').style.display = 'none';
     document.getElementById('seek-reward').style.display = 'block';

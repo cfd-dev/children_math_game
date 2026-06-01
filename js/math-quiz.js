@@ -341,6 +341,7 @@ function checkMathAnswer() {
 
         // 播放正确音效
         playCorrectSound();
+        speakCorrect();
 
         // 1秒后跳转下一题
         setTimeout(showNextMathQuestion, 1000);
@@ -354,6 +355,7 @@ function checkMathAnswer() {
 
         // 播放错误音效
         playWrongSound();
+        speakWrong();
 
         // 显示下一题按钮
         document.getElementById('next-btn').style.display = 'block';
@@ -449,6 +451,7 @@ function finishMathQuiz() {
     document.getElementById('math-reward-time').textContent = totalTime;
 
     playMemoryLevelSound();
+    speakReward(accuracy);
 
     document.getElementById('math-quiz').style.display = 'none';
     document.getElementById('math-reward').style.display = 'block';

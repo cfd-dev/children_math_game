@@ -304,6 +304,7 @@ function submitMemoryAnswer() {
 
         // 播放正确音效
         playCorrectSound();
+        speakCorrect();
 
         // 延迟后进入下一题或显示过关奖励
         setTimeout(() => {
@@ -332,6 +333,7 @@ function submitMemoryAnswer() {
 
         // 播放错误音效
         playWrongSound();
+        speakWrong();
 
         // 延迟后显示结果
         setTimeout(showMemoryResult, 2000);
@@ -350,6 +352,7 @@ function showLevelReward() {
 
     // 播放过关音效
     playMemoryLevelSound();
+    speakReward(100);
 
     // 更新奖励信息
     document.getElementById('reward-level').textContent = memoryState.level;

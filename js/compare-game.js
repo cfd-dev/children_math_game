@@ -201,6 +201,7 @@ function chooseCompare(symbol) {
             if (btn.dataset.symbol === symbol) btn.classList.add('correct');
         });
         playCorrectSound();
+        speakCorrect();
         setTimeout(showNextCompareQuestion, 1000);
     } else {
         // 答错了
@@ -212,6 +213,7 @@ function chooseCompare(symbol) {
             if (btn.dataset.symbol === symbol) btn.classList.add('wrong');
         });
         playWrongSound();
+        speakWrong();
         document.getElementById('compare-next-btn').style.display = 'block';
     }
 }
@@ -241,6 +243,7 @@ function finishCompareGame() {
     document.getElementById('compare-reward-time').textContent = totalTime;
 
     playMemoryLevelSound();
+    speakReward(accuracy);
 
     document.getElementById('compare-quiz').style.display = 'none';
     document.getElementById('compare-reward').style.display = 'block';

@@ -316,6 +316,7 @@ function chooseClockAnswer(idx) {
         feedback.textContent = '✓ 回答正确！';
         feedback.className = 'feedback correct';
         playCorrectSound();
+        speakCorrect();
         setTimeout(showNextClockQuestion, 1000);
     } else {
         // 错误
@@ -324,6 +325,7 @@ function chooseClockAnswer(idx) {
         feedback.textContent = '✗ 正确答案是 ' + clockState.choices[clockState.currentAnswer];
         feedback.className = 'feedback wrong';
         playWrongSound();
+        speakWrong();
         document.getElementById('clock-next-btn').style.display = 'block';
     }
 }
@@ -350,6 +352,7 @@ function finishClockGame() {
     document.getElementById('clock-reward-time').textContent = totalTime;
 
     playMemoryLevelSound();
+    speakReward(accuracy);
 
     document.getElementById('clock-quiz').style.display = 'none';
     document.getElementById('clock-reward').style.display = 'block';

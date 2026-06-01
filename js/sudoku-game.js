@@ -280,6 +280,7 @@ function inputSudokuNumber(num) {
     if (num !== 0 && num !== sudokuState.solution[r][c]) {
         sudokuState.mistakes++;
         playWrongSound();
+        speakWrong();
         document.getElementById('sudoku-mistakes').textContent = '错误：' + sudokuState.mistakes + '/' + sudokuState.maxMistakes;
 
         if (sudokuState.mistakes >= sudokuState.maxMistakes) {
@@ -296,6 +297,7 @@ function inputSudokuNumber(num) {
         }
     } else if (num !== 0) {
         playCorrectSound();
+        speakCorrect();
     }
 
     renderSudokuGrid();
@@ -417,6 +419,7 @@ function finishSudokuGame() {
     document.getElementById('sudoku-reward-mistakes').textContent = sudokuState.mistakes;
 
     playMemoryLevelSound();
+    speakReward(score);
 
     document.getElementById('sudoku-quiz').style.display = 'none';
     document.getElementById('sudoku-reward').style.display = 'block';

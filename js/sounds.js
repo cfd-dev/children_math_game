@@ -114,3 +114,40 @@ document.addEventListener('input', function(e) {
         playTypeSound();
     }
 });
+
+// ============ 语音鼓励 ============
+var correctPhrases = ['答对了', '你真棒', '太厉害了', '真聪明', '非常好', '真了不起'];
+var wrongPhrases = ['答错了', '还需努力', '再想想', '别灰心'];
+
+function speak(text) {
+    if (!soundEnabled) return;
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    var utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'zh-CN';
+    utter.rate = 1.1;
+    utter.pitch = 1.2;
+    window.speechSynthesis.speak(utter);
+}
+
+function speakCorrect() {
+    speak(correctPhrases[Math.floor(Math.random() * correctPhrases.length)]);
+}
+
+function speakWrong() {
+    speak(wrongPhrases[Math.floor(Math.random() * wrongPhrases.length)]);
+}
+
+function speakReward(accuracy) {
+    var msg;
+    if (accuracy >= 90) {
+        msg = '太棒了，你真是小天才！';
+    } else if (accuracy >= 70) {
+        msg = '做得不错，继续努力！';
+    } else if (accuracy >= 50) {
+        msg = '还可以，加油哦！';
+    } else {
+        msg = '没关系，多练习就会进步！';
+    }
+    speak(msg);
+}

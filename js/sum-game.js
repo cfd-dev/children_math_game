@@ -165,6 +165,7 @@ function handleSumTap(idx) {
 
             renderSumGrid();
             playCorrectSound();
+            speakCorrect();
 
             // 检查是否全部完成
             if (sumState.pairsFound >= sumState.totalPairs) {
@@ -179,6 +180,7 @@ function handleSumTap(idx) {
             cells[firstIdx].classList.add('wrong-flash');
             cells[idx].classList.add('wrong-flash');
             playWrongSound();
+            speakWrong();
 
             setTimeout(function() {
                 sumState.isProcessing = false;
@@ -209,6 +211,7 @@ function finishSumGame() {
     document.getElementById('sum-reward-time').textContent = totalTime;
 
     playMemoryLevelSound();
+    speakReward(accuracy);
 
     document.getElementById('sum-quiz').style.display = 'none';
     document.getElementById('sum-reward').style.display = 'block';

@@ -259,6 +259,7 @@ function checkMatchPair() {
         matchState.isProcessing = false;
 
         playCorrectSound();
+        speakCorrect();
 
         // 检查是否全部完成
         if (matchedCount >= matchState.pairs.length) {
@@ -269,6 +270,7 @@ function checkMatchPair() {
         leftItems[leftIdx].classList.add('wrong-flash');
         rightItems[rightIdx].classList.add('wrong-flash');
         playWrongSound();
+        speakWrong();
 
         setTimeout(function() {
             matchState.selectedLeft = -1;
@@ -301,6 +303,7 @@ function finishMatchGame() {
     document.getElementById('match-reward-time').textContent = totalTime;
 
     playMemoryLevelSound();
+    speakReward(accuracy);
 
     document.getElementById('match-quiz').style.display = 'none';
     document.getElementById('match-reward').style.display = 'block';
