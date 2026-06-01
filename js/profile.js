@@ -950,6 +950,10 @@ function updateProfilePage() {
     var gradeSelect = document.getElementById('profile-grade-select');
     if (gradeSelect) gradeSelect.value = currentGrade;
 
+    // 同步语音选择
+    var voiceSelect = document.getElementById('voice-style-select');
+    if (voiceSelect) voiceSelect.value = currentVoiceStyle;
+
     // 绘制雷达图
     drawRadarChart();
 
