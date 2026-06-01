@@ -122,11 +122,12 @@ var voiceStyles = {
     'female-student': { rate: 1.0,  pitch: 1.6, gender: 'female' },
     'male-student':   { rate: 1.05, pitch: 1.0, gender: 'male' }
 };
-var currentVoiceStyle = localStorage.getItem('voiceStyle') || 'female-teacher';
+var currentVoiceStyle = localStorage.getItem('voiceStyle') || 'female-student';
 
 function setVoiceStyle(style) {
     currentVoiceStyle = style;
     localStorage.setItem('voiceStyle', style);
+    if (style !== 'off') speak('我是你的学习小助手');
 }
 
 var correctPhrases = [
@@ -146,22 +147,37 @@ var rewardPhrases = {
 
 function pickRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
+var _voicesCache = null;
+function getVoicesCached() {
+    if (!_voicesCache) _voicesCache = window.speechSynthesis.getVoices();
+    if (!_voicesCache.length) { _voicesCache = null; return []; }
+    return _voicesCache;
+}
+if (window.speechSynthesis) {
+    window.speechSynthesis.onvoiceschanged = function() { _voicesCache = null; };
+}
+
+var maleVoiceRe = /yunxi|yunyang|kangkang|male|男/i;
+var femaleVoiceRe = /xiaoxiao|yaoyao|huihui|lili|tian|female|女/i;
+
 function findVoice(gender) {
-    var voices = window.speechSynthesis.getVoices();
-    var zhVoices = voices.filter(function(v) { return v.lang.startsWith('zh'); });
+    var zhVoices = getVoicesCached().filter(function(v) { return v.lang.startsWith('zh'); });
+    if (!zhVoices.length) return null;
     if (gender === 'male') {
-        return zhVoices.find(function(v) { return /male|男|yunxi|yunyang|kangkang/i.test(v.name); })
-            || zhVoices.find(function(v) { return !/female|女|xiaoxiao|yaoyao|lili/i.test(v.name); })
-            || zhVoices[0] || null;
+        // 明确匹配已知男声
+        return zhVoices.find(function(v) { return maleVoiceRe.test(v.name); })
+            // 排除已知女声后取第一个
+            || zhVoices.find(function(v) { return !femaleVoiceRe.test(v.name); })
+            || null;
     }
-    return zhVoices.find(function(v) { return /female|女|xiaoxiao|yaoyao|lili|tian|wan/i.test(v.name); })
-        || zhVoices[0] || null;
+    // 女声
+    return zhVoices.find(function(v) { return femaleVoiceRe.test(v.name); })
+        || zhVoices[0];
 }
 
 function speak(text) {
-    if (!soundEnabled) return;
-    if (!window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
+    if (!soundEnabled || !window.speechSynthesis || currentVoiceStyle === 'off') return;
+    if (window.speechSynthesis.speaking) window.speechSynthesis.cancel();
     var style = voiceStyles[currentVoiceStyle] || voiceStyles['female-teacher'];
     var utter = new SpeechSynthesisUtterance(text);
     utter.lang = 'zh-CN';
@@ -183,6 +199,3 @@ function speakReward(accuracy) {
     speak(pickRandom(rewardPhrases[tier]));
 }
 
-function previewVoice() {
-    speak('你好呀，我是你的学习小助手');
-}
