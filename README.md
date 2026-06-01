@@ -1,0 +1,79 @@
+# 数学小达人
+
+一款专为小学生设计的趣味数学学习游戏，涵盖幼儿园到六年级的数学知识点，通过游戏化的方式帮助孩子提升数学能力。
+
+## 功能特色
+
+| 游戏 | 说明 |
+|------|------|
+| 🧮 快速计算 | 加减乘除四则运算练习 |
+| 🧠 数字记忆 | 挑战数字记忆力 |
+| 🔍 找规律 | 数列推理与规律发现 |
+| ⚖️ 比大小 | 数的大小比较 |
+| 🔢 数独 | 逻辑推理填数 |
+| 📊 数字排序 | 从小到大排列练习 |
+| 🔟 凑十法 | 数字配对凑数游戏 |
+| 🕐 时钟认知 | 认识钟表和时间 |
+| 🔗 数学连线 | 算式与结果配对 |
+| 💡 脑筋急转弯 | 趣味数学谜语 |
+| 🎯 数字捉迷藏 | 猜数字推理游戏 |
+
+## 年级支持
+
+幼儿园小班 / 中班 / 大班、一年级 ~ 六年级，共 9 个难度等级。
+
+## 技术栈
+
+- 纯前端实现，无需后端服务
+- HTML5 + CSS3 + Vanilla JavaScript
+- Web Audio API 生成音效
+- Canvas 绘制时钟和雷达图
+- LocalStorage 存储用户数据
+- 响应式布局，适配手机和桌面
+
+## 项目结构
+
+```
+math_game/
+├── index.html          # 主页面
+├── css/
+│   └── style.css       # 样式文件
+├── js/
+│   ├── app.js          # 主应用逻辑
+│   ├── sounds.js       # 音效模块
+│   ├── keypad.js       # 数字键盘
+│   ├── math-quiz.js    # 快速计算
+│   ├── memory-game.js  # 数字记忆
+│   ├── pattern-game.js # 找规律
+│   ├── compare-game.js # 比大小
+│   ├── sudoku-game.js  # 数独
+│   ├── sort-game.js    # 数字排序
+│   ├── sum-game.js     # 凑十法
+│   ├── clock-game.js   # 时钟认知
+│   ├── match-game.js   # 数学连线
+│   ├── brain-teaser.js # 脑筋急转弯
+│   ├── seek-game.js    # 数字捉迷藏
+│   └── profile.js      # 个人中心
+└── assets/
+    └── icon.svg        # 应用图标
+```
+
+## 使用方式
+
+直接用浏览器打开 `index.html` 即可运行，无需安装任何依赖。
+
+## 邮件反馈配置
+
+项目集成了 EmailJS 实现问题反馈功能。配置步骤：
+
+1. 注册 [EmailJS](https://www.emailjs.com/) 账号
+2. 添加 Email Service，连接你的邮箱
+3. 创建 Email Template，内容中包含 `{{message}}` 变量
+4. 在 `js/app.js` 中替换以下三个值：
+   - `EMAILJS_PUBLIC_KEY`
+   - `EMAILJS_SERVICE_ID`
+   - `EMAILJS_TEMPLATE_ID`
+
+## 开发者
+
+小王子爸爸 — 用心做教育，用爱陪伴成长
