@@ -800,6 +800,19 @@ body {
     to { transform: scale(1); opacity: 1; }
 }
 
+@-webkit-keyframes voiceToast {
+    0% { opacity: 0; -webkit-transform: translate(-50%, -50%) scale(0.8); }
+    15% { opacity: 1; -webkit-transform: translate(-50%, -50%) scale(1); }
+    75% { opacity: 1; -webkit-transform: translate(-50%, -50%) scale(1); }
+    100% { opacity: 0; -webkit-transform: translate(-50%, -50%) scale(0.9); }
+}
+@keyframes voiceToast {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+    15% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    75% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+}
+
 
 .current-grade-display {
     display: -webkit-flex;
