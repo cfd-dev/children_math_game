@@ -21,12 +21,14 @@ var twentyFourState = {
 };
 
 // 年级难度配置
+// 一年级及以下：只用加减，无括号（flat求解）
+// 二年级起：学乘除法，引入括号（完整求解）
 var twentyFourGradeConfig = {
     'k-small':  { numRange: 5,  ops: ['+', '-'],            target: 10, blanks: 1, mode: 'fill',  description: '4个数算10（加减填空）' },
-    'k-medium': { numRange: 5,  ops: ['+', '-', '*'],        target: 12, blanks: 1, mode: 'fill',  description: '4个数算12（加减乘填空）' },
-    'k-large':  { numRange: 9,  ops: ['+', '-', '*'],        target: 20, blanks: 2, mode: 'fill',  description: '4个数算20（加减乘填空）' },
-    'grade-1':  { numRange: 9,  ops: ['+', '-', '*', '/'],   target: 24, blanks: 0, mode: 'build', description: '经典24点（1-9）' },
-    'grade-2':  { numRange: 13, ops: ['+', '-', '*', '/'],   target: 24, blanks: 0, mode: 'build', description: '经典24点（1-13）' },
+    'k-medium': { numRange: 5,  ops: ['+', '-'],            target: 12, blanks: 1, mode: 'fill',  description: '4个数算12（加减填空）' },
+    'k-large':  { numRange: 9,  ops: ['+', '-'],            target: 20, blanks: 2, mode: 'fill',  description: '4个数算20（加减填空）' },
+    'grade-1':  { numRange: 9,  ops: ['+', '-'],            target: 20, blanks: 2, mode: 'fill',  description: '4个数算20（加减填空）' },
+    'grade-2':  { numRange: 9,  ops: ['+', '-', '*', '/'],   target: 24, blanks: 0, mode: 'build', description: '经典24点（加减乘除+括号）' },
     'grade-3':  { numRange: 13, ops: ['+', '-', '*', '/'],   target: 24, blanks: 0, mode: 'build', description: '经典24点（1-13）' },
     'grade-4':  { numRange: 13, ops: ['+', '-', '*', '/'],   target: 24, blanks: 0, mode: 'build', description: '经典24点（进阶）' },
     'grade-5':  { numRange: 13, ops: ['+', '-', '*', '/'],   target: 24, blanks: 0, mode: 'build', description: '经典24点（进阶）' },
@@ -108,6 +110,36 @@ function safeEval24(expr) {
 }
 
 // ========== 24点求解器 ==========
+// 无括号的平铺求解（低年级用：连加连减连乘，左到右依次计算）
+function applyOp(val, op, num) {
+    if (op === '+') return val + num;
+    if (op === '-') return val - num;
+    if (op === '*') return val * num;
+    if (op === '/') return (num !== 0) ? val / num : NaN;
+    return NaN;
+}
+
+function solve24Flat(numbers, target, allowedOps) {
+    var perms = permute24(numbers.slice());
+    for (var p = 0; p < perms.length; p++) {
+        var a = perms[p][0], b = perms[p][1], c = perms[p][2], d = perms[p][3];
+        for (var i = 0; i < allowedOps.length; i++) {
+            for (var j = 0; j < allowedOps.length; j++) {
+                for (var k = 0; k < allowedOps.length; k++) {
+                    var o1 = allowedOps[i], o2 = allowedOps[j], o3 = allowedOps[k];
+                    var expr = a + o1 + b + o2 + c + o3 + d;
+                    var val = applyOp(applyOp(applyOp(a, o1, b), o2, c), o3, d);
+                    if (Math.abs(val - target) < 0.001) {
+                        return expr;
+                    }
+                }
+            }
+        }
+    }
+    return null;
+}
+
+// 带括号的求解（高年级用）
 function solve24(numbers, target, allowedOps) {
     var perms = permute24(numbers.slice());
     for (var p = 0; p < perms.length; p++) {
@@ -144,30 +176,27 @@ function generate24Puzzle() {
     var range = config.numRange;
     var target = config.target;
     var ops = config.ops;
+    var solver = (config.mode === 'fill') ? solve24Flat : solve24;
 
     for (var attempt = 0; attempt < 50; attempt++) {
         var nums = [];
         for (var i = 0; i < 4; i++) {
             nums.push(Math.floor(Math.random() * range) + 1);
         }
-        var solution = solve24(nums, target, ops);
+        var solution = solver(nums, target, ops);
         if (solution) {
             return { numbers: nums, target: target, solution: solution };
         }
     }
 
-    // 回退：构造一个保证有解的组合
-    var a = Math.floor(Math.random() * range) + 1;
-    var b = Math.floor(Math.random() * range) + 1;
-    var c = Math.floor(Math.random() * range) + 1;
-    var d = target - a - b - c;
-    if (d >= 1 && d <= range) {
-        var nums2 = [a, b, c, d];
-        var solution2 = solve24(nums2, target, ops);
-        if (solution2) return { numbers: nums2, target: target, solution: solution2 };
+    // 回退：用小数构造 a+b+c+d=target
+    var a2 = 1, b2 = 1, c2 = 1, d2 = target - 3;
+    if (d2 >= 1 && d2 <= range) {
+        return { numbers: [a2, b2, c2, d2], target: target, solution: a2 + '+' + b2 + '+' + c2 + '+' + d2 };
     }
     // 最终回退
-    return { numbers: [1, 2, 3, 4], target: target, solution: solve24([1, 2, 3, 4], target, ops) || '1+2+3+4' };
+    var fb = Math.min(target, range);
+    return { numbers: [1, 1, 1, fb], target: target, solution: '1+1+1+' + fb };
 }
 
 // ========== 表达式分词 ==========
