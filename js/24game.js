@@ -1,4 +1,4 @@
-// 24点游戏模块
+// 24点游戏模块 — 计算器自由输入模式
 var twentyFourState = {
     totalQuestions: 10,
     currentQuestion: 0,
@@ -6,34 +6,27 @@ var twentyFourState = {
     correctCount: 0,
     currentNumbers: [],
     currentTarget: 24,
-    currentSolution: null,
+    allSolutions: [],
+    solutionCount: 0,
+    userExpression: '',
     startTime: null,
     timerInterval: null,
     isProcessing: false,
     viewedAnswer: false,
-    isPractice: false,
-    // 新增：填空/构建模式
-    mode: 'fill',       // 'fill' 或 'build'
-    tokens: [],          // 解析后的表达式token数组
-    blanks: [],          // 需要填空的位置索引
-    blankValues: [],     // 每个空的正确答案
-    selectedBlank: -1,   // 当前选中的空
-    userInputs: []       // 用户填入的值
+    isPractice: false
 };
 
 // 年级难度配置
-// 一年级及以下：只用加减，无括号（flat求解）
-// 二年级起：学乘除法，引入括号（完整求解）
 var twentyFourGradeConfig = {
-    'k-small':  { numRange: 5,  ops: ['+', '-'],            target: 10, blanks: 1, mode: 'fill',  description: '4个数算10（加减填空）' },
-    'k-medium': { numRange: 5,  ops: ['+', '-'],            target: 12, blanks: 1, mode: 'fill',  description: '4个数算12（加减填空）' },
-    'k-large':  { numRange: 9,  ops: ['+', '-'],            target: 20, blanks: 2, mode: 'fill',  description: '4个数算20（加减填空）' },
-    'grade-1':  { numRange: 9,  ops: ['+', '-'],            target: 20, blanks: 2, mode: 'fill',  description: '4个数算20（加减填空）' },
-    'grade-2':  { numRange: 9,  ops: ['+', '-', '*', '/'],   target: 24, blanks: 0, mode: 'build', description: '经典24点（加减乘除+括号）' },
-    'grade-3':  { numRange: 13, ops: ['+', '-', '*', '/'],   target: 24, blanks: 0, mode: 'build', description: '经典24点（1-13）' },
-    'grade-4':  { numRange: 13, ops: ['+', '-', '*', '/'],   target: 24, blanks: 0, mode: 'build', description: '经典24点（进阶）' },
-    'grade-5':  { numRange: 13, ops: ['+', '-', '*', '/'],   target: 24, blanks: 0, mode: 'build', description: '经典24点（进阶）' },
-    'grade-6':  { numRange: 13, ops: ['+', '-', '*', '/'],   target: 24, blanks: 0, mode: 'build', description: '经典24点（挑战）' }
+    'k-small':  { numRange: 5,  ops: ['+', '-'],            target: 10, description: '4个数算10（加减）' },
+    'k-medium': { numRange: 5,  ops: ['+', '-'],            target: 12, description: '4个数算12（加减）' },
+    'k-large':  { numRange: 9,  ops: ['+', '-'],            target: 20, description: '4个数算20（加减）' },
+    'grade-1':  { numRange: 9,  ops: ['+', '-'],            target: 20, description: '4个数算20（加减）' },
+    'grade-2':  { numRange: 9,  ops: ['+', '-', '*', '/'],   target: 24, description: '经典24点（加减乘除+括号）' },
+    'grade-3':  { numRange: 13, ops: ['+', '-', '*', '/'],   target: 24, description: '经典24点（1-13）' },
+    'grade-4':  { numRange: 13, ops: ['+', '-', '*', '/'],   target: 24, description: '经典24点（进阶）' },
+    'grade-5':  { numRange: 13, ops: ['+', '-', '*', '/'],   target: 24, description: '经典24点（进阶）' },
+    'grade-6':  { numRange: 13, ops: ['+', '-', '*', '/'],   target: 24, description: '经典24点（挑战）' }
 };
 
 function get24Config() {
@@ -110,16 +103,24 @@ function safeEval24(expr) {
     return result;
 }
 
+// ========== 运算符显示符号 ==========
+function opDisplay(op) {
+    if (op === '*') return '×';
+    if (op === '/') return '÷';
+    if (op === '-') return '−';
+    return op;
+}
+
 // ========== 24点求解器 ==========
-// 无括号的平铺求解（低年级用：连加连减连乘，左到右依次计算）
 function applyOp(val, op, num) {
     if (op === '+') return val + num;
     if (op === '-') return val - num;
     if (op === '*') return val * num;
-    if (op === '/') return (num !== 0) ? val / num : NaN;
+    if (op === '/') return (num !== 0 && val % num === 0) ? val / num : NaN;
     return NaN;
 }
 
+// 无括号求解（低年级）
 function solve24Flat(numbers, target, allowedOps) {
     var perms = permute24(numbers.slice());
     for (var p = 0; p < perms.length; p++) {
@@ -128,10 +129,9 @@ function solve24Flat(numbers, target, allowedOps) {
             for (var j = 0; j < allowedOps.length; j++) {
                 for (var k = 0; k < allowedOps.length; k++) {
                     var o1 = allowedOps[i], o2 = allowedOps[j], o3 = allowedOps[k];
-                    var expr = a + o1 + b + o2 + c + o3 + d;
                     var val = applyOp(applyOp(applyOp(a, o1, b), o2, c), o3, d);
                     if (Math.abs(val - target) < 0.001) {
-                        return expr;
+                        return a + o1 + b + o2 + c + o3 + d;
                     }
                 }
             }
@@ -140,7 +140,7 @@ function solve24Flat(numbers, target, allowedOps) {
     return null;
 }
 
-// 带括号的求解（高年级用）
+// 带括号求解（高年级）
 function solve24(numbers, target, allowedOps) {
     var perms = permute24(numbers.slice());
     for (var p = 0; p < perms.length; p++) {
@@ -171,384 +171,107 @@ function solve24(numbers, target, allowedOps) {
     return null;
 }
 
+// ========== 查找所有可能的算式 ==========
+function findAllSolutions(numbers, target, allowedOps) {
+    var found = {};
+    var perms = permute24(numbers.slice());
+    var isFlat = (allowedOps.length <= 2 && allowedOps.indexOf('*') === -1);
+
+    for (var p = 0; p < perms.length; p++) {
+        var a = perms[p][0], b = perms[p][1], c = perms[p][2], d = perms[p][3];
+        for (var i = 0; i < allowedOps.length; i++) {
+            for (var j = 0; j < allowedOps.length; j++) {
+                for (var k = 0; k < allowedOps.length; k++) {
+                    var o1 = allowedOps[i], o2 = allowedOps[j], o3 = allowedOps[k];
+
+                    if (isFlat) {
+                        // 无括号：左到右
+                        var flatExpr = a + o1 + b + o2 + c + o3 + d;
+                        try {
+                            var flatVal = applyOp(applyOp(applyOp(a, o1, b), o2, c), o3, d);
+                            if (Math.abs(flatVal - target) < 0.001 && !found[flatExpr]) {
+                                found[flatExpr] = true;
+                            }
+                        } catch (e) { /* skip */ }
+                    } else {
+                        // 有括号：5种树形
+                        var trees = [
+                            '(' + a + o1 + b + ')' + o2 + '(' + c + o3 + d + ')',
+                            '((' + a + o1 + b + ')' + o2 + c + ')' + o3 + d,
+                            '(' + a + o1 + '(' + b + o2 + c + '))' + o3 + d,
+                            a + o1 + '((' + b + o2 + c + ')' + o3 + d + ')',
+                            a + o1 + '(' + b + o2 + '(' + c + o3 + d + '))'
+                        ];
+                        for (var t = 0; t < trees.length; t++) {
+                            try {
+                                var val = safeEval24(trees[t]);
+                                if (Math.abs(val - target) < 0.001 && !found[trees[t]]) {
+                                    found[trees[t]] = true;
+                                }
+                            } catch (e) { /* skip */ }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    var results = [];
+    for (var key in found) {
+        if (found.hasOwnProperty(key)) results.push(key);
+    }
+    return results;
+}
+
 // ========== 生成题目 ==========
 function generate24Puzzle() {
     var config = get24Config();
     var range = config.numRange;
     var target = config.target;
     var ops = config.ops;
-    var solver = (config.mode === 'fill') ? solve24Flat : solve24;
 
     for (var attempt = 0; attempt < 50; attempt++) {
         var nums = [];
         for (var i = 0; i < 4; i++) {
             nums.push(Math.floor(Math.random() * range) + 1);
         }
-        var solution = solver(nums, target, ops);
-        if (solution) {
-            return { numbers: nums, target: target, solution: solution };
+        var solutions = findAllSolutions(nums, target, ops);
+        if (solutions.length > 0) {
+            return { numbers: nums, target: target, solutions: solutions, solutionCount: solutions.length };
         }
     }
 
     // 回退：用小数构造 a+b+c+d=target
     var a2 = 1, b2 = 1, c2 = 1, d2 = target - 3;
     if (d2 >= 1 && d2 <= range) {
-        return { numbers: [a2, b2, c2, d2], target: target, solution: a2 + '+' + b2 + '+' + c2 + '+' + d2 };
+        var fbExpr = a2 + '+' + b2 + '+' + c2 + '+' + d2;
+        return { numbers: [a2, b2, c2, d2], target: target, solutions: [fbExpr], solutionCount: 1 };
     }
-    // 最终回退
     var fb = Math.min(target, range);
-    return { numbers: [1, 1, 1, fb], target: target, solution: '1+1+1+' + fb };
-}
-
-// ========== 表达式分词 ==========
-function tokenize(expr) {
-    var tokens = [];
-    var i = 0;
-    while (i < expr.length) {
-        if (expr[i] === ' ') { i++; continue; }
-        if (expr[i] >= '0' && expr[i] <= '9') {
-            var num = '';
-            while (i < expr.length && expr[i] >= '0' && expr[i] <= '9') {
-                num += expr[i++];
-            }
-            tokens.push({ type: 'number', value: num });
-        } else if (expr[i] === '(' || expr[i] === ')') {
-            tokens.push({ type: 'paren', value: expr[i] });
-            i++;
-        } else {
-            tokens.push({ type: 'op', value: expr[i] });
-            i++;
-        }
-    }
-    return tokens;
-}
-
-// ========== 运算符显示符号 ==========
-function opDisplay(op) {
-    if (op === '*') return '×';
-    if (op === '/') return '÷';
-    if (op === '-') return '−';
-    return op;
-}
-
-// ========== 生成填空位置 ==========
-function generateBlanks(tokens, count) {
-    var numIndices = [];
-    for (var i = 0; i < tokens.length; i++) {
-        if (tokens[i].type === 'number') numIndices.push(i);
-    }
-    // 随机打乱
-    for (var j = numIndices.length - 1; j > 0; j--) {
-        var k = Math.floor(Math.random() * (j + 1));
-        var tmp = numIndices[j]; numIndices[j] = numIndices[k]; numIndices[k] = tmp;
-    }
-    return numIndices.slice(0, Math.min(count, numIndices.length));
-}
-
-// ========== 渲染算式 ==========
-function renderExpression() {
-    var container = document.getElementById('twentyfour-expression');
-    container.innerHTML = '';
-
-    for (var i = 0; i < twentyFourState.tokens.length; i++) {
-        var token = twentyFourState.tokens[i];
-        var box = document.createElement('span');
-        box.dataset.index = i;
-
-        if (token.type === 'number') {
-            var isBlank = twentyFourState.blanks.indexOf(i) !== -1;
-            if (isBlank) {
-                box.className = 'twentyfour-expr-box blank';
-                box.textContent = '';
-                box.addEventListener('click', (function(idx) {
-                    return function() { selectExprBlank(idx); };
-                })(i));
-            } else {
-                box.className = 'twentyfour-expr-box number';
-                box.textContent = token.value;
-                if (twentyFourState.mode === 'build') {
-                    box.addEventListener('click', (function(idx) {
-                        return function() { selectExprBlank(idx); };
-                    })(i));
-                }
-            }
-        } else if (token.type === 'paren') {
-            box.className = 'twentyfour-expr-box paren';
-            box.textContent = (token.value === '_') ? '' : token.value;
-            if (token.value !== '_') box.classList.add('filled');
-            if (twentyFourState.mode === 'build') {
-                box.addEventListener('click', (function(idx) {
-                    return function() { selectExprBlank(idx); };
-                })(i));
-            }
-        } else {
-            box.className = 'twentyfour-expr-box operator';
-            box.textContent = (token.value === '_') ? '' : opDisplay(token.value);
-            if (token.value !== '_') box.classList.add('filled');
-            if (twentyFourState.mode === 'build') {
-                box.addEventListener('click', (function(idx) {
-                    return function() { selectExprBlank(idx); };
-                })(i));
-            }
-        }
-
-        container.appendChild(box);
-    }
-
-    // 填空模式自动选中第一个空
-    if (twentyFourState.mode === 'fill' && twentyFourState.blanks.length > 0) {
-        selectExprBlank(twentyFourState.blanks[0]);
-    }
-    // 构建模式选中第一个位置
-    if (twentyFourState.mode === 'build') {
-        selectExprBlank(0);
-    }
-}
-
-// ========== 选中填空/位置 ==========
-function selectExprBlank(index) {
-    twentyFourState.selectedBlank = index;
-    var boxes = document.querySelectorAll('.twentyfour-expr-box');
-    for (var i = 0; i < boxes.length; i++) {
-        boxes[i].classList.remove('selected');
-    }
-    if (boxes[index]) boxes[index].classList.add('selected');
-}
-
-// ========== 处理键盘输入 ==========
-function handle24KeyInput(key) {
-    if (twentyFourState.isProcessing) return;
-
-    if (key === 'C') {
-        clear24Input();
-        return;
-    }
-    if (key === '←') {
-        handleBackspace();
-        return;
-    }
-    if (key === '=') {
-        check24Answer();
-        return;
-    }
-    if (key === 'hint') {
-        show24Hint();
-        return;
-    }
-
-    var idx = twentyFourState.selectedBlank;
-    if (idx < 0 || idx >= twentyFourState.tokens.length) return;
-
-    if (twentyFourState.mode === 'fill') {
-        // 填空模式：只接受数字
-        if (key < '0' || key > '9') return;
-        var blankIdx = twentyFourState.blanks.indexOf(idx);
-        if (blankIdx === -1) return;
-
-        twentyFourState.userInputs[blankIdx] = key;
-        var boxes = document.querySelectorAll('.twentyfour-expr-box');
-        boxes[idx].textContent = key;
-        boxes[idx].classList.add('filled');
-        boxes[idx].classList.remove('blank');
-
-        // 自动跳到下一个空
-        var nextBlankIdx = (blankIdx + 1) % twentyFourState.blanks.length;
-        selectExprBlank(twentyFourState.blanks[nextBlankIdx]);
-
-    } else {
-        // 构建模式：接受数字、运算符和括号
-        var boxes = document.querySelectorAll('.twentyfour-expr-box');
-        var token = twentyFourState.tokens[idx];
-
-        if (token.type === 'number') {
-            if (key >= '0' && key <= '9') {
-                // 追加数字（支持多位数）
-                if (token.value === '' || token.value === '_') {
-                    token.value = key;
-                } else if (token.value.length < 3) {
-                    token.value += key;
-                }
-                boxes[idx].textContent = token.value;
-                boxes[idx].classList.add('filled');
-            }
-        } else if (token.type === 'paren') {
-            // 括号位置：只接受括号
-            if (key === '(' || key === ')') {
-                token.value = key;
-                boxes[idx].textContent = key;
-                boxes[idx].classList.add('filled');
-            }
-        } else {
-            // 运算符位置：只接受运算符
-            var opMap = { '+': '+', '-': '-', '*': '*', '/': '/', '×': '*', '÷': '/' };
-            if (opMap[key]) {
-                token.value = opMap[key];
-                boxes[idx].textContent = opDisplay(token.value);
-                boxes[idx].classList.add('filled');
-            }
-        }
-
-        // 自动跳到下一个位置
-        var next = (idx + 1) % twentyFourState.tokens.length;
-        selectExprBlank(next);
-    }
-
-    playClickSound();
-}
-
-// ========== 退格处理 ==========
-function handleBackspace() {
-    var idx = twentyFourState.selectedBlank;
-    if (idx < 0) return;
-
-    var boxes = document.querySelectorAll('.twentyfour-expr-box');
-
-    if (twentyFourState.mode === 'fill') {
-        var blankIdx = twentyFourState.blanks.indexOf(idx);
-        if (blankIdx !== -1) {
-            twentyFourState.userInputs[blankIdx] = '';
-            boxes[idx].textContent = '';
-            boxes[idx].classList.remove('filled');
-            boxes[idx].classList.add('blank');
-        }
-        // 跳到前一个空
-        var prevBlankIdx = (blankIdx - 1 + twentyFourState.blanks.length) % twentyFourState.blanks.length;
-        selectExprBlank(twentyFourState.blanks[prevBlankIdx]);
-
-    } else {
-        var token = twentyFourState.tokens[idx];
-        if (token.type === 'number') {
-            if (token.value.length > 0) {
-                token.value = token.value.slice(0, -1);
-                boxes[idx].textContent = token.value || '';
-                if (!token.value) boxes[idx].classList.remove('filled');
-            }
-        } else {
-            // 运算符或括号：重置为待填写
-            token.value = '_';
-            boxes[idx].textContent = '';
-            boxes[idx].classList.remove('filled');
-        }
-        // 跳到前一个位置
-        var prev = (idx - 1 + twentyFourState.tokens.length) % twentyFourState.tokens.length;
-        selectExprBlank(prev);
-    }
-}
-
-// ========== 清空输入 ==========
-function clear24Input() {
-    if (twentyFourState.mode === 'fill') {
-        for (var i = 0; i < twentyFourState.blanks.length; i++) {
-            twentyFourState.userInputs[i] = '';
-        }
-        renderExpression();
-    } else {
-        for (var j = 0; j < twentyFourState.tokens.length; j++) {
-            if (twentyFourState.tokens[j].type === 'number') {
-                twentyFourState.tokens[j].value = '';
-            } else {
-                twentyFourState.tokens[j].value = '_';
-            }
-        }
-        renderExpression();
-    }
-    var hintBtn = document.getElementById('twentyfour-hint-btn');
-    if (hintBtn) hintBtn.style.display = 'none';
-    var hintBtnFill = document.getElementById('twentyfour-hint-btn-fill');
-    if (hintBtnFill) hintBtnFill.style.display = 'none';
-    twentyFourState.viewedAnswer = false;
-    var answerBtn = document.getElementById('twentyfour-answer-btn');
-    if (answerBtn) answerBtn.style.display = 'inline-block';
-}
-
-// ========== 提示 ==========
-function show24Hint() {
-    if (!twentyFourState.currentSolution) return;
-
-    if (twentyFourState.mode === 'fill') {
-        // 填空模式：填入所有空的正确值
-        for (var i = 0; i < twentyFourState.blanks.length; i++) {
-            var bi = twentyFourState.blanks[i];
-            twentyFourState.userInputs[i] = twentyFourState.blankValues[i];
-            var boxes = document.querySelectorAll('.twentyfour-expr-box');
-            boxes[bi].textContent = twentyFourState.blankValues[i];
-            boxes[bi].classList.add('filled');
-            boxes[bi].classList.remove('blank');
-        }
-    } else {
-        // 构建模式：填入完整解法
-        var solutionTokens = tokenize(twentyFourState.currentSolution);
-        for (var j = 0; j < solutionTokens.length && j < twentyFourState.tokens.length; j++) {
-            twentyFourState.tokens[j].value = solutionTokens[j].value;
-        }
-        renderExpression();
-    }
-
-    var hintBtn = document.getElementById('twentyfour-hint-btn');
-    if (hintBtn) hintBtn.style.display = 'none';
-    var hintBtnFill = document.getElementById('twentyfour-hint-btn-fill');
-    if (hintBtnFill) hintBtnFill.style.display = 'none';
-}
-
-// ========== 查看答案 ==========
-function show24Answer() {
-    if (!twentyFourState.currentSolution) return;
-
-    var solutionTokens = tokenize(twentyFourState.currentSolution);
-    var boxes = document.querySelectorAll('.twentyfour-expr-box');
-
-    if (twentyFourState.mode === 'fill') {
-        for (var i = 0; i < twentyFourState.blanks.length; i++) {
-            var bi = twentyFourState.blanks[i];
-            twentyFourState.userInputs[i] = twentyFourState.blankValues[i];
-            boxes[bi].textContent = twentyFourState.blankValues[i];
-            boxes[bi].classList.remove('blank', 'wrong');
-            boxes[bi].classList.add('filled', 'correct');
-        }
-    } else {
-        for (var j = 0; j < solutionTokens.length && j < twentyFourState.tokens.length; j++) {
-            twentyFourState.tokens[j].value = solutionTokens[j].value;
-        }
-        renderExpression();
-        boxes = document.querySelectorAll('.twentyfour-expr-box');
-        for (var k = 0; k < boxes.length; k++) {
-            boxes[k].classList.add('correct');
-        }
-    }
-
-    var feedback = document.getElementById('twentyfour-feedback');
-    feedback.textContent = '答案已显示，按 = 进入下一题';
-    feedback.className = 'feedback';
-
-    twentyFourState.viewedAnswer = true;
-
-    var answerBtn = document.getElementById('twentyfour-answer-btn');
-    if (answerBtn) answerBtn.style.display = 'none';
+    var fbExpr2 = '1+1+1+' + fb;
+    return { numbers: [1, 1, 1, fb], target: target, solutions: [fbExpr2], solutionCount: 1 };
 }
 
 // ========== 验证玩家表达式 ==========
 function validate24Expression(expr, numbers, target) {
-    // 检查非法字符
     if (!/^[0-9+\-*/() ]+$/.test(expr)) {
         return { valid: false, error: '包含非法字符' };
     }
 
-    // 提取数字
     var usedNums = expr.match(/\d+/g);
     if (!usedNums) return { valid: false, error: '未输入数字' };
     usedNums = usedNums.map(Number).sort(function(a, b) { return a - b; });
     var sorted = numbers.slice().sort(function(a, b) { return a - b; });
 
     if (usedNums.length !== 4) {
-        return { valid: false, error: '必须使用4个数字' };
+        return { valid: false, error: '必须使用4个数字（你用了' + usedNums.length + '个）' };
     }
     for (var i = 0; i < 4; i++) {
         if (usedNums[i] !== sorted[i]) {
-            return { valid: false, error: '使用的数字不正确' };
+            return { valid: false, error: '使用的数字不正确，应为 ' + sorted.join(', ') };
         }
     }
 
-    // 求值
     var result;
     try {
         result = safeEval24(expr);
@@ -560,6 +283,145 @@ function validate24Expression(expr, numbers, target) {
         return { valid: true };
     }
     return { valid: false, error: '结果是 ' + (Math.round(result * 100) / 100) + '，不是 ' + target };
+}
+
+// ========== 更新计算器显示屏 ==========
+function updateCalcScreen() {
+    var screen = document.getElementById('twentyfour-calc-screen');
+    if (screen) {
+        screen.textContent = twentyFourState.userExpression || '';
+        // 自动滚动到右侧
+        screen.scrollLeft = screen.scrollWidth;
+    }
+}
+
+// ========== 处理键盘输入 ==========
+function handle24KeyInput(key) {
+    if (twentyFourState.isProcessing) return;
+
+    if (key === 'C') {
+        clear24Input();
+        return;
+    }
+    if (key === '←') {
+        twentyFourState.userExpression = twentyFourState.userExpression.slice(0, -1);
+        updateCalcScreen();
+        playClickSound();
+        return;
+    }
+    if (key === '=') {
+        check24Answer();
+        return;
+    }
+
+    // 追加字符到表达式
+    twentyFourState.userExpression += key;
+    updateCalcScreen();
+    playClickSound();
+}
+
+// ========== 清空输入 ==========
+function clear24Input() {
+    twentyFourState.userExpression = '';
+    updateCalcScreen();
+    twentyFourState.viewedAnswer = false;
+    var answerBtn = document.getElementById('twentyfour-answer-btn');
+    if (answerBtn) answerBtn.style.display = 'inline-block';
+    var solutionsDiv = document.getElementById('twentyfour-all-solutions');
+    if (solutionsDiv) solutionsDiv.style.display = 'none';
+    var feedback = document.getElementById('twentyfour-feedback');
+    if (feedback) { feedback.textContent = ''; feedback.className = 'feedback'; }
+    var screen = document.getElementById('twentyfour-calc-screen');
+    if (screen) screen.classList.remove('correct', 'wrong');
+}
+
+// ========== 查看答案 ==========
+function show24Answer() {
+    if (!twentyFourState.allSolutions || twentyFourState.allSolutions.length === 0) return;
+
+    twentyFourState.viewedAnswer = true;
+    var answerBtn = document.getElementById('twentyfour-answer-btn');
+    if (answerBtn) answerBtn.style.display = 'none';
+
+    // 显示所有可能的算式
+    var solutionsDiv = document.getElementById('twentyfour-all-solutions');
+    if (solutionsDiv) {
+        var html = '<div class="solutions-title">所有可能的算式（' + twentyFourState.allSolutions.length + '种）：</div>';
+        html += '<div class="solutions-list">';
+        for (var i = 0; i < twentyFourState.allSolutions.length; i++) {
+            var expr = twentyFourState.allSolutions[i];
+            // 美化显示：* → ×，/ → ÷
+            var display = expr.replace(/\*/g, '×').replace(/\//g, '÷');
+            html += '<div class="solution-item">' + display + ' = ' + twentyFourState.currentTarget + '</div>';
+        }
+        html += '</div>';
+        solutionsDiv.innerHTML = html;
+        solutionsDiv.style.display = 'block';
+    }
+
+    var feedback = document.getElementById('twentyfour-feedback');
+    feedback.textContent = '答案已显示，按 = 进入下一题';
+    feedback.className = 'feedback';
+}
+
+// ========== 检查答案 ==========
+function check24Answer() {
+    if (twentyFourState.isProcessing) return;
+    twentyFourState.isProcessing = true;
+
+    var feedback = document.getElementById('twentyfour-feedback');
+    var screen = document.getElementById('twentyfour-calc-screen');
+
+    if (twentyFourState.viewedAnswer) {
+        feedback.textContent = '✗ 已查看答案，不得分';
+        feedback.className = 'feedback wrong';
+        playWrongSound();
+        setTimeout(function() { showNext24Question(); }, 1500);
+        return;
+    }
+
+    var expr = twentyFourState.userExpression.trim();
+    if (!expr) {
+        feedback.textContent = '✗ 请输入算式';
+        feedback.className = 'feedback wrong';
+        twentyFourState.isProcessing = false;
+        return;
+    }
+
+    var result = validate24Expression(expr, twentyFourState.currentNumbers, twentyFourState.currentTarget);
+
+    if (result.valid) {
+        twentyFourState.correctCount++;
+        var roundScore = 10;
+        twentyFourState.score += roundScore;
+
+        if (screen) screen.classList.add('correct');
+        feedback.textContent = '✓ 正确！+' + roundScore + '分';
+        feedback.className = 'feedback correct';
+        playCorrectSound();
+        speakCorrect();
+
+        setTimeout(function() { showNext24Question(); }, 1200);
+    } else {
+        if (screen) screen.classList.add('wrong');
+        feedback.textContent = '✗ ' + result.error;
+        feedback.className = 'feedback wrong';
+        playWrongSound();
+        speakWrong();
+
+        if (twentyFourState.isPractice) {
+            feedback.textContent = '✗ ' + result.error + '，再试试';
+            setTimeout(function() {
+                if (screen) screen.classList.remove('wrong');
+                twentyFourState.isProcessing = false;
+            }, 1500);
+        } else {
+            setTimeout(function() {
+                if (screen) screen.classList.remove('wrong');
+                twentyFourState.isProcessing = false;
+            }, 500);
+        }
+    }
 }
 
 // ========== 游戏生命周期 ==========
@@ -593,44 +455,15 @@ function showNext24Question() {
         return;
     }
 
-    var config = get24Config();
-    twentyFourState.mode = config.mode;
-
     var puzzle = generate24Puzzle();
     twentyFourState.currentNumbers = puzzle.numbers;
     twentyFourState.currentTarget = puzzle.target;
-    twentyFourState.currentSolution = puzzle.solution;
-
-    // 分词
-    twentyFourState.tokens = tokenize(puzzle.solution);
-    twentyFourState.blanks = [];
-    twentyFourState.blankValues = [];
-    twentyFourState.userInputs = [];
-    twentyFourState.selectedBlank = -1;
-
-    if (twentyFourState.mode === 'fill') {
-        // 生成填空
-        twentyFourState.blanks = generateBlanks(twentyFourState.tokens, config.blanks);
-        for (var i = 0; i < twentyFourState.blanks.length; i++) {
-            twentyFourState.blankValues.push(twentyFourState.tokens[twentyFourState.blanks[i]].value);
-            twentyFourState.userInputs.push('');
-        }
-    } else {
-        // 构建模式：清空所有位置
-        for (var j = 0; j < twentyFourState.tokens.length; j++) {
-            if (twentyFourState.tokens[j].type === 'number') {
-                twentyFourState.tokens[j].value = '';
-            } else {
-                twentyFourState.tokens[j].value = '_';
-            }
-        }
-    }
+    twentyFourState.allSolutions = puzzle.solutions;
+    twentyFourState.solutionCount = puzzle.solutionCount;
+    twentyFourState.userExpression = '';
+    twentyFourState.viewedAnswer = false;
 
     // 更新显示
-    twentyFourState.viewedAnswer = false;
-    var answerBtn = document.getElementById('twentyfour-answer-btn');
-    if (answerBtn) answerBtn.style.display = 'inline-block';
-
     document.getElementById('twentyfour-progress').textContent =
         '第 ' + twentyFourState.currentQuestion + '/' + twentyFourState.totalQuestions + ' 题';
     document.getElementById('twentyfour-score').textContent = '得分：' + twentyFourState.score;
@@ -645,167 +478,20 @@ function showNext24Question() {
     });
 
     document.getElementById('twentyfour-target-text').textContent = puzzle.target;
+    document.getElementById('twentyfour-solution-count').textContent = puzzle.solutionCount;
 
-    // 显示/隐藏键盘
-    var fillKb = document.getElementById('twentyfour-keyboard-fill');
-    var buildKb = document.getElementById('twentyfour-keyboard-build');
-    if (twentyFourState.mode === 'fill') {
-        fillKb.style.display = 'block';
-        buildKb.style.display = 'none';
-    } else {
-        fillKb.style.display = 'none';
-        buildKb.style.display = 'block';
-    }
-
-    // 渲染算式
-    renderExpression();
+    // 重置界面
+    updateCalcScreen();
+    var answerBtn = document.getElementById('twentyfour-answer-btn');
+    if (answerBtn) answerBtn.style.display = 'inline-block';
+    var solutionsDiv = document.getElementById('twentyfour-all-solutions');
+    if (solutionsDiv) solutionsDiv.style.display = 'none';
+    var screen = document.getElementById('twentyfour-calc-screen');
+    if (screen) screen.classList.remove('correct', 'wrong');
 
     var feedback = document.getElementById('twentyfour-feedback');
     feedback.textContent = '';
     feedback.className = 'feedback';
-
-    var hintBtn = document.getElementById('twentyfour-hint-btn');
-    if (hintBtn) hintBtn.style.display = 'none';
-    var hintBtnFill = document.getElementById('twentyfour-hint-btn-fill');
-    if (hintBtnFill) hintBtnFill.style.display = 'none';
-}
-
-function check24Answer() {
-    if (twentyFourState.isProcessing) return;
-    twentyFourState.isProcessing = true;
-
-    var feedback = document.getElementById('twentyfour-feedback');
-    var boxes = document.querySelectorAll('.twentyfour-expr-box');
-
-    // 查看答案后直接进入下一题，不得分
-    if (twentyFourState.viewedAnswer) {
-        feedback.textContent = '✗ 已查看答案，不得分';
-        feedback.className = 'feedback wrong';
-        playWrongSound();
-        setTimeout(function() {
-            showNext24Question();
-        }, 1500);
-        return;
-    }
-
-    if (twentyFourState.mode === 'fill') {
-        // 填空模式：检查每个空
-        var allCorrect = true;
-        for (var i = 0; i < twentyFourState.blanks.length; i++) {
-            var bi = twentyFourState.blanks[i];
-            var userInput = twentyFourState.userInputs[i];
-            var correct = twentyFourState.blankValues[i];
-            if (userInput === correct) {
-                boxes[bi].classList.add('correct');
-            } else {
-                boxes[bi].classList.add('wrong');
-                allCorrect = false;
-            }
-        }
-
-        if (allCorrect) {
-            twentyFourState.correctCount++;
-            var roundScore = 10;
-            twentyFourState.score += roundScore;
-            feedback.textContent = '✓ 正确！+' + roundScore + '分';
-            feedback.className = 'feedback correct';
-            playCorrectSound();
-            speakCorrect();
-
-            setTimeout(function() {
-                showNext24Question();
-            }, 1200);
-        } else {
-            feedback.textContent = '✗ 有错误，正确答案已标出';
-            feedback.className = 'feedback wrong';
-            playWrongSound();
-            speakWrong();
-
-            // 显示正确答案
-            for (var j = 0; j < twentyFourState.blanks.length; j++) {
-                var bIdx = twentyFourState.blanks[j];
-                if (twentyFourState.userInputs[j] !== twentyFourState.blankValues[j]) {
-                    boxes[bIdx].textContent = twentyFourState.blankValues[j];
-                    boxes[bIdx].classList.remove('wrong');
-                    boxes[bIdx].classList.add('correct');
-                }
-            }
-
-            if (twentyFourState.isPractice) {
-                // 练习模式：显示正确答案后允许重试
-                feedback.textContent = '✗ 有错误，正确答案已标出。按C清除后重试';
-                setTimeout(function() {
-                    twentyFourState.isProcessing = false;
-                    // 清除错误标记，重新渲染让用户重试
-                    for (var m = 0; m < twentyFourState.blanks.length; m++) {
-                        twentyFourState.userInputs[m] = '';
-                    }
-                    renderExpression();
-                    var answerBtn = document.getElementById('twentyfour-answer-btn');
-                    if (answerBtn) answerBtn.style.display = 'inline-block';
-                    twentyFourState.viewedAnswer = false;
-                }, 2000);
-            } else {
-                setTimeout(function() {
-                    twentyFourState.isProcessing = false;
-                    showNext24Question();
-                }, 2500);
-            }
-        }
-
-    } else {
-        // 构建模式：拼接表达式并验证
-        var expr = '';
-        for (var k = 0; k < twentyFourState.tokens.length; k++) {
-            var t = twentyFourState.tokens[k];
-            if (!t.value || t.value === '_') {
-                feedback.textContent = '✗ 请填写完整算式';
-                feedback.className = 'feedback wrong';
-                twentyFourState.isProcessing = false;
-                return;
-            }
-            expr += t.value;
-        }
-
-        var result = validate24Expression(expr, twentyFourState.currentNumbers, twentyFourState.currentTarget);
-
-        if (result.valid) {
-            twentyFourState.correctCount++;
-            var roundScore2 = 10;
-            twentyFourState.score += roundScore2;
-
-            for (var m = 0; m < boxes.length; m++) {
-                boxes[m].classList.add('correct');
-            }
-
-            feedback.textContent = '✓ 正确！+' + roundScore2 + '分';
-            feedback.className = 'feedback correct';
-            playCorrectSound();
-            speakCorrect();
-
-            setTimeout(function() {
-                showNext24Question();
-            }, 1200);
-        } else {
-            for (var n = 0; n < boxes.length; n++) {
-                boxes[n].classList.add('wrong');
-            }
-
-            feedback.textContent = '✗ ' + result.error;
-            feedback.className = 'feedback wrong';
-            playWrongSound();
-            speakWrong();
-
-            var hintBtn = document.getElementById('twentyfour-hint-btn');
-            if (hintBtn) hintBtn.style.display = 'inline-block';
-            var hintBtnFill = document.getElementById('twentyfour-hint-btn-fill');
-            if (hintBtnFill) hintBtnFill.style.display = 'inline-block';
-
-            setTimeout(function() {
-                twentyFourState.isProcessing = false;
-            }, 500);
-        }
-    }
 }
 
 function update24Timer() {
@@ -820,7 +506,6 @@ function finish24Game() {
     var totalTime = Math.floor((Date.now() - twentyFourState.startTime) / 1000);
     var accuracy = Math.round((twentyFourState.correctCount / twentyFourState.totalQuestions) * 100);
 
-    // 挑战模式才保存记录
     if (!twentyFourState.isPractice) {
         save24Record(accuracy, totalTime, twentyFourState.totalQuestions, twentyFourState.score);
     }
