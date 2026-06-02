@@ -198,15 +198,19 @@ function showNextPatternQuestion() {
     patternState.isProcessing = false;
 
     // 更新显示
-    var displaySeq = '';
+    var displayContainer = document.getElementById('pattern-display');
+    displayContainer.innerHTML = '';
     for (var i = 0; i < q.sequence.length; i++) {
+        var numBox = document.createElement('span');
+        numBox.className = 'pattern-num-box';
         if (i === q.blankIndex) {
-            displaySeq += ' ? ';
+            numBox.textContent = '?';
+            numBox.classList.add('pattern-blank');
         } else {
-            displaySeq += ' ' + q.sequence[i] + ' ';
+            numBox.textContent = q.sequence[i];
         }
+        displayContainer.appendChild(numBox);
     }
-    document.getElementById('pattern-display').textContent = displaySeq;
 
     document.getElementById('pattern-progress').textContent =
         patternState.currentQuestion + '/' + patternState.totalQuestions;

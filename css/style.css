@@ -947,13 +947,43 @@ body {
 
 /* 找规律题目显示 */
 .pattern-display {
-    font-size: min(3em, 10vw);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    font-size: min(2.5em, 8vw);
     font-weight: bold;
     color: #333;
-    text-align: center;
-    letter-spacing: 0.1em;
-    line-height: 1.4;
-    white-space: nowrap;
+    padding: 10px;
+}
+
+.pattern-num-box {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.2em;
+    height: 2.2em;
+    background: #e3f2fd;
+    border: 2px solid #90caf9;
+    border-radius: 8px;
+    box-sizing: border-box;
+    transition: transform 0.2s;
+}
+
+.pattern-num-box:hover {
+    transform: scale(1.05);
+}
+
+.pattern-blank {
+    background: #fff3e0;
+    border-color: #ffb74d;
+    color: #e65100;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
 }
 
 /* 比大小题目显示 */
@@ -2329,7 +2359,13 @@ body {
     }
 
     .pattern-display {
-        font-size: 1.8em;
+        font-size: 1.6em;
+        gap: 6px;
+    }
+
+    .pattern-num-box {
+        min-width: 1.8em;
+        height: 1.8em;
     }
 
     .feedback {
@@ -2731,7 +2767,14 @@ body {
     }
 
     .pattern-display {
-        font-size: 1.4em;
+        font-size: 1.3em;
+        gap: 5px;
+    }
+
+    .pattern-num-box {
+        min-width: 1.6em;
+        height: 1.6em;
+        border-radius: 6px;
     }
 
     .feedback {
