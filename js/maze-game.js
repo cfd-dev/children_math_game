@@ -113,12 +113,10 @@ function generateMaze(size, extraOpen) {
     return grid;
 }
 
-// ========== 计算通路数（DFS枚举，限制最多100条，大迷宫限制搜索节点数）==========
+// ========== 计算通路数（完美迷宫只有一条通路）==========
 function countPaths(grid, size) {
     var count = 0;
     var visited = {};
-    var visitedCount = 0;
-    var maxVisited = size >= 25 ? 5000 : (size >= 15 ? 20000 : 100000);
     var moves = [
         [-1, 0, 'top'],
         [1, 0, 'bottom'],
@@ -127,7 +125,7 @@ function countPaths(grid, size) {
     ];
 
     function dfs(r, c) {
-        if (count >= 100 || visitedCount >= maxVisited) return;
+        if (count > 0) return;
         if (r === size - 1 && c === size - 1) { count++; return; }
         for (var m = 0; m < moves.length; m++) {
             var nr = r + moves[m][0];
@@ -136,7 +134,6 @@ function countPaths(grid, size) {
             if (nr >= 0 && nr < size && nc >= 0 && nc < size &&
                 !grid[r][c][wall] && !visited[nr + ',' + nc]) {
                 visited[nr + ',' + nc] = true;
-                visitedCount++;
                 dfs(nr, nc);
                 delete visited[nr + ',' + nc];
             }
@@ -145,8 +142,7 @@ function countPaths(grid, size) {
 
     visited['0,0'] = true;
     dfs(0, 0);
-    if (visitedCount >= maxVisited) return '100+';
-    return count >= 100 ? '100+' : count;
+    return count;
 }
 
 // ========== BFS 最短路径（返回步数）==========
