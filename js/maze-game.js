@@ -268,7 +268,7 @@ function renderMaze() {
         maxDim = Math.min(availW, availH - ctrlH);
     }
 
-    maxDim = Math.max(120, maxDim);
+    maxDim = Math.max(120, maxDim) - 2; // 2px安全余量，防止亚像素裁切
     var minCell = size >= 25 ? 8 : (size >= 15 ? 12 : 18);
     var cellSize = Math.max(minCell, Math.floor(maxDim / size));
     var gridW = cellSize * size;
