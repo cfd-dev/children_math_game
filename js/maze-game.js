@@ -16,17 +16,17 @@ var mazeState = {
 };
 
 // 年级难度配置
-// extraOpen: 额外打通的墙壁数（制造少量分叉，同时保持足够绕路）
+// extraOpen: 额外打通的墙壁数（低年级多分叉易走通，高年级少分叉更绕更难）
 var mazeGradeConfig = {
-    'k-small':  { size: 5,  mazeCount: 3, extraOpen: 1,  description: '5×5 迷宫（简单）' },
-    'k-medium': { size: 7,  mazeCount: 3, extraOpen: 2,  description: '7×7 迷宫' },
-    'k-large':  { size: 9,  mazeCount: 3, extraOpen: 4,  description: '9×9 迷宫' },
+    'k-small':  { size: 5,  mazeCount: 3, extraOpen: 4,  description: '5×5 迷宫（简单）' },
+    'k-medium': { size: 7,  mazeCount: 3, extraOpen: 5,  description: '7×7 迷宫' },
+    'k-large':  { size: 9,  mazeCount: 3, extraOpen: 5,  description: '9×9 迷宫' },
     'grade-1':  { size: 9,  mazeCount: 5, extraOpen: 4,  description: '9×9 迷宫' },
-    'grade-2':  { size: 11, mazeCount: 5, extraOpen: 6,  description: '11×11 迷宫' },
-    'grade-3':  { size: 13, mazeCount: 5, extraOpen: 8,  description: '13×13 迷宫' },
-    'grade-4':  { size: 13, mazeCount: 5, extraOpen: 12, description: '13×13 迷宫（进阶）' },
-    'grade-5':  { size: 15, mazeCount: 5, extraOpen: 16, description: '15×15 迷宫' },
-    'grade-6':  { size: 15, mazeCount: 5, extraOpen: 22, description: '15×15 迷宫（困难）' }
+    'grade-2':  { size: 11, mazeCount: 5, extraOpen: 3,  description: '11×11 迷宫' },
+    'grade-3':  { size: 13, mazeCount: 5, extraOpen: 2,  description: '13×13 迷宫' },
+    'grade-4':  { size: 13, mazeCount: 5, extraOpen: 2,  description: '13×13 迷宫（进阶）' },
+    'grade-5':  { size: 15, mazeCount: 5, extraOpen: 1,  description: '15×15 迷宫' },
+    'grade-6':  { size: 15, mazeCount: 5, extraOpen: 1,  description: '15×15 迷宫（困难）' }
 };
 
 function getMazeConfig() {
@@ -111,7 +111,39 @@ function generateMaze(size, extraOpen) {
     return grid;
 }
 
-// ========== BFS 最短路径 ==========
+// ========== 计算通路数（DFS枚举，限制最多100条避免卡顿）==========
+function countPaths(grid, size) {
+    var count = 0;
+    var visited = {};
+    var moves = [
+        [-1, 0, 'top'],
+        [1, 0, 'bottom'],
+        [0, -1, 'left'],
+        [0, 1, 'right']
+    ];
+
+    function dfs(r, c) {
+        if (r === size - 1 && c === size - 1) { count++; return; }
+        if (count >= 100) return;
+        for (var m = 0; m < moves.length; m++) {
+            var nr = r + moves[m][0];
+            var nc = c + moves[m][1];
+            var wall = moves[m][2];
+            if (nr >= 0 && nr < size && nc >= 0 && nc < size &&
+                !grid[r][c][wall] && !visited[nr + ',' + nc]) {
+                visited[nr + ',' + nc] = true;
+                dfs(nr, nc);
+                delete visited[nr + ',' + nc];
+            }
+        }
+    }
+
+    visited['0,0'] = true;
+    dfs(0, 0);
+    return count >= 100 ? '100+' : count;
+}
+
+// ========== BFS 最短路径（返回步数）==========
 function findOptimalPath(grid, size) {
     var queue = [[0, 0, 0]];
     var visited = {};
@@ -142,6 +174,58 @@ function findOptimalPath(grid, size) {
         }
     }
     return -1;
+}
+
+// ========== BFS 最短路径（返回坐标数组）==========
+function findOptimalPathCoords(grid, size) {
+    var queue = [[0, 0, [[0, 0]]]];
+    var visited = {};
+    visited['0,0'] = true;
+
+    var moves = [
+        [-1, 0, 'top'],
+        [1, 0, 'bottom'],
+        [0, -1, 'left'],
+        [0, 1, 'right']
+    ];
+
+    while (queue.length > 0) {
+        var cur = queue.shift();
+        var r = cur[0], c = cur[1], path = cur[2];
+
+        if (r === size - 1 && c === size - 1) return path;
+
+        for (var m = 0; m < moves.length; m++) {
+            var nr = r + moves[m][0];
+            var nc = c + moves[m][1];
+            var wall = moves[m][2];
+            if (nr >= 0 && nr < size && nc >= 0 && nc < size &&
+                !grid[r][c][wall] && !visited[nr + ',' + nc]) {
+                visited[nr + ',' + nc] = true;
+                queue.push([nr, nc, path.concat([[nr, nc]])]);
+            }
+        }
+    }
+    return [];
+}
+
+// ========== 查看答案 ==========
+function showMazeAnswer() {
+    var path = findOptimalPathCoords(mazeState.maze, mazeState.gridSize);
+    if (path.length === 0) return;
+
+    var cells = document.querySelectorAll('.maze-cell');
+    var size = mazeState.gridSize;
+    for (var i = 0; i < path.length; i++) {
+        var idx = path[i][0] * size + path[i][1];
+        if (cells[idx]) cells[idx].classList.add('path-hint');
+    }
+
+    var btn = document.getElementById('maze-answer-btn');
+    if (btn) btn.style.display = 'none';
+
+    mazeState.isComplete = true;
+    if (mazeState.timerInterval) clearInterval(mazeState.timerInterval);
 }
 
 // ========== 渲染迷宫 ==========
@@ -238,6 +322,7 @@ function completeMaze() {
     var feedback = document.getElementById('maze-feedback');
     feedback.textContent = '✓ 到达终点！用时' + elapsed + '秒，步数' + mazeState.stepCount + '，得分+' + baseScore;
     feedback.className = 'feedback correct';
+    document.getElementById('maze-answer-btn').style.display = 'none';
     playCorrectSound();
     speakCorrect();
 
@@ -300,10 +385,13 @@ function showNextMazeQuestion() {
     var config = getMazeConfig();
     mazeState.maze = generateMaze(mazeState.gridSize, config.extraOpen);
     mazeState.optimalSteps = findOptimalPath(mazeState.maze, mazeState.gridSize);
+    var pathCount = countPaths(mazeState.maze, mazeState.gridSize);
 
     document.getElementById('maze-progress').textContent =
         '第 ' + (mazeState.currentQuestion + 1) + '/' + mazeState.questionCount + ' 关';
+    document.getElementById('maze-paths').textContent = '通路：' + pathCount + '条';
     document.getElementById('maze-score').textContent = '得分：' + mazeState.score;
+    document.getElementById('maze-answer-btn').style.display = 'inline-block';
 
     var feedback = document.getElementById('maze-feedback');
     feedback.textContent = '';
