@@ -2610,10 +2610,21 @@ body {
         font-size: 1.1em;
     }
 
-    .maze-arrow-btn {
-        width: 50px;
-        height: 50px;
-        font-size: 1.3em;
+    .maze-arrow-btn,
+    .maze-arrow-spacer {
+        width: 44px;
+        height: 44px;
+        font-size: 1.15em;
+    }
+
+    .maze-arrow-center {
+        width: 44px;
+        height: 44px;
+        font-size: 0.75em;
+    }
+
+    .maze-info-items {
+        font-size: 0.8em;
     }
 
     .rmb-item {
@@ -3699,55 +3710,35 @@ body.numpad-open .page.active {
 }
 
 /* ========== 迷宫游戏 ========== */
-.maze-grid {
-    display: grid;
-    gap: 0;
-    margin: 15px auto;
-    max-width: 400px;
-    max-height: 400px;
-    aspect-ratio: 1;
-}
-
-.maze-cell {
-    aspect-ratio: 1;
+#maze-quiz {
+    display: -webkit-flex;
     display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    min-height: calc(100vh - 60px);
+}
+#maze-quiz .quiz-info {
+    -webkit-flex-shrink: 0;
+    flex-shrink: 0;
+    -webkit-align-items: center;
     align-items: center;
-    justify-content: center;
-    font-size: 0.8em;
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-    -webkit-transition: background 0.15s;
-    transition: background 0.15s;
-    box-sizing: border-box;
+    gap: 6px;
+    margin-bottom: 8px;
 }
-
-.maze-cell.start {
-    background: #e8f5e9;
+.maze-info-items {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    gap: 2px 10px;
+    font-size: 0.85em;
+    color: #999;
+    -webkit-justify-content: flex-end;
+    justify-content: flex-end;
+    -webkit-flex: 1;
+    flex: 1;
+    min-width: 0;
 }
-
-.maze-cell.end {
-    background: #fff3e0;
-}
-
-.maze-cell.end::after {
-    content: '🏁';
-    font-size: 1.2em;
-}
-
-.maze-cell.player {
-    background: #bbdefb;
-}
-
-.maze-cell.player::after {
-    content: '🔵';
-    font-size: 1em;
-}
-
-.maze-cell.path-hint {
-    background: #fff9c4;
-}
-
-/* 迷宫游戏区域布局 */
 .maze-play-area {
     display: -webkit-flex;
     display: flex;
@@ -3755,20 +3746,159 @@ body.numpad-open .page.active {
     flex-direction: column;
     -webkit-align-items: center;
     align-items: center;
-    gap: 10px;
+    -webkit-justify-content: center;
+    justify-content: center;
+    gap: 14px;
+    -webkit-flex: 1;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    width: 100%;
 }
-
-.maze-side {
+.maze-grid {
+    display: grid;
+    gap: 0;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #fafafa;
+    border: 2px solid #e0e0e0;
+}
+.maze-cell {
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    font-size: 0.8em;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-transition: background 0.15s;
+    transition: background 0.15s;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.maze-cell.start {
+    background: #c8e6c9;
+}
+.maze-cell.end {
+    background: #ffe0b2;
+}
+.maze-cell.end::after {
+    content: '🏁';
+    font-size: 1.1em;
+}
+.maze-cell.player {
+    background: #90caf9;
+    -webkit-transition: background 0.1s;
+    transition: background 0.1s;
+}
+.maze-cell.player::after {
+    content: '🔵';
+    font-size: 0.9em;
+}
+.maze-cell.path-hint {
+    background: #fff9c4;
+}
+.maze-controls {
     display: -webkit-flex;
     display: flex;
     -webkit-flex-direction: column;
     flex-direction: column;
     -webkit-align-items: center;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
+    -webkit-flex-shrink: 0;
+    flex-shrink: 0;
+}
+.maze-arrows {
+    display: inline-block;
+    background: linear-gradient(145deg, #e8ecf1, #f5f7fa);
+    border-radius: 20px;
+    padding: 10px 12px;
+    -webkit-box-shadow: inset 0 2px 6px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.06);
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.06);
+}
+.maze-arrow-row {
+    display: -webkit-flex;
+    display: flex;
+    gap: 6px;
+    -webkit-justify-content: center;
+    justify-content: center;
+    margin-bottom: 6px;
+}
+.maze-arrow-row:last-child {
+    margin-bottom: 0;
+}
+.maze-arrow-spacer {
+    width: 48px;
+    height: 48px;
+}
+.maze-arrow-btn {
+    width: 48px;
+    height: 48px;
+    font-size: 1.3em;
+    font-weight: bold;
+    border: none;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #ffffff, #d4d8de);
+    color: #444;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-transition: all 0.08s;
+    transition: all 0.08s;
+    -webkit-box-shadow:
+        3px 3px 8px rgba(0,0,0,0.15),
+        -2px -2px 6px rgba(255,255,255,0.8),
+        inset 0 1px 0 rgba(255,255,255,0.6);
+    box-shadow:
+        3px 3px 8px rgba(0,0,0,0.15),
+        -2px -2px 6px rgba(255,255,255,0.8),
+        inset 0 1px 0 rgba(255,255,255,0.6);
+    -webkit-user-select: none;
+    user-select: none;
+}
+.maze-arrow-btn:hover {
+    background: linear-gradient(145deg, #ffffff, #e0e3e8);
+}
+.maze-arrow-btn:active {
+    background: linear-gradient(145deg, #667eea, #764ba2);
+    color: #fff;
+    -webkit-box-shadow: inset 0 2px 6px rgba(0,0,0,0.25);
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.25);
+    -webkit-transform: scale(0.93);
+    transform: scale(0.93);
+}
+.maze-arrow-center {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #f0f2f5;
+    border: none;
+    -webkit-box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+    color: #888;
+    font-size: 0.8em;
+    font-weight: 600;
+    cursor: default;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    line-height: 1;
+}
+.maze-answer-btn {
+    font-size: 0.85em;
+    padding: 6px 16px;
+}
+#maze-feedback {
+    margin-top: 6px;
+    text-align: center;
 }
 
-/* 横屏：迷宫左侧，方向键右侧 */
+/* 横屏：迷宫左侧，控制区右侧 */
 @media (orientation: landscape) {
     .maze-play-area {
         -webkit-flex-direction: row;
@@ -3777,90 +3907,15 @@ body.numpad-open .page.active {
         justify-content: center;
         -webkit-align-items: center;
         align-items: center;
-        gap: 30px;
-        min-height: 50vh;
+        gap: 20px;
     }
-
     .maze-grid {
-        max-height: 70vh;
-        max-width: 50vh;
         margin: 0;
     }
-}
-
-.maze-arrows {
-    margin: 20px auto;
-    text-align: center;
-    display: block;
-    width: fit-content;
-    background: linear-gradient(145deg, #e6e9ed, #f5f7fa);
-    border-radius: 22px;
-    padding: 14px;
-    box-shadow: inset 0 3px 8px rgba(0,0,0,0.12), 0 2px 4px rgba(255,255,255,0.6);
-}
-
-.maze-arrow-row {
-    display: -webkit-flex;
-    display: flex;
-    gap: 8px;
-    -webkit-justify-content: center;
-    justify-content: center;
-    margin-bottom: 8px;
-}
-
-.maze-arrow-row:last-child {
-    margin-bottom: 0;
-}
-
-.maze-arrow-btn {
-    width: 62px;
-    height: 62px;
-    font-size: 1.6em;
-    font-weight: bold;
-    border: none;
-    border-radius: 16px;
-    background: linear-gradient(145deg, #ffffff, #c8ccd2);
-    color: #333;
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-    -webkit-transition: all 0.08s;
-    transition: all 0.08s;
-    box-shadow:
-        5px 5px 12px rgba(0,0,0,0.2),
-        -3px -3px 8px rgba(255,255,255,0.9),
-        inset 0 1px 0 rgba(255,255,255,0.6);
-    -webkit-user-select: none;
-    user-select: none;
-    position: relative;
-}
-
-.maze-arrow-btn:hover {
-    background: linear-gradient(145deg, #ffffff, #d6d9de);
-    box-shadow:
-        6px 6px 14px rgba(0,0,0,0.22),
-        -3px -3px 10px rgba(255,255,255,0.95),
-        inset 0 1px 0 rgba(255,255,255,0.6);
-}
-
-.maze-arrow-btn:active {
-    background: linear-gradient(145deg, #667eea, #764ba2);
-    color: #fff;
-    box-shadow:
-        inset 0 3px 8px rgba(0,0,0,0.3),
-        inset 0 1px 2px rgba(0,0,0,0.2);
-    -webkit-transform: translateY(2px) scale(0.96);
-    transform: translateY(2px) scale(0.96);
-}
-
-.maze-arrow-center {
-    background: #dfe2e7;
-    border: none;
-    box-shadow:
-        inset 0 3px 6px rgba(0,0,0,0.12),
-        inset 0 1px 2px rgba(0,0,0,0.06);
-    color: #aaa;
-    font-size: 1.2em;
-    cursor: default;
+    .maze-controls {
+        -webkit-flex-shrink: 0;
+        flex-shrink: 0;
+    }
 }
 
 /* ========== 认识人民币游戏 ========== */
@@ -4017,16 +4072,27 @@ body.numpad-open .page.active {
         gap: 4px;
     }
 
-    .maze-arrow-btn {
-        width: 52px;
-        height: 52px;
-        font-size: 1.3em;
-        border-radius: 14px;
+    .maze-arrow-btn,
+    .maze-arrow-spacer {
+        width: 40px;
+        height: 40px;
+        font-size: 1.05em;
+    }
+
+    .maze-arrow-center {
+        width: 40px;
+        height: 40px;
+        font-size: 0.7em;
     }
 
     .maze-arrows {
-        padding: 10px;
-        border-radius: 18px;
+        padding: 8px 10px;
+        border-radius: 16px;
+    }
+
+    .maze-info-items {
+        font-size: 0.75em;
+        gap: 1px 6px;
     }
 
     .rmb-item {

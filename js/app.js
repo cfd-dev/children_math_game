@@ -183,6 +183,15 @@ function goHome() {
         document.removeEventListener('keydown', mazeState.keyHandler);
         mazeState.keyHandler = null;
     }
+    // 移除迷宫窗口大小变化事件
+    if (mazeState.resizeHandler) {
+        window.removeEventListener('resize', mazeState.resizeHandler);
+        mazeState.resizeHandler = null;
+    }
+    if (mazeState.resizeTimer) {
+        clearTimeout(mazeState.resizeTimer);
+        mazeState.resizeTimer = null;
+    }
 
     // 重置认识人民币页面
     document.getElementById('rmb-setup').style.display = 'block';

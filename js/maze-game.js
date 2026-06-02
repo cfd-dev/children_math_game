@@ -12,7 +12,9 @@ var mazeState = {
     questionCount: 3,
     currentQuestion: 0,
     score: 0,
-    keyHandler: null
+    keyHandler: null,
+    resizeHandler: null,
+    resizeTimer: null
 };
 
 // 年级难度配置
@@ -233,7 +235,47 @@ function renderMaze() {
     var container = document.getElementById('maze-grid');
     container.innerHTML = '';
     var size = mazeState.gridSize;
-    container.style.gridTemplateColumns = 'repeat(' + size + ', 1fr)';
+
+    var vw = window.innerWidth;
+    var vh = window.innerHeight;
+    var isLandscape = vw > vh;
+
+    var quizSection = document.getElementById('maze-quiz');
+    var quizInfo = quizSection.querySelector('.quiz-info');
+    var feedback = document.getElementById('maze-feedback');
+    var controls = document.querySelector('.maze-controls');
+    var playArea = document.querySelector('.maze-play-area');
+
+    // 计算各区域占用的高度
+    var infoH = quizInfo ? quizInfo.offsetHeight + 8 : 40;  // quiz-info + margin
+    var feedbackH = feedback ? feedback.offsetHeight + 6 : 30;
+    var cardPadV = 60; // .quiz-section 上下 padding
+    var gapV = 14; // .maze-play-area 的 gap
+
+    // 可用总高度（减去信息栏、反馈、卡片padding）
+    var availTotalH = vh - infoH - feedbackH - cardPadV;
+
+    // 可用总宽度
+    var quizW = quizSection ? quizSection.clientWidth : Math.min(vw, 550);
+    var cardPadH = 60; // 左右 padding
+    var availTotalW = quizW - cardPadH;
+
+    var maxDim;
+    if (isLandscape) {
+        var ctrlW = controls ? controls.offsetWidth + 20 : 180;
+        maxDim = Math.min(availTotalW - ctrlW, availTotalH);
+    } else {
+        var ctrlH = controls ? controls.offsetHeight + gapV : 180;
+        maxDim = Math.min(availTotalW, availTotalH - ctrlH);
+    }
+
+    maxDim = Math.max(120, maxDim);
+    var cellSize = Math.max(18, Math.floor(maxDim / size));
+    var gridDim = cellSize * size;
+
+    container.style.gridTemplateColumns = 'repeat(' + size + ', ' + cellSize + 'px)';
+    container.style.width = gridDim + 'px';
+    container.style.height = gridDim + 'px';
 
     for (var r = 0; r < size; r++) {
         for (var c = 0; c < size; c++) {
@@ -304,6 +346,7 @@ function handleMazeMove(direction) {
     mazeState.playerCol = nc;
     mazeState.stepCount++;
     updateMazeCellHighlight();
+    updateMazeStepCount();
     playClickSound();
 
     // 检查是否到达终点
@@ -368,12 +411,30 @@ function startMazeGame() {
     mazeState.keyHandler = mazeKeyHandler;
     document.addEventListener('keydown', mazeState.keyHandler);
 
+    // 注册窗口大小变化事件（横竖屏切换时重新渲染迷宫）
+    if (mazeState.resizeHandler) window.removeEventListener('resize', mazeState.resizeHandler);
+    mazeState.resizeHandler = function() {
+        if (mazeState.resizeTimer) clearTimeout(mazeState.resizeTimer);
+        mazeState.resizeTimer = setTimeout(function() {
+            if (!mazeState.isComplete && document.getElementById('maze-quiz').style.display !== 'none') {
+                renderMaze();
+                updateMazeCellHighlight();
+            }
+        }, 200);
+    };
+    window.addEventListener('resize', mazeState.resizeHandler);
+
     playStartSound();
     showNextMazeQuestion();
 
     document.getElementById('maze-setup').style.display = 'none';
     document.getElementById('maze-result').style.display = 'none';
-    document.getElementById('maze-quiz').style.display = 'block';
+    document.getElementById('maze-quiz').style.display = 'flex';
+}
+
+function updateMazeStepCount() {
+    var el = document.getElementById('maze-step-count');
+    if (el) el.textContent = mazeState.stepCount + '步';
 }
 
 function showNextMazeQuestion() {
@@ -392,6 +453,7 @@ function showNextMazeQuestion() {
     document.getElementById('maze-paths').textContent = '通路：' + pathCount + '条';
     document.getElementById('maze-score').textContent = '得分：' + mazeState.score;
     document.getElementById('maze-answer-btn').style.display = 'inline-block';
+    updateMazeStepCount();
 
     var feedback = document.getElementById('maze-feedback');
     feedback.textContent = '';
@@ -411,6 +473,14 @@ function finishMazeGame() {
     if (mazeState.keyHandler) {
         document.removeEventListener('keydown', mazeState.keyHandler);
         mazeState.keyHandler = null;
+    }
+    if (mazeState.resizeHandler) {
+        window.removeEventListener('resize', mazeState.resizeHandler);
+        mazeState.resizeHandler = null;
+    }
+    if (mazeState.resizeTimer) {
+        clearTimeout(mazeState.resizeTimer);
+        mazeState.resizeTimer = null;
     }
 
     var totalTime = Math.floor((Date.now() - mazeState.startTime) / 1000);
