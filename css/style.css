@@ -3730,6 +3730,7 @@ body.numpad-open .page.active {
     -webkit-flex-direction: column;
     flex-direction: column;
     min-height: calc(100vh - 60px);
+    padding: 15px;
 }
 #maze-quiz .quiz-info {
     -webkit-flex-shrink: 0;
@@ -3770,10 +3771,11 @@ body.numpad-open .page.active {
     display: grid;
     gap: 0;
     margin: 0 auto;
-    overflow: hidden;
+    overflow: visible;
     border-radius: 0;
     background: #fafafa;
-    border: 2px solid #e0e0e0;
+    border: none;
+    box-sizing: content-box;
 }
 .maze-cell {
     display: flex;
@@ -3919,10 +3921,12 @@ body.numpad-open .page.active {
         justify-content: center;
         -webkit-align-items: center;
         align-items: center;
-        gap: 20px;
+        gap: 12px;
     }
     .maze-grid {
         margin: 0;
+        -webkit-flex-shrink: 0;
+        flex-shrink: 0;
     }
     .maze-controls {
         -webkit-flex-shrink: 0;

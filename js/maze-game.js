@@ -261,12 +261,12 @@ function renderMaze() {
 
     // 可用总宽度
     var quizW = quizSection ? quizSection.clientWidth : Math.min(vw, 550);
-    var cardPadH = 60; // 左右 padding
+    var cardPadH = 10; // 左右预留间距
     var availTotalW = quizW - cardPadH;
 
     var maxDim;
     if (isLandscape) {
-        var ctrlW = controls ? controls.offsetWidth + 20 : 180;
+        var ctrlW = controls ? controls.offsetWidth + 12 : 180;
         maxDim = Math.min(availTotalW - ctrlW, availTotalH);
     } else {
         var ctrlH = controls ? controls.offsetHeight + gapV : 180;
