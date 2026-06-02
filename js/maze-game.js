@@ -18,17 +18,17 @@ var mazeState = {
 };
 
 // 年级难度配置
-// extraOpen: 额外打通的墙壁数（低年级多分叉易走通，高年级少分叉更绕更难）
+// DFS递归回溯生成完美迷宫：唯一通路 + 死胡同分支，无环路
 var mazeGradeConfig = {
-    'k-small':  { size: 5,  mazeCount: 3, extraOpen: 4,  description: '5×5 迷宫（简单）' },
-    'k-medium': { size: 7,  mazeCount: 3, extraOpen: 5,  description: '7×7 迷宫' },
-    'k-large':  { size: 9,  mazeCount: 3, extraOpen: 5,  description: '9×9 迷宫' },
-    'grade-1':  { size: 9,  mazeCount: 5, extraOpen: 4,  description: '9×9 迷宫' },
-    'grade-2':  { size: 11, mazeCount: 5, extraOpen: 3,  description: '11×11 迷宫' },
-    'grade-3':  { size: 13, mazeCount: 5, extraOpen: 2,  description: '13×13 迷宫' },
-    'grade-4':  { size: 13, mazeCount: 5, extraOpen: 2,  description: '13×13 迷宫（进阶）' },
-    'grade-5':  { size: 15, mazeCount: 5, extraOpen: 1,  description: '15×15 迷宫' },
-    'grade-6':  { size: 15, mazeCount: 5, extraOpen: 1,  description: '15×15 迷宫（困难）' }
+    'k-small':  { size: 5,  mazeCount: 3, description: '5×5 迷宫（简单）' },
+    'k-medium': { size: 7,  mazeCount: 3, description: '7×7 迷宫' },
+    'k-large':  { size: 9,  mazeCount: 3, description: '9×9 迷宫' },
+    'grade-1':  { size: 9,  mazeCount: 5, description: '9×9 迷宫' },
+    'grade-2':  { size: 15, mazeCount: 5, description: '15×15 迷宫' },
+    'grade-3':  { size: 20, mazeCount: 5, description: '20×20 迷宫' },
+    'grade-4':  { size: 25, mazeCount: 5, description: '25×25 迷宫（进阶）' },
+    'grade-5':  { size: 30, mazeCount: 5, description: '30×30 迷宫' },
+    'grade-6':  { size: 30, mazeCount: 5, description: '30×30 迷宫（困难）' }
 };
 
 function getMazeConfig() {
@@ -113,10 +113,12 @@ function generateMaze(size, extraOpen) {
     return grid;
 }
 
-// ========== 计算通路数（DFS枚举，限制最多100条避免卡顿）==========
+// ========== 计算通路数（DFS枚举，限制最多100条，大迷宫限制搜索节点数）==========
 function countPaths(grid, size) {
     var count = 0;
     var visited = {};
+    var visitedCount = 0;
+    var maxVisited = size >= 25 ? 5000 : (size >= 15 ? 20000 : 100000);
     var moves = [
         [-1, 0, 'top'],
         [1, 0, 'bottom'],
@@ -125,8 +127,8 @@ function countPaths(grid, size) {
     ];
 
     function dfs(r, c) {
+        if (count >= 100 || visitedCount >= maxVisited) return;
         if (r === size - 1 && c === size - 1) { count++; return; }
-        if (count >= 100) return;
         for (var m = 0; m < moves.length; m++) {
             var nr = r + moves[m][0];
             var nc = c + moves[m][1];
@@ -134,6 +136,7 @@ function countPaths(grid, size) {
             if (nr >= 0 && nr < size && nc >= 0 && nc < size &&
                 !grid[r][c][wall] && !visited[nr + ',' + nc]) {
                 visited[nr + ',' + nc] = true;
+                visitedCount++;
                 dfs(nr, nc);
                 delete visited[nr + ',' + nc];
             }
@@ -142,6 +145,7 @@ function countPaths(grid, size) {
 
     visited['0,0'] = true;
     dfs(0, 0);
+    if (visitedCount >= maxVisited) return '100+';
     return count >= 100 ? '100+' : count;
 }
 
@@ -270,7 +274,8 @@ function renderMaze() {
     }
 
     maxDim = Math.max(120, maxDim);
-    var cellSize = Math.max(18, Math.floor(maxDim / size));
+    var minCell = size >= 25 ? 8 : (size >= 15 ? 12 : 18);
+    var cellSize = Math.max(minCell, Math.floor(maxDim / size));
     var gridDim = cellSize * size;
 
     container.style.gridTemplateColumns = 'repeat(' + size + ', ' + cellSize + 'px)';
@@ -286,10 +291,11 @@ function renderMaze() {
             cell.dataset.col = c;
 
             var wall = mazeState.maze[r][c];
-            if (wall.top) cell.style.borderTop = '2px solid #333';
-            if (wall.right) cell.style.borderRight = '2px solid #333';
-            if (wall.bottom) cell.style.borderBottom = '2px solid #333';
-            if (wall.left) cell.style.borderLeft = '2px solid #333';
+            var borderWidth = cellSize >= 15 ? '2px' : '1px';
+            if (wall.top) cell.style.borderTop = borderWidth + ' solid #333';
+            if (wall.right) cell.style.borderRight = borderWidth + ' solid #333';
+            if (wall.bottom) cell.style.borderBottom = borderWidth + ' solid #333';
+            if (wall.left) cell.style.borderLeft = borderWidth + ' solid #333';
 
             if (r === 0 && c === 0) cell.classList.add('start');
             if (r === size - 1 && c === size - 1) cell.classList.add('end');
@@ -448,7 +454,7 @@ function showNextMazeQuestion() {
     mazeState.playerCol = 0;
 
     var config = getMazeConfig();
-    mazeState.maze = generateMaze(mazeState.gridSize, config.extraOpen);
+    mazeState.maze = generateMaze(mazeState.gridSize, 0);
     mazeState.optimalSteps = findOptimalPath(mazeState.maze, mazeState.gridSize);
     var pathCount = countPaths(mazeState.maze, mazeState.gridSize);
 
