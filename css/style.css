@@ -997,18 +997,23 @@ body {
     gap: 10px;
     margin: 20px 0;
     padding: 10px 5px;
+    overflow: hidden;
 }
 
 .compare-side {
-    font-size: 2em;
+    font-size: min(2em, 6vw);
     font-weight: bold;
     color: #333;
-    min-width: 60px;
+    min-width: 0;
+    max-width: 40%;
     text-align: center;
-    background: #f8f9fa;
+    background: #e3f2fd;
+    border: 3px solid #90caf9;
     padding: 10px 12px;
     border-radius: 12px;
-    white-space: nowrap;
+    word-break: break-all;
+    flex-shrink: 1;
+    box-sizing: border-box;
 }
 
 .compare-symbol {
@@ -1263,8 +1268,10 @@ body {
     }
 
     .compare-side {
-        font-size: 1.6em;
+        font-size: min(1.6em, 5.5vw);
         padding: 8px 10px;
+        max-width: 38%;
+        min-width: 0;
     }
 
     .compare-symbol {
