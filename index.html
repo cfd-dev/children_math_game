@@ -1741,22 +1741,26 @@
                 <span id="maze-timer">用时：0秒</span>
                 <span id="maze-score">得分：0</span>
             </div>
-            <div id="maze-grid" class="maze-grid"></div>
-            <div class="maze-arrows">
-                <div class="maze-arrow-row">
-                    <button class="maze-arrow-btn" onclick="handleMazeMove('up')">↑</button>
-                </div>
-                <div class="maze-arrow-row">
-                    <button class="maze-arrow-btn" onclick="handleMazeMove('left')">←</button>
-                    <button class="maze-arrow-btn maze-arrow-center">·</button>
-                    <button class="maze-arrow-btn" onclick="handleMazeMove('right')">→</button>
-                </div>
-                <div class="maze-arrow-row">
-                    <button class="maze-arrow-btn" onclick="handleMazeMove('down')">↓</button>
+            <div class="maze-play-area">
+                <div id="maze-grid" class="maze-grid"></div>
+                <div class="maze-side">
+                    <div class="maze-arrows">
+                        <div class="maze-arrow-row">
+                            <button class="maze-arrow-btn" onclick="handleMazeMove('up')">↑</button>
+                        </div>
+                        <div class="maze-arrow-row">
+                            <button class="maze-arrow-btn" onclick="handleMazeMove('left')">←</button>
+                            <button class="maze-arrow-btn maze-arrow-center">🎮</button>
+                            <button class="maze-arrow-btn" onclick="handleMazeMove('right')">→</button>
+                        </div>
+                        <div class="maze-arrow-row">
+                            <button class="maze-arrow-btn" onclick="handleMazeMove('down')">↓</button>
+                        </div>
+                    </div>
+                    <button id="maze-answer-btn" class="next-btn" style="display:none" onclick="showMazeAnswer()">查看答案</button>
                 </div>
             </div>
             <div id="maze-feedback" class="feedback"></div>
-            <button id="maze-answer-btn" class="next-btn" style="display:none" onclick="showMazeAnswer()">查看答案</button>
         </div>
 
         <!-- 奖励页面 -->

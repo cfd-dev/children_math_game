@@ -3747,9 +3747,56 @@ body.numpad-open .page.active {
     background: #fff9c4;
 }
 
+/* 迷宫游戏区域布局 */
+.maze-play-area {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    -webkit-align-items: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.maze-side {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    -webkit-align-items: center;
+    align-items: center;
+    gap: 12px;
+}
+
+/* 横屏：迷宫左侧，方向键右侧 */
+@media (orientation: landscape) {
+    .maze-play-area {
+        -webkit-flex-direction: row;
+        flex-direction: row;
+        -webkit-justify-content: center;
+        justify-content: center;
+        -webkit-align-items: center;
+        align-items: center;
+        gap: 30px;
+        min-height: 50vh;
+    }
+
+    .maze-grid {
+        max-height: 70vh;
+        max-width: 50vh;
+        margin: 0;
+    }
+}
+
 .maze-arrows {
-    margin: 15px auto;
+    margin: 20px auto;
     text-align: center;
+    display: block;
+    width: fit-content;
+    background: linear-gradient(145deg, #e6e9ed, #f5f7fa);
+    border-radius: 22px;
+    padding: 14px;
+    box-shadow: inset 0 3px 8px rgba(0,0,0,0.12), 0 2px 4px rgba(255,255,255,0.6);
 }
 
 .maze-arrow-row {
@@ -3758,32 +3805,61 @@ body.numpad-open .page.active {
     gap: 8px;
     -webkit-justify-content: center;
     justify-content: center;
-    margin-bottom: 4px;
+    margin-bottom: 8px;
+}
+
+.maze-arrow-row:last-child {
+    margin-bottom: 0;
 }
 
 .maze-arrow-btn {
-    width: 56px;
-    height: 56px;
-    font-size: 1.5em;
+    width: 62px;
+    height: 62px;
+    font-size: 1.6em;
     font-weight: bold;
-    border: 2px solid #667eea;
-    border-radius: 12px;
-    background: #e8eaed;
+    border: none;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #ffffff, #c8ccd2);
     color: #333;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
-    -webkit-transition: background 0.1s;
-    transition: background 0.1s;
+    -webkit-transition: all 0.08s;
+    transition: all 0.08s;
+    box-shadow:
+        5px 5px 12px rgba(0,0,0,0.2),
+        -3px -3px 8px rgba(255,255,255,0.9),
+        inset 0 1px 0 rgba(255,255,255,0.6);
+    -webkit-user-select: none;
+    user-select: none;
+    position: relative;
+}
+
+.maze-arrow-btn:hover {
+    background: linear-gradient(145deg, #ffffff, #d6d9de);
+    box-shadow:
+        6px 6px 14px rgba(0,0,0,0.22),
+        -3px -3px 10px rgba(255,255,255,0.95),
+        inset 0 1px 0 rgba(255,255,255,0.6);
 }
 
 .maze-arrow-btn:active {
-    background: #667eea;
+    background: linear-gradient(145deg, #667eea, #764ba2);
     color: #fff;
+    box-shadow:
+        inset 0 3px 8px rgba(0,0,0,0.3),
+        inset 0 1px 2px rgba(0,0,0,0.2);
+    -webkit-transform: translateY(2px) scale(0.96);
+    transform: translateY(2px) scale(0.96);
 }
 
 .maze-arrow-center {
-    background: transparent;
-    border-color: transparent;
+    background: #dfe2e7;
+    border: none;
+    box-shadow:
+        inset 0 3px 6px rgba(0,0,0,0.12),
+        inset 0 1px 2px rgba(0,0,0,0.06);
+    color: #aaa;
+    font-size: 1.2em;
     cursor: default;
 }
 
@@ -3942,9 +4018,15 @@ body.numpad-open .page.active {
     }
 
     .maze-arrow-btn {
-        width: 44px;
-        height: 44px;
-        font-size: 1.2em;
+        width: 52px;
+        height: 52px;
+        font-size: 1.3em;
+        border-radius: 14px;
+    }
+
+    .maze-arrows {
+        padding: 10px;
+        border-radius: 18px;
     }
 
     .rmb-item {
