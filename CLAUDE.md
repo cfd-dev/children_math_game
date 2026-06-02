@@ -22,10 +22,7 @@ app.js                        → navigation, goHome(), init
 
 **Each game page has 4 display states** (toggled via `style.display`): `*-setup`, `*-quiz`, `*-reward`, `*-result`.
 
-**24-point game (`24game.js`) is a special case** — it uses its own on-screen keyboard (not the global numpad) and has two input modes based on grade:
-- **Fill mode** (k-small/k-medium/k-large): expression shown as boxes with some blanks pre-filled; player only types missing digits
-- **Build mode** (grade-1+): all boxes empty; player constructs the full expression with digits and operators
-The game also includes a brute-force solver (`solve24`), a recursive-descent parser (`safeEval24`), and expression tokenization (`tokenize`).
+**24-point game (`24game.js`) is a special case** — it uses its own on-screen keyboard (not the global numpad) with calculator-style free input for all grades. The player types an expression freely using digits, operators, and parentheses. The game includes a brute-force solver (`findAllSolutions`) that enumerates all possible expressions, and a recursive-descent parser (`safeEval24`) for safe evaluation. Keys for digits/operators not needed for the current puzzle are grayed out.
 
 **`goHome()` in app.js** is the central reset — it resets every game page to setup visibility, clears all timer intervals, and hides the numpad. When adding a new game, you must add its reset logic here.
 
