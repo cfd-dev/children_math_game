@@ -3723,26 +3723,18 @@ body.numpad-open .page.active {
     -webkit-align-items: center;
     align-items: center;
     margin-bottom: 8px;
-    position: relative;
-    padding-left: 60px;
-}
-#maze-quiz .quiz-info .back-btn {
-    position: absolute;
-    left: 0;
 }
 .maze-info-items {
     display: -webkit-flex;
     display: flex;
-    gap: 6px 12px;
-    font-size: 0.85em;
+    font-size: 14px;
     color: #999;
-    -webkit-justify-content: center;
-    justify-content: center;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
     -webkit-flex: 1;
     flex: 1;
     min-width: 0;
-    -white-space: nowrap;
-    white-space: nowrap;
+    -webkit-font-smoothing: antialiased;
 }
 .maze-play-area {
     display: -webkit-flex;
