@@ -16,16 +16,17 @@ var mazeState = {
 };
 
 // 年级难度配置
+// extraOpen: 额外打通的墙壁数（制造少量分叉，同时保持足够绕路）
 var mazeGradeConfig = {
-    'k-small':  { size: 5,  mazeCount: 3, description: '5×5 迷宫（简单）' },
-    'k-medium': { size: 7,  mazeCount: 3, description: '7×7 迷宫' },
-    'k-large':  { size: 9,  mazeCount: 3, description: '9×9 迷宫' },
-    'grade-1':  { size: 9,  mazeCount: 5, description: '9×9 迷宫' },
-    'grade-2':  { size: 11, mazeCount: 5, description: '11×11 迷宫' },
-    'grade-3':  { size: 13, mazeCount: 5, description: '13×13 迷宫' },
-    'grade-4':  { size: 13, mazeCount: 5, description: '13×13 迷宫（进阶）' },
-    'grade-5':  { size: 15, mazeCount: 5, description: '15×15 迷宫' },
-    'grade-6':  { size: 15, mazeCount: 5, description: '15×15 迷宫（困难）' }
+    'k-small':  { size: 5,  mazeCount: 3, extraOpen: 1,  description: '5×5 迷宫（简单）' },
+    'k-medium': { size: 7,  mazeCount: 3, extraOpen: 2,  description: '7×7 迷宫' },
+    'k-large':  { size: 9,  mazeCount: 3, extraOpen: 4,  description: '9×9 迷宫' },
+    'grade-1':  { size: 9,  mazeCount: 5, extraOpen: 4,  description: '9×9 迷宫' },
+    'grade-2':  { size: 11, mazeCount: 5, extraOpen: 6,  description: '11×11 迷宫' },
+    'grade-3':  { size: 13, mazeCount: 5, extraOpen: 8,  description: '13×13 迷宫' },
+    'grade-4':  { size: 13, mazeCount: 5, extraOpen: 12, description: '13×13 迷宫（进阶）' },
+    'grade-5':  { size: 15, mazeCount: 5, extraOpen: 16, description: '15×15 迷宫' },
+    'grade-6':  { size: 15, mazeCount: 5, extraOpen: 22, description: '15×15 迷宫（困难）' }
 };
 
 function getMazeConfig() {
@@ -33,7 +34,7 @@ function getMazeConfig() {
 }
 
 // ========== 迷宫生成（递归回溯 / DFS）==========
-function generateMaze(size) {
+function generateMaze(size, extraOpen) {
     var grid = [];
     for (var r = 0; r < size; r++) {
         grid[r] = [];
@@ -74,6 +75,32 @@ function generateMaze(size) {
             stack.push([nr, nc]);
         } else {
             stack.pop();
+        }
+    }
+
+    // 额外打通墙壁，制造分叉和环路
+    var walls = [];
+    for (var r = 0; r < size; r++) {
+        for (var c = 0; c < size; c++) {
+            // 只收集右墙和下墙，避免重复
+            if (c < size - 1 && grid[r][c].right) walls.push([r, c, 'right']);
+            if (r < size - 1 && grid[r][c].bottom) walls.push([r, c, 'bottom']);
+        }
+    }
+    // 洗牌后取前 extraOpen 个打通
+    for (var i = walls.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = walls[i]; walls[i] = walls[j]; walls[j] = tmp;
+    }
+    var toOpen = Math.min(extraOpen || 0, walls.length);
+    for (var k = 0; k < toOpen; k++) {
+        var wr = walls[k][0], wc = walls[k][1], side = walls[k][2];
+        if (side === 'right') {
+            grid[wr][wc].right = false;
+            grid[wr][wc + 1].left = false;
+        } else {
+            grid[wr][wc].bottom = false;
+            grid[wr + 1][wc].top = false;
         }
     }
 
@@ -270,7 +297,8 @@ function showNextMazeQuestion() {
     mazeState.playerRow = 0;
     mazeState.playerCol = 0;
 
-    mazeState.maze = generateMaze(mazeState.gridSize);
+    var config = getMazeConfig();
+    mazeState.maze = generateMaze(mazeState.gridSize, config.extraOpen);
     mazeState.optimalSteps = findOptimalPath(mazeState.maze, mazeState.gridSize);
 
     document.getElementById('maze-progress').textContent =
