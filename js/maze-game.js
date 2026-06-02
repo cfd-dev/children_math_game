@@ -349,6 +349,9 @@ function handleMazeMove(direction) {
     else if (direction === 'right' && !wall.right) nc++;
     else return; // 有墙，不能移动
 
+    // 边界检查：不允许移出迷宫
+    if (nr < 0 || nr >= mazeState.gridSize || nc < 0 || nc >= mazeState.gridSize) return;
+
     mazeState.playerRow = nr;
     mazeState.playerCol = nc;
     mazeState.stepCount++;
