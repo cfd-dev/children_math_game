@@ -13,7 +13,8 @@ var sudokuState = {
     timerInterval: null,
     mistakes: 0,
     maxMistakes: 3,
-    isComplete: false
+    isComplete: false,
+    isPractice: false
 };
 
 // 按年级的数独配置
@@ -281,10 +282,15 @@ function inputSudokuNumber(num) {
         sudokuState.mistakes++;
         playWrongSound();
         speakWrong();
-        document.getElementById('sudoku-mistakes').textContent = '错误：' + sudokuState.mistakes + '/' + sudokuState.maxMistakes;
 
-        if (sudokuState.mistakes >= sudokuState.maxMistakes) {
-            // 游戏结束
+        if (sudokuState.isPractice) {
+            document.getElementById('sudoku-mistakes').textContent = '错误：' + sudokuState.mistakes;
+        } else {
+            document.getElementById('sudoku-mistakes').textContent = '错误：' + sudokuState.mistakes + '/' + sudokuState.maxMistakes;
+        }
+
+        if (!sudokuState.isPractice && sudokuState.mistakes >= sudokuState.maxMistakes) {
+            // 游戏结束（仅挑战模式）
             sudokuState.isComplete = true;
             if (sudokuState.timerInterval) clearInterval(sudokuState.timerInterval);
             document.getElementById('sudoku-feedback').textContent = '错误次数已达上限，游戏结束！';
@@ -326,7 +332,7 @@ function checkSudokuComplete() {
 }
 
 // 开始数独游戏
-function startSudokuGame() {
+function startSudokuGame(practice) {
     var config = getSudokuConfig();
     sudokuState.gridSize = config.gridSize;
     sudokuState.subRows = config.subRows;
@@ -335,6 +341,7 @@ function startSudokuGame() {
     sudokuState.selectedCol = -1;
     sudokuState.mistakes = 0;
     sudokuState.isComplete = false;
+    sudokuState.isPractice = !!practice;
     sudokuState.startTime = Date.now();
 
     // 生成题目
@@ -361,8 +368,15 @@ function startSudokuGame() {
     document.getElementById('sudoku-quiz').style.display = 'block';
     document.getElementById('sudoku-feedback').textContent = '';
     document.getElementById('sudoku-feedback').className = 'feedback';
-    document.getElementById('sudoku-reveal-btn').style.display = 'none';
-    document.getElementById('sudoku-mistakes').textContent = '错误：0/' + sudokuState.maxMistakes;
+
+    // 练习模式下始终显示查看答案按钮
+    document.getElementById('sudoku-reveal-btn').style.display = sudokuState.isPractice ? 'inline-block' : 'none';
+
+    if (sudokuState.isPractice) {
+        document.getElementById('sudoku-mistakes').textContent = '错误：' + sudokuState.mistakes;
+    } else {
+        document.getElementById('sudoku-mistakes').textContent = '错误：0/' + sudokuState.maxMistakes;
+    }
 
     // 清除之前的定时器
     if (sudokuState.timerInterval) clearInterval(sudokuState.timerInterval);
@@ -410,10 +424,14 @@ function finishSudokuGame() {
     var config = getSudokuConfig();
     var score = Math.max(0, 100 - sudokuState.mistakes * 10);
 
-    // 保存记录
-    saveSudokuRecord(score, elapsed, config.gridSize, sudokuState.mistakes);
+    // 挑战模式才保存记录
+    if (!sudokuState.isPractice) {
+        saveSudokuRecord(score, elapsed, config.gridSize, sudokuState.mistakes);
+    }
 
     // 显示奖励画面
+    var rewardTitle = document.querySelector('#sudoku-reward h3');
+    if (rewardTitle) rewardTitle.textContent = sudokuState.isPractice ? '练习完成！' : '数独完成！';
     document.getElementById('sudoku-reward-score').textContent = score;
     document.getElementById('sudoku-reward-time').textContent = elapsed;
     document.getElementById('sudoku-reward-mistakes').textContent = sudokuState.mistakes;

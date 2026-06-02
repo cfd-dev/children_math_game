@@ -569,9 +569,11 @@
                 <div class="rules">
                     <p>1. 每行、每列、每个小区域不能重复</p>
                     <p>2. 点击空格，再点下方数字填入</p>
-                    <p>3. 填错3次游戏结束，可查看答案</p>
+                    <p>3. 挑战模式：填错3次游戏结束</p>
+                    <p>4. 练习模式：不限错误次数，可随时查看答案</p>
                 </div>
-                <button class="start-btn" onclick="startSudokuGame()">开始挑战</button>
+                <button class="start-btn" onclick="startSudokuGame(true)">开始练习</button>
+                <button class="start-btn" onclick="startSudokuGame()" style="margin-top:8px;background:linear-gradient(135deg,#e74c3c,#c0392b)">开始挑战</button>
             </div>
 
             <!-- 游戏区域 -->
@@ -1586,7 +1588,8 @@
                     <option value="15">15题</option>
                 </select>
             </div>
-            <button class="start-btn" onclick="start24Game()">开始挑战</button>
+            <button class="start-btn" onclick="start24Game(true)">开始练习</button>
+            <button class="start-btn" onclick="start24Game()" style="margin-top:8px;background:linear-gradient(135deg,#e74c3c,#c0392b)">开始挑战</button>
         </div>
 
         <!-- 答题页面 -->

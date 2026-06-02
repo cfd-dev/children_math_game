@@ -11,6 +11,7 @@ var twentyFourState = {
     timerInterval: null,
     isProcessing: false,
     viewedAnswer: false,
+    isPractice: false,
     // 新增：填空/构建模式
     mode: 'fill',       // 'fill' 或 'build'
     tokens: [],          // 解析后的表达式token数组
@@ -562,13 +563,14 @@ function validate24Expression(expr, numbers, target) {
 }
 
 // ========== 游戏生命周期 ==========
-function start24Game() {
+function start24Game(practice) {
     var countSelect = document.getElementById('twentyfour-question-count');
     twentyFourState.totalQuestions = parseInt(countSelect ? countSelect.value : '10');
     twentyFourState.currentQuestion = 0;
     twentyFourState.score = 0;
     twentyFourState.correctCount = 0;
     twentyFourState.isProcessing = false;
+    twentyFourState.isPractice = !!practice;
     twentyFourState.startTime = Date.now();
 
     if (twentyFourState.timerInterval) clearInterval(twentyFourState.timerInterval);
@@ -729,10 +731,26 @@ function check24Answer() {
                 }
             }
 
-            setTimeout(function() {
-                twentyFourState.isProcessing = false;
-                showNext24Question();
-            }, 2500);
+            if (twentyFourState.isPractice) {
+                // 练习模式：显示正确答案后允许重试
+                feedback.textContent = '✗ 有错误，正确答案已标出。按C清除后重试';
+                setTimeout(function() {
+                    twentyFourState.isProcessing = false;
+                    // 清除错误标记，重新渲染让用户重试
+                    for (var m = 0; m < twentyFourState.blanks.length; m++) {
+                        twentyFourState.userInputs[m] = '';
+                    }
+                    renderExpression();
+                    var answerBtn = document.getElementById('twentyfour-answer-btn');
+                    if (answerBtn) answerBtn.style.display = 'inline-block';
+                    twentyFourState.viewedAnswer = false;
+                }, 2000);
+            } else {
+                setTimeout(function() {
+                    twentyFourState.isProcessing = false;
+                    showNext24Question();
+                }, 2500);
+            }
         }
 
     } else {
@@ -802,8 +820,13 @@ function finish24Game() {
     var totalTime = Math.floor((Date.now() - twentyFourState.startTime) / 1000);
     var accuracy = Math.round((twentyFourState.correctCount / twentyFourState.totalQuestions) * 100);
 
-    save24Record(accuracy, totalTime, twentyFourState.totalQuestions, twentyFourState.score);
+    // 挑战模式才保存记录
+    if (!twentyFourState.isPractice) {
+        save24Record(accuracy, totalTime, twentyFourState.totalQuestions, twentyFourState.score);
+    }
 
+    var rewardTitle = document.querySelector('#twentyfour-reward h3');
+    if (rewardTitle) rewardTitle.textContent = twentyFourState.isPractice ? '练习完成！' : '挑战完成！';
     document.getElementById('twentyfour-reward-score').textContent = twentyFourState.score;
     document.getElementById('twentyfour-reward-accuracy').textContent = accuracy + '%';
     document.getElementById('twentyfour-reward-time').textContent = totalTime;
