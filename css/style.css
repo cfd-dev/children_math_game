@@ -1005,14 +1005,12 @@ body {
     font-weight: bold;
     color: #333;
     min-width: 0;
-    max-width: 40%;
     text-align: center;
     background: #e3f2fd;
     border: 3px solid #90caf9;
     padding: 10px 12px;
     border-radius: 12px;
-    word-break: break-all;
-    flex-shrink: 1;
+    white-space: nowrap;
     box-sizing: border-box;
 }
 
@@ -1270,8 +1268,6 @@ body {
     .compare-side {
         font-size: min(1.6em, 5.5vw);
         padding: 8px 10px;
-        max-width: 38%;
-        min-width: 0;
     }
 
     .compare-symbol {
