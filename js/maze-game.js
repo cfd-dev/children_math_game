@@ -424,12 +424,15 @@ function startMazeGame() {
     };
     window.addEventListener('resize', mazeState.resizeHandler);
 
-    playStartSound();
-    showNextMazeQuestion();
-
     document.getElementById('maze-setup').style.display = 'none';
     document.getElementById('maze-result').style.display = 'none';
     document.getElementById('maze-quiz').style.display = 'flex';
+
+    playStartSound();
+    // 延迟一帧确保浏览器完成布局后再计算迷宫尺寸
+    requestAnimationFrame(function() {
+        showNextMazeQuestion();
+    });
 }
 
 function updateMazeStepCount() {

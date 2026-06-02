@@ -3722,22 +3722,27 @@ body.numpad-open .page.active {
     flex-shrink: 0;
     -webkit-align-items: center;
     align-items: center;
-    gap: 6px;
     margin-bottom: 8px;
+    position: relative;
+    padding-left: 60px;
+}
+#maze-quiz .quiz-info .back-btn {
+    position: absolute;
+    left: 0;
 }
 .maze-info-items {
     display: -webkit-flex;
     display: flex;
-    -webkit-flex-wrap: wrap;
-    flex-wrap: wrap;
-    gap: 2px 10px;
+    gap: 6px 12px;
     font-size: 0.85em;
     color: #999;
-    -webkit-justify-content: flex-end;
-    justify-content: flex-end;
+    -webkit-justify-content: center;
+    justify-content: center;
     -webkit-flex: 1;
     flex: 1;
     min-width: 0;
+    -white-space: nowrap;
+    white-space: nowrap;
 }
 .maze-play-area {
     display: -webkit-flex;
