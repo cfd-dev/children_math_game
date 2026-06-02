@@ -211,6 +211,9 @@ function tokenize(expr) {
                 num += expr[i++];
             }
             tokens.push({ type: 'number', value: num });
+        } else if (expr[i] === '(' || expr[i] === ')') {
+            tokens.push({ type: 'paren', value: expr[i] });
+            i++;
         } else {
             tokens.push({ type: 'op', value: expr[i] });
             i++;
@@ -262,10 +265,30 @@ function renderExpression() {
             } else {
                 box.className = 'twentyfour-expr-box number';
                 box.textContent = token.value;
+                if (twentyFourState.mode === 'build') {
+                    box.addEventListener('click', (function(idx) {
+                        return function() { selectExprBlank(idx); };
+                    })(i));
+                }
+            }
+        } else if (token.type === 'paren') {
+            box.className = 'twentyfour-expr-box paren';
+            box.textContent = (token.value === '_') ? '' : token.value;
+            if (token.value !== '_') box.classList.add('filled');
+            if (twentyFourState.mode === 'build') {
+                box.addEventListener('click', (function(idx) {
+                    return function() { selectExprBlank(idx); };
+                })(i));
             }
         } else {
             box.className = 'twentyfour-expr-box operator';
-            box.textContent = opDisplay(token.value);
+            box.textContent = (token.value === '_') ? '' : opDisplay(token.value);
+            if (token.value !== '_') box.classList.add('filled');
+            if (twentyFourState.mode === 'build') {
+                box.addEventListener('click', (function(idx) {
+                    return function() { selectExprBlank(idx); };
+                })(i));
+            }
         }
 
         container.appendChild(box);
@@ -332,7 +355,7 @@ function handle24KeyInput(key) {
         selectExprBlank(twentyFourState.blanks[nextBlankIdx]);
 
     } else {
-        // 构建模式：接受数字和运算符
+        // 构建模式：接受数字、运算符和括号
         var boxes = document.querySelectorAll('.twentyfour-expr-box');
         var token = twentyFourState.tokens[idx];
 
@@ -347,15 +370,18 @@ function handle24KeyInput(key) {
                 boxes[idx].textContent = token.value;
                 boxes[idx].classList.add('filled');
             }
+        } else if (token.type === 'paren') {
+            // 括号位置：只接受括号
+            if (key === '(' || key === ')') {
+                token.value = key;
+                boxes[idx].textContent = key;
+                boxes[idx].classList.add('filled');
+            }
         } else {
-            // 运算符位置
+            // 运算符位置：只接受运算符
             var opMap = { '+': '+', '-': '-', '*': '*', '/': '/', '×': '*', '÷': '/' };
-            if (opMap[key] || key === '(' || key === ')') {
-                if (key === '(' || key === ')') {
-                    // 括号不放在运算符位置，忽略
-                    return;
-                }
-                token.value = opMap[key] || key;
+            if (opMap[key]) {
+                token.value = opMap[key];
                 boxes[idx].textContent = opDisplay(token.value);
                 boxes[idx].classList.add('filled');
             }
@@ -397,6 +423,7 @@ function handleBackspace() {
                 if (!token.value) boxes[idx].classList.remove('filled');
             }
         } else {
+            // 运算符或括号：重置为待填写
             token.value = '_';
             boxes[idx].textContent = '';
             boxes[idx].classList.remove('filled');
@@ -587,7 +614,7 @@ function showNext24Question() {
             twentyFourState.userInputs.push('');
         }
     } else {
-        // 构建模式：清空所有数字，运算符标记为待填写
+        // 构建模式：清空所有位置
         for (var j = 0; j < twentyFourState.tokens.length; j++) {
             if (twentyFourState.tokens[j].type === 'number') {
                 twentyFourState.tokens[j].value = '';
@@ -713,23 +740,13 @@ function check24Answer() {
         var expr = '';
         for (var k = 0; k < twentyFourState.tokens.length; k++) {
             var t = twentyFourState.tokens[k];
-            if (t.type === 'number') {
-                if (!t.value || t.value === '_') {
-                    feedback.textContent = '✗ 请填写完整算式';
-                    feedback.className = 'feedback wrong';
-                    twentyFourState.isProcessing = false;
-                    return;
-                }
-                expr += t.value;
-            } else {
-                if (!t.value || t.value === '_') {
-                    feedback.textContent = '✗ 请选择运算符';
-                    feedback.className = 'feedback wrong';
-                    twentyFourState.isProcessing = false;
-                    return;
-                }
-                expr += t.value;
+            if (!t.value || t.value === '_') {
+                feedback.textContent = '✗ 请填写完整算式';
+                feedback.className = 'feedback wrong';
+                twentyFourState.isProcessing = false;
+                return;
             }
+            expr += t.value;
         }
 
         var result = validate24Expression(expr, twentyFourState.currentNumbers, twentyFourState.currentTarget);
