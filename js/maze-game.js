@@ -248,40 +248,40 @@ function renderMaze() {
     var quizInfo = quizSection.querySelector('.quiz-info');
     var feedback = document.getElementById('maze-feedback');
     var controls = document.querySelector('.maze-controls');
-    var playArea = document.querySelector('.maze-play-area');
 
     // 计算各区域占用的高度
-    var infoH = quizInfo ? quizInfo.offsetHeight + 8 : 40;  // quiz-info + margin
+    var infoH = quizInfo ? quizInfo.offsetHeight + 8 : 40;
     var feedbackH = feedback ? feedback.offsetHeight + 6 : 30;
-    var cardPadV = 60; // .quiz-section 上下 padding
-    var gapV = 14; // .maze-play-area 的 gap
+    var quizPadV = 30; // #maze-quiz 上下 padding (15px * 2)
 
-    // 可用总高度（减去信息栏、反馈、卡片padding）
-    var availTotalH = vh - infoH - feedbackH - cardPadV;
+    // 可用总高度
+    var availH = vh - infoH - feedbackH - quizPadV;
 
-    // 可用总宽度
-    var quizW = quizSection ? quizSection.clientWidth : Math.min(vw, 550);
-    var cardPadH = 10; // 左右预留间距
-    var availTotalW = quizW - cardPadH;
+    // 可用总宽度（clientWidth 已排除 padding）
+    var quizW = quizSection ? quizSection.clientWidth : vw;
+    var availW = quizW;
 
+    // 计算迷宫最大尺寸
+    var gap = 12; // 横屏时迷宫与方向键间距
     var maxDim;
     if (isLandscape) {
-        var ctrlW = controls ? controls.offsetWidth + 12 : 180;
-        maxDim = Math.min(availTotalW - ctrlW, availTotalH);
+        var ctrlW = controls ? controls.offsetWidth + gap : 180;
+        maxDim = Math.min(availW - ctrlW, availH);
     } else {
-        var ctrlH = controls ? controls.offsetHeight + gapV : 180;
-        maxDim = Math.min(availTotalW, availTotalH - ctrlH);
+        var ctrlH = controls ? controls.offsetHeight + 14 : 180;
+        maxDim = Math.min(availW, availH - ctrlH);
     }
 
     maxDim = Math.max(120, maxDim);
     var minCell = size >= 25 ? 8 : (size >= 15 ? 12 : 18);
     var cellSize = Math.max(minCell, Math.floor(maxDim / size));
-    var gridDim = cellSize * size;
+    var gridW = cellSize * size;
+    var gridH = cellSize * size;
 
     container.style.gridTemplateColumns = 'repeat(' + size + ', ' + cellSize + 'px)';
     container.style.gridTemplateRows = 'repeat(' + size + ', ' + cellSize + 'px)';
-    container.style.width = gridDim + 'px';
-    container.style.height = gridDim + 'px';
+    container.style.width = gridW + 'px';
+    container.style.height = gridH + 'px';
 
     for (var r = 0; r < size; r++) {
         for (var c = 0; c < size; c++) {
@@ -291,11 +291,14 @@ function renderMaze() {
             cell.dataset.col = c;
 
             var wall = mazeState.maze[r][c];
-            var borderWidth = cellSize >= 15 ? '2px' : '1px';
-            if (wall.top) cell.style.borderTop = borderWidth + ' solid #333';
-            if (wall.right) cell.style.borderRight = borderWidth + ' solid #333';
-            if (wall.bottom) cell.style.borderBottom = borderWidth + ' solid #333';
-            if (wall.left) cell.style.borderLeft = borderWidth + ' solid #333';
+            var bw = cellSize >= 15 ? '2px' : '1px';
+            // 每个格子只画上边和左边，避免相邻格子边框重叠
+            if (wall.top) cell.style.borderTop = bw + ' solid #333';
+            if (wall.left) cell.style.borderLeft = bw + ' solid #333';
+            // 最后一行画下边
+            if (r === size - 1 && wall.bottom) cell.style.borderBottom = bw + ' solid #333';
+            // 最后一列画右边
+            if (c === size - 1 && wall.right) cell.style.borderRight = bw + ' solid #333';
 
             if (r === 0 && c === 0) cell.classList.add('start');
             if (r === size - 1 && c === size - 1) cell.classList.add('end');

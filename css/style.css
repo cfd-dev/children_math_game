@@ -3808,11 +3808,12 @@ body.numpad-open .page.active {
     display: grid;
     gap: 0;
     margin: 0 auto;
-    overflow: visible;
+    overflow: hidden;
     border-radius: 0;
     background: #fafafa;
     border: none;
-    box-sizing: content-box;
+    box-sizing: border-box;
+    padding: 0;
 }
 .maze-cell {
     display: flex;
