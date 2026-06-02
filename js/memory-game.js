@@ -101,9 +101,9 @@ function showMemoryRound() {
     document.getElementById('memory-round').textContent = `第 ${memoryState.roundInLevel}/${ROUNDS_PER_LEVEL} 题`;
     document.getElementById('memory-score').textContent = `得分：${memoryState.score}`;
 
-    // 显示数字（带空格）
-    const displayNumbers = memoryState.currentNumbers.split('').join(' ');
-    document.getElementById('memory-numbers').textContent = displayNumbers;
+    // 显示数字（每个数字一个蓝色框）
+    const numbersHtml = memoryState.currentNumbers.split('').map(d => `<span class="memory-show-box">${d}</span>`).join('');
+    document.getElementById('memory-numbers').innerHTML = numbersHtml;
 
     // 根据关卡设置显示时间
     memoryState.maxTime = config.displayTime;
