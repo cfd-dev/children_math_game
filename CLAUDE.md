@@ -26,7 +26,7 @@ app.js                        → navigation, goHome(), init
 
 **`goHome()` in app.js** is the central reset — it resets every game page to setup visibility, clears all timer intervals, and hides the numpad. When adding a new game, you must add its reset logic here.
 
-**Maze game (`maze-game.js`)** — uses DFS recursive backtracking for maze generation and BFS for optimal path. Registers keyboard arrow keys only while active; removes handler on exit. Grid rendered as CSS grid with border-based walls.
+**Maze game (`maze-game.js`)** — generates perfect mazes (single path + dead ends, no loops) using DFS recursive backtracking, BFS for optimal path. Setup page has a maze size dropdown (±10 from grade default, step 5). Grid rendered as CSS grid; borders drawn per-cell (top/left only, last row/right for bottom/right) to avoid overlap. Supports mazes up to 40×40. Registers keyboard arrow keys only while active; removes handler on exit. `countPaths` has search node limit to avoid performance issues on large mazes.
 
 **RMB game (`rmb-game.js`)** — simulates shopping with emoji items. Three question types based on grade: "total" (calculate sum), "change" (given total, calculate change), "both" (calculate both total and change from items with quantities). Higher grades have `qtyMax > 1` (buy multiple of same item) and `showSubtotal: false` (no price hint on cards). Uses the numpad in append mode (`numpad-append` class) for multi-digit input with a submit button.
 
@@ -67,7 +67,7 @@ Individual per-game ability values are still tracked and updated independently b
 
 ## CSS
 
-Single file `css/style.css`. Mobile-first responsive with breakpoints at 480px and 360px. Custom on-screen numpad replaces native keyboard on mobile. The `.menu-buttons` grid uses `repeat(3, 1fr)` with `min-width: 0` on buttons to prevent content overflow on narrow screens.
+Single file `css/style.css`. Mobile-first responsive with breakpoints at 480px and 360px. Custom on-screen numpad replaces native keyboard on mobile. The `.menu-buttons` grid uses `repeat(3, 1fr)` with `min-width: 0` on buttons to prevent content overflow on narrow screens. Maze game has landscape media query for side-by-side layout (maze left, controls right).
 
 ## EmailJS Feedback
 
