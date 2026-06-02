@@ -274,6 +274,7 @@ function renderMaze() {
     var gridDim = cellSize * size;
 
     container.style.gridTemplateColumns = 'repeat(' + size + ', ' + cellSize + 'px)';
+    container.style.gridTemplateRows = 'repeat(' + size + ', ' + cellSize + 'px)';
     container.style.width = gridDim + 'px';
     container.style.height = gridDim + 'px';
 

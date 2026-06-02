@@ -3893,6 +3893,7 @@ body.numpad-open .page.active {
 #maze-feedback {
     margin-top: 6px;
     text-align: center;
+    font-size: 0.95em;
 }
 
 /* 横屏：迷宫左侧，控制区右侧 */
