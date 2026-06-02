@@ -212,8 +212,15 @@ function showNextRMBQuestion() {
         itemsContainer.appendChild(card);
     }
 
-    // 合计栏留空，需要学生自己计算
-    document.getElementById('rmb-total').textContent = '';
+    // 合计栏：showSubtotal模式显示总价，否则隐藏
+    var totalEl = document.getElementById('rmb-total');
+    if (config.showSubtotal) {
+        totalEl.textContent = '合计：' + q.total + ' 元';
+        totalEl.style.display = 'inline-block';
+    } else {
+        totalEl.textContent = '';
+        totalEl.style.display = 'none';
+    }
 
     // 渲染题目
     var questionEl = document.getElementById('rmb-question-text');
