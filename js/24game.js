@@ -289,15 +289,76 @@ function validate24Expression(expr, numbers, target) {
 function updateCalcScreen() {
     var screen = document.getElementById('twentyfour-calc-screen');
     if (screen) {
-        screen.textContent = twentyFourState.userExpression || '';
-        // 自动滚动到右侧
+        // 显示时将 * / 替换为 × ÷
+        var display = (twentyFourState.userExpression || '')
+            .replace(/\*/g, '×')
+            .replace(/\//g, '÷');
+        screen.textContent = display;
         screen.scrollLeft = screen.scrollWidth;
+    }
+}
+
+// ========== 置灰不需要的按键 ==========
+function update24KeyStates() {
+    var config = get24Config();
+    var nums = twentyFourState.currentNumbers;
+    var allowedOps = config.ops;
+
+    // 收集题目数字中出现的数位
+    var allowedDigits = {};
+    for (var i = 0; i < nums.length; i++) {
+        var s = String(nums[i]);
+        for (var j = 0; j < s.length; j++) {
+            allowedDigits[s[j]] = true;
+        }
+    }
+
+    // 运算符映射：显示文本 → 内部值（括号始终可用）
+    var opKeyMap = { '+': '+', '−': '-', '×': '*', '÷': '/' };
+
+    var keys = document.querySelectorAll('#twentyfour-keyboard .twentyfour-key');
+    for (var k = 0; k < keys.length; k++) {
+        var btn = keys[k];
+        var text = btn.textContent.trim();
+        var disabled = false;
+
+        if (text >= '0' && text <= '9') {
+            disabled = !allowedDigits[text];
+        } else if (opKeyMap[text]) {
+            disabled = allowedOps.indexOf(opKeyMap[text]) === -1;
+        }
+        // 清除、退格、等号、括号始终可用
+
+        if (disabled) {
+            btn.classList.add('twentyfour-key-disabled');
+        } else {
+            btn.classList.remove('twentyfour-key-disabled');
+        }
     }
 }
 
 // ========== 处理键盘输入 ==========
 function handle24KeyInput(key) {
     if (twentyFourState.isProcessing) return;
+
+    // 检查按键是否被置灰（通过事件对象的target判断）
+    // 由于是onclick调用，无法直接获取event，改为在HTML中传递event
+    // 这里通过检查按键是否在允许范围内来拦截
+    if (key >= '0' && key <= '9') {
+        var allowedDigits = {};
+        var nums = twentyFourState.currentNumbers;
+        for (var d = 0; d < nums.length; d++) {
+            var s = String(nums[d]);
+            for (var c = 0; c < s.length; c++) allowedDigits[s[c]] = true;
+        }
+        if (!allowedDigits[key]) return;
+    } else {
+        var opMap = { '+': '+', '-': '-', '*': '*', '/': '/' };
+        if (opMap[key]) {
+            var config = get24Config();
+            if (config.ops.indexOf(opMap[key]) === -1) return;
+        }
+    }
 
     if (key === 'C') {
         clear24Input();
@@ -479,6 +540,9 @@ function showNext24Question() {
 
     document.getElementById('twentyfour-target-text').textContent = puzzle.target;
     document.getElementById('twentyfour-solution-count').textContent = puzzle.solutionCount;
+
+    // 置灰不需要的按键
+    update24KeyStates();
 
     // 重置界面
     updateCalcScreen();

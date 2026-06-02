@@ -3654,6 +3654,15 @@ body.numpad-open .page.active {
     color: #2e7d32;
 }
 
+.twentyfour-key-disabled {
+    background: #f0f0f0;
+    border-color: #ddd;
+    color: #ccc;
+    cursor: not-allowed;
+    -webkit-tap-highlight-color: transparent;
+    pointer-events: none;
+}
+
 .twentyfour-answer-btn {
     display: inline-block;
     margin-top: 8px;
