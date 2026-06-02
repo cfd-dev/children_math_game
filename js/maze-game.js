@@ -407,7 +407,10 @@ function mazeKeyHandler(e) {
 function startMazeGame() {
     var config = getMazeConfig();
     mazeState.questionCount = config.mazeCount;
-    mazeState.gridSize = config.size;
+
+    // 使用用户选择的迷宫大小
+    var sizeSelect = document.getElementById('maze-size-select');
+    mazeState.gridSize = sizeSelect ? parseInt(sizeSelect.value) : config.size;
     mazeState.currentQuestion = 0;
     mazeState.score = 0;
     mazeState.isComplete = false;

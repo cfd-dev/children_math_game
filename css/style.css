@@ -3724,6 +3724,43 @@ body.numpad-open .page.active {
 }
 
 /* ========== 迷宫游戏 ========== */
+.maze-size-option {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 15px 0;
+}
+.maze-size-option label {
+    font-size: 1.05em;
+    color: #555;
+    font-weight: 500;
+}
+.maze-size-option select {
+    padding: 10px 18px;
+    border: 2px solid #667eea;
+    border-radius: 10px;
+    font-size: 1.05em;
+    background: white;
+    color: #333;
+    cursor: pointer;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23667eea' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
+}
+.maze-size-option select:focus {
+    border-color: #764ba2;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
 #maze-quiz {
     display: -webkit-flex;
     display: flex;

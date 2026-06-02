@@ -440,6 +440,32 @@ function showMazeGame() {
     var gradeDescEl = document.getElementById('maze-grade-desc');
     if (gradeNameEl) gradeNameEl.textContent = config.name;
     if (gradeDescEl) gradeDescEl.textContent = mConfig.description;
+
+    // 填充迷宫大小下拉框
+    var select = document.getElementById('maze-size-select');
+    if (select) {
+        var defaultSize = mConfig.size;
+        var minSize = Math.max(5, defaultSize - 10);
+        var maxSize = defaultSize + 10;
+        select.innerHTML = '';
+        for (var s = minSize; s <= maxSize; s += 5) {
+            var opt = document.createElement('option');
+            opt.value = s;
+            opt.textContent = s + '×' + s;
+            if (s === defaultSize) opt.textContent += '（默认）';
+            select.appendChild(opt);
+        }
+        if (defaultSize < minSize || defaultSize > maxSize || (defaultSize - minSize) % 5 !== 0) {
+            var opt0 = document.createElement('option');
+            opt0.value = defaultSize;
+            opt0.textContent = defaultSize + '×' + defaultSize + '（默认）';
+            select.insertBefore(opt0, select.firstChild);
+            select.value = defaultSize;
+        } else {
+            select.value = defaultSize;
+        }
+    }
+
     showPage('maze-page');
 }
 
