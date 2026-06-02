@@ -1120,6 +1120,7 @@
 
     <!-- 认识人民币页面 -->
     <div id="rmb-page" class="page">
+        <div class="container">
         <div class="page-header">
             <button class="back-btn" onclick="goHome()">← 返回</button>
             <h2>认识人民币</h2>
@@ -1207,6 +1208,7 @@
                 <button class="retry-btn" onclick="startRMBGame()">再来一次</button>
                 <button class="home-btn" onclick="goHome()">返回首页</button>
             </div>
+        </div>
         </div>
     </div>
 
@@ -1564,6 +1566,7 @@
 
     <!-- 24点游戏 -->
     <div id="twentyfour-page" class="page">
+        <div class="container">
         <div class="page-header">
             <button class="back-btn" onclick="goHome()">← 返回</button>
             <h2>24点</h2>
@@ -1579,6 +1582,8 @@
                 <p>1. 用给出的4个数字，通过运算得到目标数</p>
                 <p>2. 可以使用 +、-、×、÷ 和括号</p>
                 <p>3. 每个数字必须恰好使用一次</p>
+                <p>4. 练习模式：答错可重试，不记录成绩</p>
+                <p>5. 挑战模式：答错跳下一题，记录成绩</p>
             </div>
             <div class="question-count">
                 <label>题目数量：</label>
@@ -1622,7 +1627,7 @@
                     <button class="twentyfour-key" onclick="handle24KeyInput('0')">0</button>
                 </div>
                 <div class="twentyfour-key-row">
-                    <button class="twentyfour-key" onclick="handle24KeyInput('C')">C</button>
+                    <button class="twentyfour-key" onclick="handle24KeyInput('C')">清除</button>
                     <button class="twentyfour-key" onclick="handle24KeyInput('←')">←</button>
                     <button class="twentyfour-key twentyfour-key-hint" id="twentyfour-hint-btn-fill" onclick="handle24KeyInput('hint')" style="display:none">提示</button>
                     <button class="twentyfour-key twentyfour-key-submit" onclick="handle24KeyInput('=')">=</button>
@@ -1652,7 +1657,7 @@
                     <button class="twentyfour-key twentyfour-key-op" onclick="handle24KeyInput(')')">)</button>
                 </div>
                 <div class="twentyfour-key-row">
-                    <button class="twentyfour-key" onclick="handle24KeyInput('C')">C</button>
+                    <button class="twentyfour-key" onclick="handle24KeyInput('C')">清除</button>
                     <button class="twentyfour-key" onclick="handle24KeyInput('0')">0</button>
                     <button class="twentyfour-key" onclick="handle24KeyInput('←')">←</button>
                     <button class="twentyfour-key twentyfour-key-hint" id="twentyfour-hint-btn" onclick="handle24KeyInput('hint')" style="display:none">提示</button>
@@ -1703,10 +1708,12 @@
                 <button class="home-btn" onclick="goHome()">返回首页</button>
             </div>
         </div>
+        </div>
     </div>
 
     <!-- 迷宫游戏 -->
     <div id="maze-page" class="page">
+        <div class="container">
         <div class="page-header">
             <button class="back-btn" onclick="goHome()">← 返回</button>
             <h2>迷宫</h2>
@@ -1815,6 +1822,7 @@
                 <button class="numpad-key numpad-wide" data-key="0">0</button>
                 <button class="numpad-key numpad-del" data-key="del">⌫</button>
             </div>
+        </div>
         </div>
     </div>
 
