@@ -94,13 +94,17 @@ function generateRMBQuestion() {
     var type = config.types[Math.floor(Math.random() * config.types.length)];
     var answer, payAmount = 0;
 
+    // 人民币单张面值
+    var denominations = [1, 5, 10, 20, 50, 100];
+
     if (type === 'total') {
         answer = total;
     } else if (type === 'change') {
-        // 找零：找一个比总价大的整十/整五数
         var candidates = [];
-        for (var n = 10; n <= config.payMax; n += 5) {
-            if (n > total) candidates.push(n);
+        for (var i = 0; i < denominations.length; i++) {
+            if (denominations[i] > total && denominations[i] <= config.payMax) {
+                candidates.push(denominations[i]);
+            }
         }
         if (candidates.length === 0) {
             type = 'total';
@@ -112,8 +116,10 @@ function generateRMBQuestion() {
     } else {
         // both：只给商品和付款额，学生需先算总价再算找零
         var candidates2 = [];
-        for (var n2 = 10; n2 <= config.payMax; n2 += 5) {
-            if (n2 > total) candidates2.push(n2);
+        for (var j = 0; j < denominations.length; j++) {
+            if (denominations[j] > total && denominations[j] <= config.payMax) {
+                candidates2.push(denominations[j]);
+            }
         }
         if (candidates2.length === 0) {
             type = 'total';
