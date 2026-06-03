@@ -4,7 +4,7 @@
 使用方法:
   1. 设置环境变量: set MIMO_API_KEY=your_api_key
   2. 运行: python generate_voice.py
-  3. 音频文件将输出到 assets/audio/ 目录
+  3. 音频文件将输出到 assets/audio-xiaomi/ 目录
 """
 
 import base64
@@ -30,22 +30,22 @@ MODEL = "mimo-v2.5-tts"
 
 # 小米冰糖（女声，语速偏快）
 # VOICE = "冰糖"
-# OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "assets", "audio", "xiaomi-bingtang")
+# OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "xiaomi-bingtang")
 # STYLE_BASE = "语速偏快，吐字清晰，声音甜美亲切，像小朋友的大姐姐。"
 
 # 小米苏打（男声，语速较快）
 # VOICE = "苏打"
-# OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "assets", "audio", "xiaomi-suda")
+# OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "xiaomi-suda")
 # STYLE_BASE = "语速较快，吐字清晰，声音阳光亲切，像小朋友的大哥哥。"
 
 # 小米茉莉（女声，语速较快）
 # VOICE = "茉莉"
-# OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "assets", "audio", "xiaomi-moli")
+# OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "xiaomi-moli")
 # STYLE_BASE = "语速较快，吐字清晰，声音甜美亲切，像小朋友的大姐姐。"
 
 # 小米白桦（男声，语速较快）
 VOICE = "白桦"
-OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "assets", "audio", "xiaomi-baihua")
+OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "xiaomi-baihua")
 STYLE_BASE = "语速较快，吐字清晰，声音阳光亲切，像小朋友的大哥哥。"
 
 MAX_RETRIES = 5

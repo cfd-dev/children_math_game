@@ -135,7 +135,7 @@ var currentVoiceStyle = localStorage.getItem('voiceStyle') || 'cherry';
 // 预录音频角色配置（通用）
 var voiceAudioProfiles = {
     'xiaomi-bingtang': {
-        base: 'assets/audio/xiaomi-bingtang/',
+        base: 'assets/audio-xiaomi/xiaomi-bingtang/',
         correct: ['correct_01.wav','correct_02.wav','correct_03.wav','correct_04.wav','correct_05.wav','correct_06.wav','correct_07.wav','correct_08.wav'],
         wrong:   ['wrong_01.wav','wrong_02.wav','wrong_03.wav','wrong_04.wav','wrong_05.wav','wrong_06.wav'],
         reward: {
@@ -146,7 +146,7 @@ var voiceAudioProfiles = {
         }
     },
     'xiaomi-suda': {
-        base: 'assets/audio/xiaomi-suda/',
+        base: 'assets/audio-xiaomi/xiaomi-suda/',
         correct: ['correct_01.wav','correct_02.wav','correct_03.wav','correct_04.wav','correct_05.wav','correct_06.wav','correct_07.wav','correct_08.wav'],
         wrong:   ['wrong_01.wav','wrong_02.wav','wrong_03.wav','wrong_04.wav','wrong_05.wav','wrong_06.wav'],
         reward: {
@@ -157,7 +157,7 @@ var voiceAudioProfiles = {
         }
     },
     'xiaomi-moli': {
-        base: 'assets/audio/xiaomi-moli/',
+        base: 'assets/audio-xiaomi/xiaomi-moli/',
         correct: ['correct_01.wav','correct_02.wav','correct_03.wav','correct_04.wav','correct_05.wav','correct_06.wav','correct_07.wav','correct_08.wav'],
         wrong:   ['wrong_01.wav','wrong_02.wav','wrong_03.wav','wrong_04.wav','wrong_05.wav','wrong_06.wav'],
         reward: {
@@ -168,7 +168,7 @@ var voiceAudioProfiles = {
         }
     },
     'xiaomi-baihua': {
-        base: 'assets/audio/xiaomi-baihua/',
+        base: 'assets/audio-xiaomi/xiaomi-baihua/',
         correct: ['correct_01.wav','correct_02.wav','correct_03.wav','correct_04.wav','correct_05.wav','correct_06.wav','correct_07.wav','correct_08.wav'],
         wrong:   ['wrong_01.wav','wrong_02.wav','wrong_03.wav','wrong_04.wav','wrong_05.wav','wrong_06.wav'],
         reward: {
@@ -179,7 +179,7 @@ var voiceAudioProfiles = {
         }
     },
     'cherry': {
-        base: 'assets/audiox/cherry/',
+        base: 'assets/audio-aliyun/cherry/',
         correct: ['correct_01.wav','correct_02.wav','correct_03.wav','correct_04.wav','correct_05.wav','correct_06.wav','correct_07.wav','correct_08.wav'],
         wrong:   ['wrong_01.wav','wrong_02.wav','wrong_03.wav','wrong_04.wav','wrong_05.wav','wrong_06.wav'],
         reward: {

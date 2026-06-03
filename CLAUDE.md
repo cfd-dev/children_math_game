@@ -46,6 +46,7 @@ Every game follows an identical pattern:
 - `gradeConfig` / `currentGrade` (defined in `math-quiz.js`) — used by all game modules and profile
 - `numpad` object (from `keypad.js`) — referenced directly by name in game modules for numeric input
 - `playCorrectSound()`, `playWrongSound()`, `playClickSound()` etc. (from `sounds.js`) — global click delegation auto-plays click sounds; `playTone()` checks `soundEnabled` flag
+- `voiceAudioProfiles` / `voiceStyles` (from `sounds.js`) — voice role registry. Pre-recorded WAV files live under `assets/audio-xiaomi/` (MiMo TTS) and `assets/audio-aliyun/` (DashScope TTS). Each voice entry has `base`, `correct[]`, `wrong[]`, `reward{high,mid,low,veryLow}[]`. `playVoiceAudio()` applies `playbackRate` from `voiceStyles[style].rate` for speed control. Default voice is `cherry` (DashScope). HTML select is in `index.html` profile page.
 - `STORAGE_KEYS` and `initStorage()` (from `profile.js`) — all localStorage keys defined there
 - Profile functions: `save*Record()`, `update*Ability()`, `getUserName()`, `getUserGrade()` called cross-module
 

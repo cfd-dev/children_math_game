@@ -1,6 +1,6 @@
 """使用 DashScope qwen3-tts-instruct-flash 批量生成儿童数学 App 语音资源
    端点: /api/v1/services/aigc/multimodal-generation/generation
-   输出: WAV 保存到 audiox/{voice}/ 子目录"""
+   输出: WAV 保存到 audio-aliyun/{voice}/ 子目录"""
 
 import sys
 import os
