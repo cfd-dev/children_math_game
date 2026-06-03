@@ -34,12 +34,22 @@ MODEL = "mimo-v2.5-tts"
 # STYLE_BASE = "语速偏快，吐字清晰，声音甜美亲切，像小朋友的大姐姐。"
 
 # 小米苏打（男声，语速较快）
-VOICE = "苏打"
-OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "assets", "audio", "xiaomi-suda")
+# VOICE = "苏打"
+# OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "assets", "audio", "xiaomi-suda")
+# STYLE_BASE = "语速较快，吐字清晰，声音阳光亲切，像小朋友的大哥哥。"
+
+# 小米茉莉（女声，语速较快）
+# VOICE = "茉莉"
+# OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "assets", "audio", "xiaomi-moli")
+# STYLE_BASE = "语速较快，吐字清晰，声音甜美亲切，像小朋友的大姐姐。"
+
+# 小米白桦（男声，语速较快）
+VOICE = "白桦"
+OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "assets", "audio", "xiaomi-baihua")
 STYLE_BASE = "语速较快，吐字清晰，声音阳光亲切，像小朋友的大哥哥。"
 
-MAX_RETRIES = 3
-RETRY_DELAY = 2  # 秒
+MAX_RETRIES = 5
+RETRY_DELAY = 5  # 秒
 
 # ── 语音风格指令前缀 ──────────────────────────────────────────────────────────
 # 通过 user 消息控制语速和情绪基调

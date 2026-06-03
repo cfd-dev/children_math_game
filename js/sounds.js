@@ -122,7 +122,11 @@ var voiceStyles = {
     // 小米冰糖 - 预录音频
     'xiaomi-bingtang': { rate: 1.0, pitch: 1.0 },
     // 小米苏打 - 预录音频
-    'xiaomi-suda': { rate: 1.0, pitch: 1.0 }
+    'xiaomi-suda': { rate: 1.0, pitch: 1.0 },
+    // 小米茉莉 - 预录音频
+    'xiaomi-moli': { rate: 1.0, pitch: 1.0 },
+    // 小米白桦 - 预录音频
+    'xiaomi-baihua': { rate: 1.0, pitch: 1.0 }
 };
 var currentVoiceStyle = localStorage.getItem('voiceStyle') || 'female-student';
 
@@ -141,6 +145,28 @@ var voiceAudioProfiles = {
     },
     'xiaomi-suda': {
         base: 'assets/audio/xiaomi-suda/',
+        correct: ['correct_01.wav','correct_02.wav','correct_03.wav','correct_04.wav','correct_05.wav','correct_06.wav','correct_07.wav','correct_08.wav'],
+        wrong:   ['wrong_01.wav','wrong_02.wav','wrong_03.wav','wrong_04.wav','wrong_05.wav','wrong_06.wav'],
+        reward: {
+            high:    ['reward_high_01.wav','reward_high_02.wav','reward_high_03.wav'],
+            mid:     ['reward_mid_01.wav','reward_mid_02.wav','reward_mid_03.wav'],
+            low:     ['reward_low_01.wav','reward_low_02.wav','reward_low_03.wav'],
+            veryLow: ['reward_verylow_01.wav','reward_verylow_02.wav','reward_verylow_03.wav']
+        }
+    },
+    'xiaomi-moli': {
+        base: 'assets/audio/xiaomi-moli/',
+        correct: ['correct_01.wav','correct_02.wav','correct_03.wav','correct_04.wav','correct_05.wav','correct_06.wav','correct_07.wav','correct_08.wav'],
+        wrong:   ['wrong_01.wav','wrong_02.wav','wrong_03.wav','wrong_04.wav','wrong_05.wav','wrong_06.wav'],
+        reward: {
+            high:    ['reward_high_01.wav','reward_high_02.wav','reward_high_03.wav'],
+            mid:     ['reward_mid_01.wav','reward_mid_02.wav','reward_mid_03.wav'],
+            low:     ['reward_low_01.wav','reward_low_02.wav','reward_low_03.wav'],
+            veryLow: ['reward_verylow_01.wav','reward_verylow_02.wav','reward_verylow_03.wav']
+        }
+    },
+    'xiaomi-baihua': {
+        base: 'assets/audio/xiaomi-baihua/',
         correct: ['correct_01.wav','correct_02.wav','correct_03.wav','correct_04.wav','correct_05.wav','correct_06.wav','correct_07.wav','correct_08.wav'],
         wrong:   ['wrong_01.wav','wrong_02.wav','wrong_03.wav','wrong_04.wav','wrong_05.wav','wrong_06.wav'],
         reward: {
