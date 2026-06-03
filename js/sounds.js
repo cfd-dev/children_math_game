@@ -128,7 +128,7 @@ var voiceStyles = {
     // 小米白桦 - 预录音频
     'xiaomi-baihua': { rate: 1.0, pitch: 1.0 },
     // DashScope Cherry - 预录音频
-    'cherry': { rate: 1.0, pitch: 1.0 }
+    'cherry': { rate: 1.2, pitch: 1.0 }
 };
 var currentVoiceStyle = localStorage.getItem('voiceStyle') || 'cherry';
 
@@ -197,6 +197,8 @@ function playVoiceAudio(style, filename) {
     var profile = voiceAudioProfiles[style];
     if (!profile) return;
     var audio = new Audio(profile.base + filename);
+    var vs = voiceStyles[style];
+    if (vs && vs.rate) audio.playbackRate = vs.rate;
     audio.play().catch(function() {});
 }
 
