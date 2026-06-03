@@ -119,32 +119,53 @@ document.addEventListener('input', function(e) {
 var voiceStyles = {
     'female-teacher': { rate: 0.95, pitch: 1.3 },
     'female-student': { rate: 1.0,  pitch: 1.6 },
-    'xiaomi-bingtang': { rate: 1.0, pitch: 1.0 }
+    // 小米冰糖 - 预录音频
+    'xiaomi-bingtang': { rate: 1.0, pitch: 1.0 },
+    // 小米苏打 - 预录音频
+    'xiaomi-suda': { rate: 1.0, pitch: 1.0 }
 };
 var currentVoiceStyle = localStorage.getItem('voiceStyle') || 'female-student';
 
-// 小米冰糖预录音频文件路径
-var BT_AUDIO_BASE = 'assets/audio/xiaomi-bingtang/';
-var btCorrectAudios = ['correct_01.wav','correct_02.wav','correct_03.wav','correct_04.wav','correct_05.wav','correct_06.wav','correct_07.wav','correct_08.wav'];
-var btWrongAudios   = ['wrong_01.wav','wrong_02.wav','wrong_03.wav','wrong_04.wav','wrong_05.wav','wrong_06.wav'];
-var btRewardAudios  = {
-    high:    ['reward_high_01.wav','reward_high_02.wav','reward_high_03.wav'],
-    mid:     ['reward_mid_01.wav','reward_mid_02.wav','reward_mid_03.wav'],
-    low:     ['reward_low_01.wav','reward_low_02.wav','reward_low_03.wav'],
-    veryLow: ['reward_verylow_01.wav','reward_verylow_02.wav','reward_verylow_03.wav']
+// 预录音频角色配置（通用）
+var voiceAudioProfiles = {
+    'xiaomi-bingtang': {
+        base: 'assets/audio/xiaomi-bingtang/',
+        correct: ['correct_01.wav','correct_02.wav','correct_03.wav','correct_04.wav','correct_05.wav','correct_06.wav','correct_07.wav','correct_08.wav'],
+        wrong:   ['wrong_01.wav','wrong_02.wav','wrong_03.wav','wrong_04.wav','wrong_05.wav','wrong_06.wav'],
+        reward: {
+            high:    ['reward_high_01.wav','reward_high_02.wav','reward_high_03.wav'],
+            mid:     ['reward_mid_01.wav','reward_mid_02.wav','reward_mid_03.wav'],
+            low:     ['reward_low_01.wav','reward_low_02.wav','reward_low_03.wav'],
+            veryLow: ['reward_verylow_01.wav','reward_verylow_02.wav','reward_verylow_03.wav']
+        }
+    },
+    'xiaomi-suda': {
+        base: 'assets/audio/xiaomi-suda/',
+        correct: ['correct_01.wav','correct_02.wav','correct_03.wav','correct_04.wav','correct_05.wav','correct_06.wav','correct_07.wav','correct_08.wav'],
+        wrong:   ['wrong_01.wav','wrong_02.wav','wrong_03.wav','wrong_04.wav','wrong_05.wav','wrong_06.wav'],
+        reward: {
+            high:    ['reward_high_01.wav','reward_high_02.wav','reward_high_03.wav'],
+            mid:     ['reward_mid_01.wav','reward_mid_02.wav','reward_mid_03.wav'],
+            low:     ['reward_low_01.wav','reward_low_02.wav','reward_low_03.wav'],
+            veryLow: ['reward_verylow_01.wav','reward_verylow_02.wav','reward_verylow_03.wav']
+        }
+    }
 };
 
-function playBtAudio(filename) {
+// 通用预录音频播放
+function playVoiceAudio(style, filename) {
     if (!soundEnabled) return;
-    var audio = new Audio(BT_AUDIO_BASE + filename);
+    var profile = voiceAudioProfiles[style];
+    if (!profile) return;
+    var audio = new Audio(profile.base + filename);
     audio.play().catch(function() {});
 }
 
 function setVoiceStyle(style) {
     currentVoiceStyle = style;
     localStorage.setItem('voiceStyle', style);
-    if (style === 'xiaomi-bingtang') {
-        playBtAudio('system_hello.wav');
+    if (voiceAudioProfiles[style]) {
+        playVoiceAudio(style, 'system_hello.wav');
     } else if (style !== 'off') {
         speak('我是你的学习小助手');
     }
@@ -200,11 +221,13 @@ function speak(text) {
 }
 
 function speakCorrect() {
-    if (currentVoiceStyle === 'xiaomi-bingtang') { playBtAudio(pickRandom(btCorrectAudios)); return; }
+    var profile = voiceAudioProfiles[currentVoiceStyle];
+    if (profile) { playVoiceAudio(currentVoiceStyle, pickRandom(profile.correct)); return; }
     speak(pickRandom(correctPhrases));
 }
 function speakWrong() {
-    if (currentVoiceStyle === 'xiaomi-bingtang') { playBtAudio(pickRandom(btWrongAudios)); return; }
+    var profile = voiceAudioProfiles[currentVoiceStyle];
+    if (profile) { playVoiceAudio(currentVoiceStyle, pickRandom(profile.wrong)); return; }
     speak(pickRandom(wrongPhrases));
 }
 function speakReward(accuracy) {
@@ -213,7 +236,8 @@ function speakReward(accuracy) {
     else if (accuracy >= 70) tier = 'mid';
     else if (accuracy >= 50) tier = 'low';
     else tier = 'veryLow';
-    if (currentVoiceStyle === 'xiaomi-bingtang') { playBtAudio(pickRandom(btRewardAudios[tier])); return; }
+    var profile = voiceAudioProfiles[currentVoiceStyle];
+    if (profile) { playVoiceAudio(currentVoiceStyle, pickRandom(profile.reward[tier])); return; }
     speak(pickRandom(rewardPhrases[tier]));
 }
 
