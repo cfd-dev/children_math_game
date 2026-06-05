@@ -15,33 +15,90 @@ var sortState = {
 
 // 按年级的题目配置
 var sortGradeConfig = {
-    'k-small':  { count: 3, min: 1, max: 5,   allowDesc: false, description: '3个数排序(1-5)' },
-    'k-medium': { count: 4, min: 1, max: 10,  allowDesc: false, description: '4个数排序(1-10)' },
-    'k-large':  { count: 4, min: 1, max: 20,  allowDesc: true,  description: '4个数排序(1-20)' },
-    'grade-1':  { count: 5, min: 1, max: 30,  allowDesc: true,  description: '5个数排序(1-30)' },
-    'grade-2':  { count: 5, min: 1, max: 50,  allowDesc: true,  description: '5个数排序(1-50)' },
-    'grade-3':  { count: 6, min: 1, max: 100, allowDesc: true,  description: '6个数排序(1-100)' },
-    'grade-4':  { count: 6, min: -10, max: 100, allowDesc: true, description: '6个数排序(含负数)' },
-    'grade-5':  { count: 7, min: 0, max: 100, allowDesc: true, hasDecimals: true, description: '7个数排序(含小数)' },
-    'grade-6':  { count: 8, min: 0, max: 100, allowDesc: true, hasDecimals: true, description: '8个数排序(含小数)' }
+    'k-small':  { count: 3, min: 1, max: 5,   allowDesc: false, questionTypes: ['number'], description: '3个数排序(1-5)' },
+    'k-medium': { count: 4, min: 1, max: 10,  allowDesc: false, questionTypes: ['number'], description: '4个数排序(1-10)' },
+    'k-large':  { count: 4, min: 1, max: 20,  allowDesc: true,  questionTypes: ['number'], description: '4个数排序(1-20)' },
+    'grade-1':  { count: 5, min: 1, max: 30,  allowDesc: true,  questionTypes: ['number'], description: '5个数排序(1-30)' },
+    'grade-2':  { count: 5, min: 1, max: 50,  allowDesc: true,  questionTypes: ['number'], description: '5个数排序(1-50)' },
+    'grade-3':  { count: 6, min: 1, max: 100, allowDesc: true,  questionTypes: ['number', 'unit'], description: '6个数排序(含单位换算)' },
+    'grade-4':  { count: 6, min: -10, max: 100, allowDesc: true, questionTypes: ['number', 'unit'], description: '6个数排序(含负数/单位)' },
+    'grade-5':  { count: 7, min: 0, max: 100, allowDesc: true,  questionTypes: ['number', 'unit', 'fraction'], description: '7个数排序(含小数/单位/分数)' },
+    'grade-6':  { count: 8, min: 0, max: 100, allowDesc: true,  questionTypes: ['number', 'unit', 'fraction'], description: '8个数排序(含小数/单位/分数)' }
 };
+
+// 单位换算类别
+var sortUnitCategories = [
+    { units: [
+        { label: 'km', toBase: 100000, range: [1, 10] },
+        { label: 'm',  toBase: 100,    range: [10, 500] },
+        { label: 'cm', toBase: 1,      range: [10, 999] }
+    ]},
+    { units: [
+        { label: 'm',  toBase: 100, range: [1, 50] },
+        { label: 'cm', toBase: 1,   range: [50, 5000] }
+    ]},
+    { units: [
+        { label: 'km', toBase: 1000, range: [1, 100] },
+        { label: 'm',  toBase: 1,    range: [100, 50000] }
+    ]},
+    { units: [
+        { label: 'kg', toBase: 1000, range: [1, 50] },
+        { label: 'g',  toBase: 1,    range: [100, 5000] }
+    ]},
+    { units: [
+        { label: '吨', toBase: 1000, range: [1, 20] },
+        { label: 'kg', toBase: 1,    range: [100, 5000] }
+    ]},
+    { units: [
+        { label: 'L',  toBase: 1000, range: [1, 20] },
+        { label: 'mL', toBase: 1,    range: [100, 5000] }
+    ]}
+];
+
+// 分数分母配置
+var sortFractionDenominators = {
+    'grade-5': [2, 3, 4, 5],
+    'grade-6': [2, 3, 4, 5, 6, 8, 12]
+};
+
+// 最大公约数
+function gcd(a, b) { return b === 0 ? a : gcd(b, a % b); }
 
 // 获取当前配置
 function getSortConfig() {
     return sortGradeConfig[currentGrade] || sortGradeConfig['grade-1'];
 }
 
-// 生成排序题目
-function generateSortQuestion() {
-    var config = getSortConfig();
+// 公共结果构建：排序方向、正确顺序、洗牌、分配id
+function buildSortResult(items, config) {
+    for (var i = 0; i < items.length; i++) {
+        items[i].id = i;
+    }
+    var sortOrder = 'asc';
+    if (config.allowDesc && Math.random() < 0.4) {
+        sortOrder = 'desc';
+    }
+    var correctOrder = items.slice().sort(function(a, b) {
+        return sortOrder === 'asc' ? a.value - b.value : b.value - a.value;
+    });
+    var shuffled = items.slice();
+    for (var i = shuffled.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = shuffled[i]; shuffled[i] = shuffled[j]; shuffled[j] = tmp;
+    }
+    return { numbers: shuffled, correctOrder: correctOrder, sortOrder: sortOrder };
+}
+
+// 生成纯数字排序题
+function generateNumberSortQuestion(config) {
     var count = config.count;
     var numbers = [];
     var used = {};
+    var hasDecimalTypes = config.questionTypes.indexOf('fraction') >= 0;
 
-    // 生成不重复的随机数
     while (numbers.length < count) {
         var num;
-        if (config.hasDecimals) {
+        if (hasDecimalTypes && Math.random() < 0.3) {
             num = Math.round((Math.random() * config.max + config.min) * 10) / 10;
         } else {
             num = Math.floor(Math.random() * (config.max - config.min + 1)) + config.min;
@@ -49,39 +106,84 @@ function generateSortQuestion() {
         var key = num.toString();
         if (!used[key]) {
             used[key] = true;
-            numbers.push(num);
+            var display = Number.isInteger(num) ? num.toString() : num.toFixed(1);
+            numbers.push({ display: display, value: num, type: 'number' });
         }
     }
-
-    // 确定排序方向
-    var sortOrder = 'asc';
-    if (config.allowDesc && Math.random() < 0.4) {
-        sortOrder = 'desc';
-    }
-
-    // 计算正确排序
-    var correctOrder = numbers.slice().sort(function(a, b) {
-        return sortOrder === 'asc' ? a - b : b - a;
-    });
-
-    // 打乱展示顺序（Fisher-Yates）
-    var shuffled = numbers.slice();
-    for (var i = shuffled.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var tmp = shuffled[i]; shuffled[i] = shuffled[j]; shuffled[j] = tmp;
-    }
-
-    return {
-        numbers: shuffled,
-        correctOrder: correctOrder,
-        sortOrder: sortOrder
-    };
+    return buildSortResult(numbers, config);
 }
 
-// 格式化数字显示
-function formatSortNum(num) {
-    if (Number.isInteger(num)) return num.toString();
-    return num.toFixed(1);
+// 生成单位换算排序题
+function generateUnitSortQuestion(config) {
+    var category = sortUnitCategories[Math.floor(Math.random() * sortUnitCategories.length)];
+    var count = config.count;
+    var items = [];
+    var used = {};
+
+    while (items.length < count) {
+        var unit = category.units[Math.floor(Math.random() * category.units.length)];
+        var min = unit.range[0], max = unit.range[1];
+        var num = Math.floor(Math.random() * (max - min + 1)) + min;
+        var value = num * unit.toBase;
+        var key = value.toString();
+        if (!used[key]) {
+            used[key] = true;
+            items.push({
+                display: num + unit.label,
+                value: value,
+                type: 'unit'
+            });
+        }
+    }
+    return buildSortResult(items, config);
+}
+
+// 生成分数排序题
+function generateFractionSortQuestion(config) {
+    var denominators = sortFractionDenominators[currentGrade] || sortFractionDenominators['grade-5'];
+    var count = config.count;
+    var items = [];
+    var used = {};
+
+    while (items.length < count) {
+        var d = denominators[Math.floor(Math.random() * denominators.length)];
+        var maxN = (currentGrade === 'grade-6') ? d * 2 : d - 1;
+        var n = Math.floor(Math.random() * maxN) + 1;
+        var g = gcd(n, d);
+        var reducedN = n / g, reducedD = d / g;
+        var key = reducedN + '/' + reducedD;
+        if (!used[key]) {
+            used[key] = true;
+            items.push({
+                display: n + '/' + d,
+                value: n / d,
+                type: 'fraction'
+            });
+        }
+    }
+    return buildSortResult(items, config);
+}
+
+// 生成排序题目（随机选类型）
+function generateSortQuestion() {
+    var config = getSortConfig();
+    var types = config.questionTypes;
+    var chosenType = types[Math.floor(Math.random() * types.length)];
+
+    switch (chosenType) {
+        case 'unit':     return generateUnitSortQuestion(config);
+        case 'fraction': return generateFractionSortQuestion(config);
+        default:         return generateNumberSortQuestion(config);
+    }
+}
+
+// 格式化显示
+function formatSortDisplay(item) {
+    if (typeof item === 'object' && item !== null && item.display) {
+        return item.display;
+    }
+    if (Number.isInteger(item)) return item.toString();
+    return item.toFixed(1);
 }
 
 // 开始游戏
@@ -120,8 +222,15 @@ function showNextSortQuestion() {
     sortState.isProcessing = false;
 
     // 更新提示
-    document.getElementById('sort-hint').textContent =
-        '请从' + (q.sortOrder === 'asc' ? '小到大' : '大到小') + '排列：';
+    var hintText = '请从' + (q.sortOrder === 'asc' ? '小到大' : '大到小') + '排列';
+    var firstItem = q.correctOrder[0] || q.numbers[0];
+    if (firstItem.type === 'unit') {
+        hintText += '（注意单位换算）';
+    } else if (firstItem.type === 'fraction') {
+        hintText += '（比较分数大小）';
+    }
+    hintText += '：';
+    document.getElementById('sort-hint').textContent = hintText;
 
     document.getElementById('sort-progress').textContent =
         sortState.currentQuestion + '/' + sortState.totalQuestions;
@@ -141,18 +250,20 @@ function renderSortInterface() {
     slotsContainer.innerHTML = '';
 
     var count = sortState.currentNumbers.length;
+    var needsWide = count > 0 &&
+        (sortState.currentNumbers[0].type === 'unit' || sortState.currentNumbers[0].type === 'fraction');
 
     // 渲染数字按钮
     for (var i = 0; i < count; i++) {
         var btn = document.createElement('button');
         btn.className = 'sort-num-btn';
-        btn.textContent = formatSortNum(sortState.currentNumbers[i]);
-        btn.dataset.index = i;
-        btn.dataset.value = sortState.currentNumbers[i];
+        if (needsWide) btn.classList.add('wide');
+        btn.textContent = formatSortDisplay(sortState.currentNumbers[i]);
 
         // 检查是否已被放入
-        var placedIdx = sortState.userOrder.indexOf(sortState.currentNumbers[i]);
-        if (placedIdx >= 0) {
+        var currentItem = sortState.currentNumbers[i];
+        var isPlaced = sortState.userOrder.some(function(u) { return u.id === currentItem.id; });
+        if (isPlaced) {
             btn.classList.add('selected');
         }
 
@@ -167,10 +278,10 @@ function renderSortInterface() {
     for (var i = 0; i < count; i++) {
         var slot = document.createElement('div');
         slot.className = 'sort-slot';
-        slot.dataset.slotIndex = i;
+        if (needsWide) slot.classList.add('wide');
 
         if (i < sortState.userOrder.length) {
-            slot.textContent = formatSortNum(sortState.userOrder[i]);
+            slot.textContent = formatSortDisplay(sortState.userOrder[i]);
             slot.classList.add('filled');
             slot.addEventListener('click', (function(idx) {
                 return function() { handleSortSlotClick(idx); };
@@ -185,12 +296,13 @@ function renderSortInterface() {
 function handleSortNumClick(idx) {
     if (sortState.isProcessing) return;
 
-    var num = sortState.currentNumbers[idx];
+    var item = sortState.currentNumbers[idx];
     // 检查是否已放入
-    if (sortState.userOrder.indexOf(num) >= 0) return;
+    var alreadyPlaced = sortState.userOrder.some(function(u) { return u.id === item.id; });
+    if (alreadyPlaced) return;
 
     // 放入下一个空格
-    sortState.userOrder.push(num);
+    sortState.userOrder.push(item);
     playClickSound();
     renderSortInterface();
 
@@ -216,7 +328,7 @@ function checkSortAnswer() {
 
     var correct = true;
     for (var i = 0; i < sortState.correctOrder.length; i++) {
-        if (sortState.userOrder[i] !== sortState.correctOrder[i]) {
+        if (sortState.userOrder[i].id !== sortState.correctOrder[i].id) {
             correct = false;
             break;
         }
@@ -235,7 +347,7 @@ function checkSortAnswer() {
         speakCorrect();
         setTimeout(showNextSortQuestion, 1000);
     } else {
-        feedback.textContent = '✗ 正确顺序：' + sortState.correctOrder.map(formatSortNum).join(' → ');
+        feedback.textContent = '✗ 正确顺序：' + sortState.correctOrder.map(formatSortDisplay).join(' → ');
         feedback.className = 'feedback wrong';
         slots.forEach(function(s) { s.classList.add('wrong'); });
         playWrongSound();

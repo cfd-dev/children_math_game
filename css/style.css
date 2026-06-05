@@ -2592,6 +2592,12 @@ body {
         font-size: 1.3em;
     }
 
+    .sort-num-btn.wide,
+    .sort-slot.wide {
+        min-width: 60px;
+        font-size: 1.05em;
+    }
+
     .sum-cell {
         height: 52px;
         font-size: 1.3em;
@@ -2881,6 +2887,12 @@ body {
         font-size: 1.1em;
     }
 
+    .sort-num-btn.wide,
+    .sort-slot.wide {
+        min-width: 52px;
+        font-size: 0.95em;
+    }
+
     .sum-cell {
         height: 46px;
         font-size: 1.1em;
@@ -3009,6 +3021,14 @@ body {
     background: #e0e0e0;
     border-color: #ccc;
     opacity: 0.4;
+}
+
+.sort-num-btn.wide,
+.sort-slot.wide {
+    min-width: 70px;
+    font-size: 1.2em;
+    padding: 0 6px;
+    white-space: nowrap;
 }
 
 .sort-slots {

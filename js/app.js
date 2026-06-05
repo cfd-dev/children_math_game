@@ -363,6 +363,12 @@ function showSortGame() {
     var gradeDescEl = document.getElementById('sort-grade-desc');
     if (gradeNameEl) gradeNameEl.textContent = config.name;
     if (gradeDescEl) gradeDescEl.textContent = sConfig.description;
+    // 高年级显示额外提示
+    var extraRule = document.getElementById('sort-rule-extra');
+    if (extraRule) {
+        var showExtra = sConfig.questionTypes.length > 1;
+        extraRule.style.display = showExtra ? 'block' : 'none';
+    }
     showPage('sort-page');
 }
 
