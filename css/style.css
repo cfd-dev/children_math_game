@@ -4201,3 +4201,70 @@ body.numpad-open .page.active {
         font-size: 0.85em;
     }
 }
+
+/* 记忆游戏模式选择 */
+.mode-selection {
+    display: -webkit-flex;
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.mode-btn {
+    -webkit-flex: 1;
+    flex: 1;
+    padding: 15px;
+    background: #f8f9fa;
+    color: #555;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    -webkit-transition: all 0.2s;
+    transition: all 0.2s;
+    -webkit-appearance: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+}
+
+.mode-btn.active {
+    background: -webkit-linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: #667eea;
+}
+
+.mode-btn:hover:not(.active) {
+    background: #e9ecef;
+}
+
+.level-select-wrap {
+    margin-bottom: 20px;
+}
+
+.level-select-wrap label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+}
+
+#memory-practice-level {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 1.1em;
+    background: white;
+    color: #333;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+#memory-practice-level:focus {
+    border-color: #667eea;
+}

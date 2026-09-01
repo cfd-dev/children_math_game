@@ -284,7 +284,36 @@
                     <p>3. 低难度关卡显示时间短，高难度显示时间长</p>
                     <p>4. 关卡越高，数字越长，空缺越多</p>
                 </div>
-                <button class="start-btn" onclick="startMemoryGame()">开始挑战</button>
+                
+                <!-- 模式选择 -->
+                <div class="mode-selection">
+                    <button class="mode-btn active" data-mode="challenge" onclick="selectMemoryMode('challenge')">挑战模式</button>
+                    <button class="mode-btn" data-mode="practice" onclick="selectMemoryMode('practice')">练习模式</button>
+                </div>
+                
+                <!-- 挑战模式区域 -->
+                <div id="memory-challenge-area">
+                    <button class="start-btn" onclick="startMemoryGame()">开始挑战</button>
+                </div>
+                
+                <!-- 练习模式区域 -->
+                <div id="memory-practice-area" style="display:none">
+                    <div class="level-select-wrap">
+                        <label for="memory-practice-level">选择关卡：</label>
+                        <select id="memory-practice-level">
+                            <option value="1">第 1 关 (4位数，1个空)</option>
+                            <option value="2">第 2 关 (4位数，2个空)</option>
+                            <option value="3">第 3 关 (4位数，4个空)</option>
+                            <option value="4">第 4 关 (6位数，2个空)</option>
+                            <option value="5">第 5 关 (6位数，3个空)</option>
+                            <option value="6">第 6 关 (6位数，6个空)</option>
+                            <option value="7">第 7 关 (8位数，3个空)</option>
+                            <option value="8">第 8 关 (8位数，4个空)</option>
+                            <option value="9">第 9 关 (8位数，8个空)</option>
+                        </select>
+                    </div>
+                    <button class="start-btn" onclick="startMemoryPractice()">开始练习</button>
+                </div>
             </div>
 
             <!-- 记忆显示区域 -->

@@ -318,6 +318,8 @@ function showMathQuiz() {
 
 // 显示数字记忆页面
 function showMemoryGame() {
+    // 重置为挑战模式
+    selectMemoryMode('challenge');
     showPage('memory-page');
 }
 
