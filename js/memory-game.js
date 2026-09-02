@@ -1,5 +1,6 @@
 // 数字记忆游戏模块
 let memoryState = {
+    mode: 'challenge',          // 'challenge' 关卡模式 | 'practice' 练习模式
     level: 1,
     roundInLevel: 1,
     score: 0,
@@ -10,7 +11,11 @@ let memoryState = {
     timerInterval: null,
     timeLeft: 10,
     maxTime: 10,
-    isProcessing: false
+    isProcessing: false,
+    // 练习模式专属
+    totalQuestions: 20,
+    currentQuestion: 0,
+    wrongCount: 0
 };
 
 // 关卡配置（每关10题，难度越低显示时间越短）
@@ -65,13 +70,27 @@ function getLevelConfig() {
 }
 
 // 开始记忆游戏
-function startMemoryGame() {
+// practice=true 进入练习模式（答错继续、无关卡）；false 进入挑战模式；
+// 不传参数则沿用上次模式（用于结果页"再来一次"按钮）
+function startMemoryGame(practice) {
+    // 读取模式
+    if (practice !== undefined) {
+        memoryState.mode = practice ? 'practice' : 'challenge';
+    }
+
     // 重置状态
     memoryState.level = gradeStartLevel[currentGrade] || 1;
     memoryState.roundInLevel = 1;
     memoryState.score = 0;
     memoryState.totalCorrect = 0;
     memoryState.isProcessing = false;
+
+    if (memoryState.mode === 'practice') {
+        // 练习模式：固定 20 题，无关卡概念
+        memoryState.totalQuestions = 20;
+        memoryState.currentQuestion = 0;
+        memoryState.wrongCount = 0;
+    }
 
     // 切换显示
     document.getElementById('memory-setup').style.display = 'none';
@@ -89,6 +108,14 @@ function startMemoryGame() {
 // 显示记忆轮次
 function showMemoryRound() {
     memoryState.isProcessing = false;
+
+    // 练习模式：随题号递增难度（每5题加1关，上限为最高关卡）
+    if (memoryState.mode === 'practice') {
+        var baseLevel = gradeStartLevel[currentGrade] || 1;
+        var advance = Math.floor(memoryState.currentQuestion / 5);
+        memoryState.level = Math.min(baseLevel + advance, levelConfig.length);
+    }
+
     const config = getLevelConfig();
 
     // 生成数字和空缺位置
@@ -96,9 +123,15 @@ function showMemoryRound() {
     memoryState.blankPositions = selectBlankPositions(config.digitLength, config.blankCount);
     memoryState.correctAnswers = memoryState.blankPositions.map(pos => memoryState.currentNumbers[pos]);
 
-    // 更新显示
-    document.getElementById('memory-level').textContent = `第 ${memoryState.level} 关`;
-    document.getElementById('memory-round').textContent = `第 ${memoryState.roundInLevel}/${ROUNDS_PER_LEVEL} 题`;
+    // 更新显示（练习模式显示进度而非关卡）
+    if (memoryState.mode === 'practice') {
+        document.getElementById('memory-level').textContent = '练习模式';
+        document.getElementById('memory-round').textContent =
+            `第 ${memoryState.currentQuestion + 1}/${memoryState.totalQuestions} 题`;
+    } else {
+        document.getElementById('memory-level').textContent = `第 ${memoryState.level} 关`;
+        document.getElementById('memory-round').textContent = `第 ${memoryState.roundInLevel}/${ROUNDS_PER_LEVEL} 题`;
+    }
     document.getElementById('memory-score').textContent = `得分：${memoryState.score}`;
 
     // 显示数字（每个数字一个蓝色框）
@@ -156,11 +189,11 @@ function createMemoryAnswerBoxes() {
 
             input.addEventListener('input', handleMemoryBoxInput);
             input.addEventListener('keydown', handleMemoryBoxKeydown);
-            input.addEventListener('focus', function() {
+            input.addEventListener('focus', function () {
                 this.select();
                 if (typeof numpad !== 'undefined') numpad.show(this);
             });
-            input.addEventListener('touchstart', function() {
+            input.addEventListener('touchstart', function () {
                 if (typeof numpad !== 'undefined') numpad.show(this);
             }, { passive: true });
 
@@ -250,8 +283,14 @@ function showMemoryInput() {
     document.getElementById('memory-input').style.display = 'block';
 
     // 更新信息
-    document.getElementById('memory-level2').textContent = `第 ${memoryState.level} 关`;
-    document.getElementById('memory-round2').textContent = `第 ${memoryState.roundInLevel}/${ROUNDS_PER_LEVEL} 题`;
+    if (memoryState.mode === 'practice') {
+        document.getElementById('memory-level2').textContent = '练习模式';
+        document.getElementById('memory-round2').textContent =
+            `第 ${memoryState.currentQuestion + 1}/${memoryState.totalQuestions} 题`;
+    } else {
+        document.getElementById('memory-level2').textContent = `第 ${memoryState.level} 关`;
+        document.getElementById('memory-round2').textContent = `第 ${memoryState.roundInLevel}/${ROUNDS_PER_LEVEL} 题`;
+    }
     document.getElementById('memory-score2').textContent = `得分：${memoryState.score}`;
 
     // 更新提示
@@ -315,15 +354,27 @@ function submitMemoryAnswer() {
 
         // 延迟后进入下一题或显示过关奖励
         setTimeout(() => {
-            memoryState.roundInLevel++;
-
-            if (memoryState.roundInLevel > ROUNDS_PER_LEVEL) {
-                // 通过当前关卡，显示奖励画面
-                showLevelReward();
+            if (memoryState.mode === 'practice') {
+                // 练习模式：题数+1，到总数则结束
+                memoryState.currentQuestion++;
+                if (memoryState.currentQuestion >= memoryState.totalQuestions) {
+                    showMemoryResult();
+                } else {
+                    document.getElementById('memory-input').style.display = 'none';
+                    document.getElementById('memory-show').style.display = 'block';
+                    showMemoryRound();
+                }
             } else {
-                document.getElementById('memory-input').style.display = 'none';
-                document.getElementById('memory-show').style.display = 'block';
-                showMemoryRound();
+                memoryState.roundInLevel++;
+
+                if (memoryState.roundInLevel > ROUNDS_PER_LEVEL) {
+                    // 通过当前关卡，显示奖励画面
+                    showLevelReward();
+                } else {
+                    document.getElementById('memory-input').style.display = 'none';
+                    document.getElementById('memory-show').style.display = 'block';
+                    showMemoryRound();
+                }
             }
         }, 1200);
     } else {
@@ -360,10 +411,25 @@ function submitMemoryAnswer() {
 
         // 播放错误音效
         playWrongSound();
-
-        // 延迟后显示结果
-        setTimeout(showMemoryResult, 4000);
         speakWrong();
+
+        if (memoryState.mode === 'practice') {
+            // 练习模式：答错不结束，继续下一题
+            memoryState.wrongCount++;
+            setTimeout(() => {
+                memoryState.currentQuestion++;
+                if (memoryState.currentQuestion >= memoryState.totalQuestions) {
+                    showMemoryResult();
+                } else {
+                    document.getElementById('memory-input').style.display = 'none';
+                    document.getElementById('memory-show').style.display = 'block';
+                    showMemoryRound();
+                }
+            }, 4000);
+        } else {
+            // 关卡模式：答错结束游戏
+            setTimeout(showMemoryResult, 4000);
+        }
     }
 }
 
@@ -434,16 +500,37 @@ function showMemoryResult() {
     // 隐藏数字键盘
     if (typeof numpad !== 'undefined') numpad.hide();
 
-    // 通过关卡数：失败时当前关不算通过，完成全部关卡时等于剩余关卡数
-    var startLevel = gradeStartLevel[currentGrade] || 1;
-    var passedLevel = memoryState.level >= levelConfig.length ? levelConfig.length - startLevel + 1 : memoryState.level - startLevel;
+    // 标题：练习模式显示"练习结束"，挑战模式显示"挑战结束"
+    var titleEl = document.getElementById('memory-result-title');
+    var levelLabel = document.getElementById('memory-final-level-label');
+    var levelValue;
 
-    // 保存记录
-    saveMemoryGameRecord(memoryState.score, passedLevel, memoryState.totalCorrect);
+    if (memoryState.mode === 'practice') {
+        // 练习模式：显示答对率
+        var accuracy = memoryState.totalQuestions > 0
+            ? Math.round((memoryState.totalCorrect / memoryState.totalQuestions) * 100)
+            : 0;
+        levelValue = accuracy + '%';
+        if (levelLabel) levelLabel.textContent = '正确率';
+        if (titleEl) titleEl.textContent = '练习结束！';
+        // 练习模式不影响能力值，记录中保存题目总数
+        saveMemoryGameRecord(memoryState.score, 0, memoryState.totalCorrect, {
+            mode: 'practice',
+            skipAbilityUpdate: true
+        });
+    } else {
+        // 关卡模式：通过关卡数（失败时当前关不算通过，完成全部关卡时等于剩余关卡数）
+        var startLevel = gradeStartLevel[currentGrade] || 1;
+        var passedLevel = memoryState.level >= levelConfig.length ? levelConfig.length - startLevel + 1 : memoryState.level - startLevel;
+        levelValue = passedLevel;
+        if (levelLabel) levelLabel.textContent = '通过关卡';
+        if (titleEl) titleEl.textContent = '挑战结束！';
+        saveMemoryGameRecord(memoryState.score, passedLevel, memoryState.totalCorrect);
+    }
 
     // 更新显示
     document.getElementById('memory-final-score').textContent = memoryState.score;
-    document.getElementById('memory-final-level').textContent = passedLevel;
+    document.getElementById('memory-final-level').textContent = levelValue;
     document.getElementById('memory-final-questions').textContent = memoryState.totalCorrect;
 
     // 切换显示

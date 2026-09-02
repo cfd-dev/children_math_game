@@ -2241,6 +2241,17 @@ body {
     margin-bottom: 8px;
 }
 
+.history-tag {
+    display: inline-block;
+    padding: 1px 6px;
+    margin-left: 6px;
+    font-size: 0.75em;
+    color: #fff;
+    background: #4CAF50;
+    border-radius: 8px;
+    vertical-align: middle;
+}
+
 .history-details {
     display: -webkit-flex;
     display: flex;

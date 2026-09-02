@@ -193,13 +193,15 @@ function saveMathQuizRecord(accuracy, totalTime, questionCount, score, grade) {
 }
 
 // 保存记忆游戏记录
-function saveMemoryGameRecord(score, level, totalCorrect) {
+function saveMemoryGameRecord(score, level, totalCorrect, options) {
+    options = options || {};
     const history = getMemoryHistory();
     history.unshift({
         date: new Date().toLocaleString('zh-CN'),
         score: score,
         level: level,
-        totalCorrect: totalCorrect
+        totalCorrect: totalCorrect,
+        mode: options.mode || 'challenge'
     });
 
     // 只保留最近50条记录
@@ -209,8 +211,10 @@ function saveMemoryGameRecord(score, level, totalCorrect) {
 
     localStorage.setItem(STORAGE_KEYS.MEMORY_HISTORY, JSON.stringify(history));
 
-    // 更新能力值
-    updateMemoryAbility(level, totalCorrect);
+    // 练习模式不影响能力值
+    if (!options.skipAbilityUpdate) {
+        updateMemoryAbility(level, totalCorrect);
+    }
 }
 
 // 保存找规律记录
@@ -860,12 +864,16 @@ function showHistory(type) {
             html = '<div class="history-empty">暂无记忆游戏记录</div>';
         } else {
             history.slice(0, 10).forEach(record => {
+                var modeText = record.mode === 'practice' ? '<span class="history-tag">练习</span>' : '';
+                var levelText = record.mode === 'practice'
+                    ? '无关卡'
+                    : `通过: ${record.level}关`;
                 html += `
                     <div class="history-item">
-                        <div class="history-date">${record.date}</div>
+                        <div class="history-date">${record.date} ${modeText}</div>
                         <div class="history-details">
                             <span>得分: ${record.score}</span>
-                            <span>通过: ${record.level}关</span>
+                            <span>${levelText}</span>
                             <span>答对: ${record.totalCorrect}题</span>
                         </div>
                     </div>
