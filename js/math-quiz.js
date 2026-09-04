@@ -1,6 +1,6 @@
 // 快速计算模块
 let mathState = {
-    difficulty: 20,
+    difficulty: 'normal',   // 题目难度：easy(简单)/normal(标准)/hard(困难)
     operations: ['+', '-'],
     totalQuestions: 20,
     currentQuestion: 0,
@@ -175,7 +175,7 @@ function showGradeChangeNotification(oldGrade, newGrade, reason) {
 
     // 3秒后自动消失
     if (notification._autoTimer) clearTimeout(notification._autoTimer);
-    notification._autoTimer = setTimeout(function() {
+    notification._autoTimer = setTimeout(function () {
         hideGradeChangeNotification();
     }, 3000);
 }
@@ -187,17 +187,83 @@ function hideGradeChangeNotification() {
     notification.style.display = 'none';
 }
 
-// 生成随机数学题
+// 题目难度配置：控制加减法比例与跨十位（进位/退位）题目占比
+const mathDifficultyConfig = {
+    easy: { name: '简单', addWeight: 2.5, subWeight: 1, crossTenRatio: 0, avoidCross: true },
+    normal: { name: '标准', addWeight: 1, subWeight: 1, crossTenRatio: 0, avoidCross: false },
+    hard: { name: '困难', addWeight: 1, subWeight: 2.5, crossTenRatio: 0.8, avoidCross: false }
+};
+
+// 按难度加权随机选择运算符（难度越高，减法占比越大）
+function pickMathOperation(operations, difficulty) {
+    const cfg = mathDifficultyConfig[difficulty] || mathDifficultyConfig.normal;
+    const weights = operations.map(op => {
+        if (op === '+') return cfg.addWeight;
+        if (op === '-') return cfg.subWeight;
+        return 1;
+    });
+    const total = weights.reduce((a, b) => a + b, 0);
+    let r = Math.random() * total;
+    for (let i = 0; i < operations.length; i++) {
+        r -= weights[i];
+        if (r <= 0) return operations[i];
+    }
+    return operations[operations.length - 1];
+}
+
+// 判断加法是否进位（跨十位）：个位相加满十
+function isCarryAddition(num1, num2) {
+    return (num1 % 10) + (num2 % 10) >= 10;
+}
+
+// 判断减法是否退位（跨十位）：被减数个位小于减数个位
+function isBorrowSubtraction(num1, num2) {
+    return (num1 % 10) < (num2 % 10);
+}
+
+// 尝试按指定跨十位要求生成加减题，多次尝试失败返回 null
+function tryGenerateMathQuestion(max, op, wantCross) {
+    for (let i = 0; i < 30; i++) {
+        if (op === '+') {
+            const num1 = Math.floor(Math.random() * (max - 1)) + 1;
+            const num2 = Math.floor(Math.random() * (max - num1)) + 1;
+            if (isCarryAddition(num1, num2) === wantCross) {
+                return { question: `${num1} + ${num2} = ?`, answer: num1 + num2 };
+            }
+        } else if (op === '-') {
+            const num1 = Math.floor(Math.random() * max) + 1;
+            const num2 = Math.floor(Math.random() * num1) + 1;
+            if (isBorrowSubtraction(num1, num2) === wantCross) {
+                return { question: `${num1} - ${num2} = ?`, answer: num1 - num2 };
+            }
+        }
+    }
+    return null;
+}
+
+// 生成随机数学题（难度影响加减比例与跨十位题目占比）
 function generateMathQuestion() {
     const config = gradeConfig[currentGrade];
     const max = config.difficulty;
     const operations = config.operations;
-    const op = operations[Math.floor(Math.random() * operations.length)];
+    const diffCfg = mathDifficultyConfig[mathState.difficulty] || mathDifficultyConfig.normal;
 
+    const op = pickMathOperation(operations, mathState.difficulty);
+
+    // 按难度要求优先生成跨十位/不跨十位的题目
+    if (diffCfg.crossTenRatio > 0 && Math.random() < diffCfg.crossTenRatio) {
+        const q = tryGenerateMathQuestion(max, op, true);
+        if (q) return q;
+    } else if (diffCfg.avoidCross) {
+        const q = tryGenerateMathQuestion(max, op, false);
+        if (q) return q;
+    }
+
+    // 自然分布生成
     let num1, num2, answer, question;
 
     if (op === '+') {
-        num1 = Math.floor(Math.random() * max) + 1;
+        num1 = Math.floor(Math.random() * (max - 1)) + 1;
         num2 = Math.floor(Math.random() * (max - num1)) + 1;
         answer = num1 + num2;
         question = `${num1} + ${num2} = ?`;
@@ -240,11 +306,11 @@ function createAnswerBoxes(length) {
 
         input.addEventListener('input', handleBoxInput);
         input.addEventListener('keydown', handleBoxKeydown);
-        input.addEventListener('focus', function() {
+        input.addEventListener('focus', function () {
             this.select();
             if (typeof numpad !== 'undefined') numpad.show(this);
         });
-        input.addEventListener('touchstart', function() {
+        input.addEventListener('touchstart', function () {
             if (typeof numpad !== 'undefined') numpad.show(this);
         }, { passive: true });
 
@@ -366,6 +432,8 @@ function checkMathAnswer() {
 function startMathQuiz() {
     // 重置状态
     mathState.totalQuestions = parseInt(document.getElementById('question-count').value);
+    var diffSelect = document.getElementById('math-difficulty');
+    mathState.difficulty = diffSelect ? diffSelect.value : 'normal';
     mathState.currentQuestion = 0;
     mathState.score = 0;
     mathState.correctCount = 0;
